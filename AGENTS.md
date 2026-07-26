@@ -1,5 +1,13 @@
-<!-- BEGIN:nextjs-agent-rules -->
-# This is NOT the Next.js you know
+## Rule
+ - Don't test  build and  deploy  if user nor ask.
 
-This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` before writing any code. Heed deprecation notices.
-<!-- END:nextjs-agent-rules -->
+
+
+## Test or Verify UI
+- Use `playwright-cli --help`  skill
+- you must to use `playwright-cli open {url}`
+- Then must to show user with `playwright-cli show`
+
+
+## Database tool
+- Use `db-cli --help` skill

@@ -1,65 +1,107 @@
 import Image from "next/image";
+import { ClipboardCheck, CircleCheckBig, CircleX, MousePointerClick } from "lucide-react";
 
 export default function Home() {
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+    <main className="landing-page">
+      <div className="page-glow page-glow-one" />
+      <div className="page-glow page-glow-two" />
+
+      <section className="hero" aria-labelledby="page-title">
+        <header className="brand">
+          <Image
+            src="/moph-logo-transparent.png"
+            alt="กระทรวงสาธารณสุข"
+            width={72}
+            height={72}
+            priority
+          />
+          <div>
+            <p>สำนักงานสาธารณสุขจังหวัดพิษณุโลก</p>
+            <span>PHITSANULOK PROVINCIAL HEALTH OFFICE</span>
+          </div>
+        </header>
+
+        <aside className="case-stats" aria-label="สถิติการรับแจ้ง">
+          <div>
+            <ClipboardCheck aria-hidden="true" />
+            <span>รับแจ้งแล้ว <b>n</b> รายการ</span>
+          </div>
+          <div>
+            <CircleCheckBig aria-hidden="true" />
+            <span>แก้ไขแล้ว <b>n</b> รายการ</span>
+          </div>
+        </aside>
+
+        <div className="hero-grid">
+          <div className="hero-copy">
+            <h1 id="page-title">
+              ศูนย์รับแจ้งแก้ไขประวัติสุขภาพ<br />
+              <strong>ในแอปพลิเคชันหมอพร้อม</strong>
+            </h1>
+            <p className="intro">
+              หากข้อมูลสุขภาพของคุณในแอปพลิเคชันหมอพร้อมไม่ถูกต้อง
+              สามารถแจ้งรายละเอียดให้เราตรวจสอบและประสานการแก้ไขได้ที่นี่
+            </p>
+            <a className="complaint-button" href="/complaint">
+              <span className="complaint-label">
+                <span>แจ้งแก้ไขประวัติสุขภาพในหมอพร้อม</span>
+                <strong>คลิกที่นี่</strong>
+              </span>
+              <b aria-hidden="true">↗</b>
+            </a>
+          </div>
+
+          <div className="visual" aria-hidden="true">
+            <div className="orbit orbit-a" />
+            <div className="orbit orbit-b" />
+            <div className="leaf leaf-one">✦</div>
+            <div className="leaf leaf-two">✦</div>
+            <div className="phone-shadow" />
+            <div className="phone">
+              <div className="phone-top"><i /><span>หมอพร้อม</span><em>•••</em></div>
+              <div className="phone-screen">
+                <div className="screen-wave" />
+                <h2>
+                  <span>
+                    <span className="issue-icons" aria-hidden="true">
+                      <CircleX className="issue-x" strokeWidth={2.5} />
+                      <Image
+                        className="patient-chart"
+                        src="/medical-record.png"
+                        alt=""
+                        width={48}
+                        height={48}
+                      />
+                    </span>
+                    <span className="issue-text">ข้อมูล<br />ผิดพลาด<br />สามารถ<br />แก้ไขได้</span>
+                  </span>
+                </h2>
+                <div className="health-card">
+                  <div className="cross">+</div>
+                  <div><span>HEALTH PROFILE</span><b>ข้อมูลสุขภาพ</b></div>
+                  <i>✓</i>
+                </div>
+                <div className="screen-lines"><i /><i /><i /></div>
+              </div>
+            </div>
+          </div>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
-    </div>
+
+        <footer>
+          <div className="visit-count" aria-label="จำนวนครั้งเข้าใช้งาน">
+            <MousePointerClick aria-hidden="true" />
+            <span>เข้าใช้งาน <b>n</b> ครั้ง</span>
+          </div>
+          <Image
+            className="footer-mohprom"
+            src="/mohprom-transparent.png"
+            alt="แอปพลิเคชันหมอพร้อม"
+            width={90}
+            height={90}
+          />
+        </footer>
+      </section>
+    </main>
   );
 }

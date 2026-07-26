@@ -1,0 +1,97 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum Gender {
+  MALE   @map("1")
+  FEMALE @map("2")
+
+  @@map("gender")
+}
+
+model Hospital {
+  hospcode      String  @id @db.VarChar(10)
+  hospname      String  @db.VarChar(255)
+  hospnameShort String? @map("hospname_short") @db.VarChar(255)
+  hostype       String? @db.VarChar(20)
+  address       String? @db.Text
+  road          String? @db.Text
+  mu            String? @db.VarChar(20)
+  subdistcode   String? @db.VarChar(20)
+  distcode      String? @db.VarChar(20)
+  provcode      String? @db.VarChar(20)
+  postcode      String? @db.VarChar(20)
+  hoscodenew    String? @db.VarChar(20)
+  bed           String? @db.VarChar(20)
+  levelService  String? @map("level_service") @db.VarChar(50)
+  bedhos        String? @db.VarChar(20)
+  hdcRegist     String? @map("hdc_regist") @db.VarChar(20)
+  dep           String? @db.VarChar(20)
+  hmainSent     String? @map("hmain_sent") @db.VarChar(20)
+  registerDate  String? @map("register_date") @db.VarChar(30)
+  mcode         String? @db.VarChar(20)
+  status        String? @db.VarChar(20)
+  mName         String? @map("m_name") @db.VarChar(255)
+  depName       String? @map("dep_name") @db.VarChar(255)
+  zoneCode      String? @map("zone_code") @db.VarChar(20)
+  zoneName      String? @map("zone_name") @db.VarChar(255)
+  chwCode       String? @map("chw_code") @db.VarChar(20)
+  chwName       String? @map("chw_name") @db.VarChar(255)
+  ampCode       String? @map("amp_code") @db.VarChar(20)
+  ampName       String? @map("amp_name") @db.VarChar(255)
+  tmbCode       String? @map("tmb_code") @db.VarChar(20)
+  tmbName       String? @map("tmb_name") @db.VarChar(255)
+  bedCmi        String? @map("bed_cmi") @db.VarChar(20)
+  note          String? @db.Text
+  hostypeNew    String? @map("hostype_new") @db.VarChar(20)
+  closeDate     String? @map("close_date") @db.VarChar(30)
+  isActive      String? @map("is_active") @db.VarChar(20)
+
+  @@index([hospname])
+  @@index([provcode, distcode])
+  @@map("hospitals")
+}
+
+model Complaint {
+  id        Int      @id @default(autoincrement())
+  cidHash   String   @map("cid_hash") @db.VarChar(128)
+  cid       String   @db.VarChar(13)
+  gender    Gender
+  birthYear Int      @map("birth_year") @db.SmallInt
+  birthDate DateTime? @map("birth_date") @db.Date
+  hospcode  String   @db.VarChar(10)
+  hospname  String   @db.VarChar(255)
+  visitDate DateTime @map("visit_date") @db.Date
+  detail    String   @db.Text
+  image     Bytes[]  @default([]) @db.ByteA
+  statuses  ComplaintStatus[]
+
+  @@index([cidHash])
+  @@index([hospcode, visitDate])
+  @@map("complaints")
+}
+
+model ComplaintStatus {
+  id          Int       @id @default(autoincrement())
+  complaintId Int       @map("complaint_id")
+  status      String    @db.VarChar(50)
+  note        String?   @db.Text
+  complaint   Complaint @relation(fields: [complaintId], references: [id], onDelete: Cascade)
+
+  @@index([complaintId])
+  @@map("complaint_status")
+}
+
+model VisitCounter {
+  key       String   @id @default("landing_page") @db.VarChar(50)
+  count     Int      @default(0)
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  @@map("visit_counters")
+}
