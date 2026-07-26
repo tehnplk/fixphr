@@ -1,7 +1,33 @@
 import Image from "next/image";
-import { ClipboardCheck, CircleCheckBig, CircleX, MousePointerClick } from "lucide-react";
+import { ClipboardCheck, CircleCheckBig, CircleX } from "lucide-react";
+import { getPrisma } from "@/lib/prisma";
+import VisitCount from "./VisitCount";
 
-export default function Home() {
+export const dynamic = "force-dynamic";
+
+export default async function Home() {
+  const prisma = getPrisma();
+  const [receivedCount, resolvedCount, visitCounter] = await prisma.$transaction([
+    prisma.complaint.count(),
+    prisma.complaint.count({
+      where: {
+        statuses: {
+          some: {
+            status: "RESOLVED",
+          },
+        },
+      },
+    }),
+    prisma.visitCounter.findUnique({
+      where: {
+        key: "landing_page",
+      },
+      select: {
+        count: true,
+      },
+    }),
+  ]);
+
   return (
     <main className="landing-page">
       <div className="page-glow page-glow-one" />
@@ -25,11 +51,11 @@ export default function Home() {
         <aside className="case-stats" aria-label="สถิติการรับแจ้ง">
           <div>
             <ClipboardCheck aria-hidden="true" />
-            <span>รับแจ้งแล้ว <b>n</b> รายการ</span>
+            <span>รับแจ้งแล้ว <b>{receivedCount.toLocaleString("th-TH")}</b> รายการ</span>
           </div>
           <div>
             <CircleCheckBig aria-hidden="true" />
-            <span>แก้ไขแล้ว <b>n</b> รายการ</span>
+            <span>แก้ไขแล้ว <b>{resolvedCount.toLocaleString("th-TH")}</b> รายการ</span>
           </div>
         </aside>
 
@@ -89,10 +115,7 @@ export default function Home() {
         </div>
 
         <footer>
-          <div className="visit-count" aria-label="จำนวนครั้งเข้าใช้งาน">
-            <MousePointerClick aria-hidden="true" />
-            <span>เข้าใช้งาน <b>n</b> ครั้ง</span>
-          </div>
+          <VisitCount initialCount={visitCounter?.count ?? 0} />
           <Image
             className="footer-mohprom"
             src="/mohprom-transparent.png"

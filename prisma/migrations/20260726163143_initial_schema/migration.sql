@@ -51,8 +51,8 @@ CREATE TABLE "complaints" (
     "gender" "gender" NOT NULL,
     "birth_year" SMALLINT NOT NULL,
     "birth_date" DATE,
-    "hoscode" VARCHAR(10) NOT NULL,
-    "hosname" VARCHAR(255) NOT NULL,
+    "hospcode" VARCHAR(10) NOT NULL,
+    "hospname" VARCHAR(255) NOT NULL,
     "visit_date" DATE NOT NULL,
     "detail" TEXT NOT NULL,
     "image" BYTEA[] DEFAULT ARRAY[]::BYTEA[],
@@ -90,7 +90,7 @@ CREATE INDEX "hospitals_provcode_distcode_idx" ON "hospitals"("provcode", "distc
 CREATE INDEX "complaints_cid_hash_idx" ON "complaints"("cid_hash");
 
 -- CreateIndex
-CREATE INDEX "complaints_hoscode_visit_date_idx" ON "complaints"("hoscode", "visit_date");
+CREATE INDEX "complaints_hospcode_visit_date_idx" ON "complaints"("hospcode", "visit_date");
 
 -- CreateIndex
 CREATE INDEX "complaint_status_complaint_id_idx" ON "complaint_status"("complaint_id");
