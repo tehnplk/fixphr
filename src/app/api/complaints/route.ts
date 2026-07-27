@@ -1,5 +1,6 @@
 import { createHash } from "node:crypto";
 import { type NextRequest, NextResponse } from "next/server";
+import sharp, { type Sharp } from "sharp";
 import { isValidThaiCid } from "@/lib/cid";
 import { encryptCid } from "@/lib/cid-crypto";
 import { getExternalOrigin, isSameOrigin } from "@/lib/http";
@@ -10,8 +11,54 @@ import {
 } from "@/lib/signed-token";
 import { getPrisma } from "@/lib/prisma";
 
-const MAX_IMAGES = 5;
-const MAX_IMAGE_SIZE = 5 * 1024 * 1024;
+const MAX_IMAGES = 1;
+const MAX_IMAGE_SIZE = 2 * 1024 * 1024;
+const SHRINK_FACTOR = 0.85;
+
+// re-encoding with sharp's defaults inflates a PNG well past its original size,
+// so each format gets the encoder that actually compresses it
+function encode(pipeline: Sharp, format: string | undefined) {
+  if (format === "jpeg" || format === "jpg") {
+    return pipeline.jpeg({ quality: 82, mozjpeg: true });
+  }
+
+  if (format === "png") {
+    return pipeline.png({ compressionLevel: 9, palette: true });
+  }
+
+  return pipeline.webp({ quality: 88 });
+}
+
+function toBytes(buffer: Buffer) {
+  // copy into a plain ArrayBuffer: Buffer is backed by a shared pool, which
+  // Prisma's Bytes type does not accept
+  const bytes = new Uint8Array(buffer.byteLength);
+  bytes.set(buffer);
+
+  return bytes;
+}
+
+// shrink each side to 85% of the original before storing; sharp also re-encodes,
+// so a corrupt or mislabelled upload fails here rather than reaching the database
+async function shrinkImage(image: File) {
+  const original = Buffer.from(await image.arrayBuffer());
+  const { width, height, format } = await sharp(original).metadata();
+
+  if (!width || !height) {
+    return null;
+  }
+
+  const shrunk = await encode(
+    sharp(original).resize({
+      width: Math.max(1, Math.round(width * SHRINK_FACTOR)),
+      height: Math.max(1, Math.round(height * SHRINK_FACTOR)),
+    }),
+    format,
+  ).toBuffer();
+
+  // never spend more storage than the upload already cost
+  return toBytes(shrunk.byteLength < original.byteLength ? shrunk : original);
+}
 
 function parseDate(value: string) {
   if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) {
@@ -124,9 +171,19 @@ export async function POST(request: NextRequest) {
       return redirectToForm(request, { error: "image" });
     }
 
-    const imageBytes = await Promise.all(
-      images.map(async (image) => new Uint8Array(await image.arrayBuffer())),
-    );
+    let imageBytes: Uint8Array<ArrayBuffer>[];
+
+    try {
+      imageBytes = (await Promise.all(images.map(shrinkImage))).filter(
+        (bytes) => bytes !== null,
+      );
+    } catch {
+      return redirectToForm(request, { error: "image" });
+    }
+
+    if (imageBytes.length !== images.length) {
+      return redirectToForm(request, { error: "image" });
+    }
 
     await getPrisma().complaint.create({
       data: {

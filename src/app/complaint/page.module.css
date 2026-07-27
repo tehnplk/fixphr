@@ -464,6 +464,75 @@
   cursor: pointer;
 }
 
+.imageField {
+  display: grid;
+  gap: 12px;
+}
+
+.imagePreview {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 12px;
+  background: #f3f7f2;
+  border: 1px solid #bfd5c8;
+  border-radius: 7px;
+}
+
+.imagePreview img {
+  width: 78px;
+  height: 78px;
+  flex-shrink: 0;
+  object-fit: cover;
+  background: #fff;
+  border: 1px solid #d3e0d8;
+  border-radius: 5px;
+}
+
+.imagePreview > div {
+  min-width: 0;
+  display: grid;
+  gap: 3px;
+}
+
+.imagePreview strong {
+  overflow: hidden;
+  color: #176047;
+  font-size: 13px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.imagePreview span {
+  color: #6b8880;
+  font-size: 11px;
+}
+
+.imagePreview button {
+  width: 34px;
+  height: 34px;
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  margin-left: auto;
+  padding: 0;
+  color: #6f8880;
+  background: #e7efe9;
+  border: 0;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.imagePreview button:hover {
+  color: #9f4035;
+  background: #f8e8e5;
+}
+
+.imagePreview button svg {
+  width: 17px;
+  height: 17px;
+}
+
 .actions {
   display: flex;
   justify-content: space-between;

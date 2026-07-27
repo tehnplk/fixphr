@@ -18,6 +18,7 @@ import {
 } from "@/lib/signed-token";
 import CidInput from "./CidInput";
 import HospitalAutocomplete from "./HospitalAutocomplete";
+import ImageInput from "./ImageInput";
 import MathCheckSubmitButton from "./MathCheckSubmitButton";
 import RequiredDetailTextarea from "./RequiredDetailTextarea";
 import RequiredGenderSelect from "./RequiredGenderSelect";
@@ -40,7 +41,7 @@ type ComplaintPageProps = {
 const errorMessages: Record<string, string> = {
   forbidden: "ไม่สามารถส่งเรื่องแจ้งจากแหล่งที่มาไม่ถูกต้องได้",
   invalid: "กรุณาตรวจสอบข้อมูลที่กรอกให้ครบถ้วนและถูกต้อง",
-  image: "แนบรูปภาพได้ไม่เกิน 5 รูป และแต่ละรูปต้องมีขนาดไม่เกิน 5 MB",
+  image: "แนบรูปภาพได้ 1 รูป และต้องมีขนาดไม่เกิน 2 MB",
   server: "ระบบไม่สามารถบันทึกข้อมูลได้ในขณะนี้ กรุณาลองใหม่อีกครั้ง",
 };
 
@@ -166,12 +167,7 @@ export default async function ComplaintPage({
               <FileImage aria-hidden="true" />
               รูปภาพประกอบ
             </legend>
-            <label className={styles.upload}>
-              <FileImage aria-hidden="true" />
-              <strong>เลือกรูปภาพ</strong>
-              <span>แนบได้สูงสุด 5 รูป รูปละไม่เกิน 5 MB</span>
-              <input name="image" type="file" accept="image/*" multiple />
-            </label>
+            <ImageInput />
           </fieldset>
 
           <div className={styles.actions}>
