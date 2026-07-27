@@ -1,7 +1,13 @@
 import { createHash } from "node:crypto";
-import { NextResponse } from "next/server";
+import { type NextRequest, NextResponse } from "next/server";
 import { isValidThaiCid } from "@/lib/cid";
-import { isValidFormToken } from "@/lib/form-token";
+import { encryptCid } from "@/lib/cid-crypto";
+import { isSameOrigin } from "@/lib/http";
+import {
+  CONSENT_COOKIE,
+  isValidConsentToken,
+  isValidFormToken,
+} from "@/lib/signed-token";
 import { getPrisma } from "@/lib/prisma";
 
 const MAX_IMAGES = 5;
@@ -16,24 +22,36 @@ function parseDate(value: string) {
   return date.toISOString().slice(0, 10) === value ? date : null;
 }
 
-function redirectToForm(request: Request, params: Record<string, string>) {
-  const url = new URL("/complaint", request.url);
+function redirectTo(
+  request: Request,
+  path: string,
+  params: Record<string, string> = {},
+) {
+  const url = new URL(path, request.url);
   Object.entries(params).forEach(([key, value]) => url.searchParams.set(key, value));
   return NextResponse.redirect(url, 303);
 }
 
-function isSameOrigin(request: Request) {
-  const origin = request.headers.get("origin");
-
-  return origin !== null && origin === new URL(request.url).origin;
+function redirectToForm(request: Request, params: Record<string, string>) {
+  return redirectTo(request, "/complaint", params);
 }
 
-export async function POST(request: Request) {
+function hasConsent(request: NextRequest) {
+  const consentToken = request.cookies.get(CONSENT_COOKIE)?.value;
+
+  return Boolean(consentToken && isValidConsentToken(consentToken));
+}
+
+export async function POST(request: NextRequest) {
   try {
     const formData = await request.formData();
     const formToken = String(formData.get("form_token") ?? "");
 
-    if (!isSameOrigin(request) || !isValidFormToken(formToken)) {
+    if (
+      !isSameOrigin(request) ||
+      !isValidFormToken(formToken) ||
+      !hasConsent(request)
+    ) {
       return redirectToForm(request, { error: "forbidden" });
     }
 
@@ -110,9 +128,9 @@ export async function POST(request: Request) {
       images.map(async (image) => new Uint8Array(await image.arrayBuffer())),
     );
 
-    const complaint = await getPrisma().complaint.create({
+    await getPrisma().complaint.create({
       data: {
-        cid,
+        cid: encryptCid(cid),
         cidHash: createHash("sha256").update(cid).digest("hex"),
         gender: gender === "1" ? "MALE" : "FEMALE",
         birthYear: birthYearValue,
@@ -134,10 +152,7 @@ export async function POST(request: Request) {
       },
     });
 
-    return redirectToForm(request, {
-      success: "1",
-      id: String(complaint.id),
-    });
+    return redirectTo(request, "/success");
   } catch (error) {
     console.error("Unable to create complaint", error);
     return redirectToForm(request, { error: "server" });

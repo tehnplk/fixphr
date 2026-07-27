@@ -183,6 +183,24 @@
   color: #d68d36;
 }
 
+.fieldsetNote {
+  display: flex;
+  align-items: flex-start;
+  gap: 7px;
+  margin: 0 0 18px;
+  color: #6b8880;
+  font-size: 12px;
+  line-height: 1.7;
+}
+
+.fieldsetNote svg {
+  width: 15px;
+  height: 15px;
+  flex-shrink: 0;
+  margin-top: 2px;
+  color: #d68d36;
+}
+
 .grid {
   display: grid;
   grid-template-columns: minmax(0, .65fr) minmax(0, 1.35fr);

@@ -1,17 +1,24 @@
 import type { Metadata } from "next";
+import { cookies } from "next/headers";
 import Image from "next/image";
 import Link from "next/link";
+import { redirect } from "next/navigation";
 import {
   ArrowLeft,
   CalendarDays,
   FileImage,
-  Send,
+  Info,
   ShieldCheck,
 } from "lucide-react";
 import { getPrisma } from "@/lib/prisma";
-import { createFormToken } from "@/lib/form-token";
+import {
+  CONSENT_COOKIE,
+  createFormToken,
+  isValidConsentToken,
+} from "@/lib/signed-token";
 import CidInput from "./CidInput";
 import HospitalAutocomplete from "./HospitalAutocomplete";
+import MathCheckSubmitButton from "./MathCheckSubmitButton";
 import RequiredDetailTextarea from "./RequiredDetailTextarea";
 import RequiredGenderSelect from "./RequiredGenderSelect";
 import ThaiDateControl from "./ThaiDateControl";
@@ -26,8 +33,6 @@ export const dynamic = "force-dynamic";
 
 type ComplaintPageProps = {
   searchParams: Promise<{
-    success?: string;
-    id?: string;
     error?: string;
   }>;
 };
@@ -42,6 +47,12 @@ const errorMessages: Record<string, string> = {
 export default async function ComplaintPage({
   searchParams,
 }: ComplaintPageProps) {
+  const consentToken = (await cookies()).get(CONSENT_COOKIE)?.value;
+
+  if (!consentToken || !isValidConsentToken(consentToken)) {
+    redirect("/?consent=required");
+  }
+
   const params = await searchParams;
   const errorMessage = params.error ? errorMessages[params.error] : undefined;
   const formToken = createFormToken();
@@ -89,16 +100,6 @@ export default async function ComplaintPage({
           </span>
         </div>
 
-        {params.success === "1" && (
-          <div className={styles.success} role="status">
-            <ShieldCheck aria-hidden="true" />
-            <div>
-              <strong>รับเรื่องแจ้งเรียบร้อยแล้ว</strong>
-              <span>หมายเลขเรื่องแจ้ง #{params.id}</span>
-            </div>
-          </div>
-        )}
-
         {errorMessage && (
           <div className={styles.error} role="alert">
             {errorMessage}
@@ -114,6 +115,10 @@ export default async function ComplaintPage({
           <input name="form_token" type="hidden" value={formToken} />
           <fieldset>
             <legend>ข้อมูลผู้รับบริการ</legend>
+            <p className={styles.fieldsetNote}>
+              <Info aria-hidden="true" />
+              หมายเหตุ : ข้อมูลส่วนนี้เพื่อใช้ในการตรวจสอบกับฐานข้อมูลของโรงพยาบาล
+            </p>
             <div className={styles.grid}>
               <div className={`${styles.full} ${styles.fieldGroup}`}>
                 <span>เลขประจำตัวประชาชน</span>
@@ -146,7 +151,7 @@ export default async function ComplaintPage({
                 <ThaiDateControl name="visit_date" />
               </div>
               <div className={`${styles.full} ${styles.fieldGroup}`}>
-                <span>โรงพยาบาลที่ทำข้อมูลของท่านผิด</span>
+                <span>โรงพยาบาลที่บันทึกข้อมูลของท่านผิดพลาด</span>
                 <HospitalAutocomplete hospitals={hospitals} />
               </div>
               <label className={styles.full}>
@@ -174,10 +179,7 @@ export default async function ComplaintPage({
               <ShieldCheck aria-hidden="true" />
               โปรดตรวจสอบข้อมูลก่อนส่งเรื่องแจ้ง
             </p>
-            <button type="submit">
-              ส่งเรื่องแจ้งแก้ไข
-              <Send aria-hidden="true" />
-            </button>
+            <MathCheckSubmitButton />
           </div>
         </form>
       </section>

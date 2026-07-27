@@ -1,0 +1,137 @@
+.page {
+  min-height: 100svh;
+  display: grid;
+  place-items: center;
+  padding: clamp(16px, 3vw, 42px);
+  color: #173f34;
+  background:
+    radial-gradient(circle at 92% 8%, rgba(189, 225, 198, .7), transparent 30%),
+    radial-gradient(circle at 5% 92%, rgba(236, 218, 157, .38), transparent 26%),
+    #e8eee5;
+}
+
+.shell {
+  width: min(680px, 100%);
+  padding: clamp(30px, 6vw, 62px);
+  background: #f8f6ef;
+  border: 1px solid rgba(25, 86, 59, .14);
+  box-shadow: 0 24px 70px rgba(44, 75, 56, .14);
+  text-align: center;
+}
+
+.brand {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 32px;
+}
+
+.brand img {
+  width: clamp(96px, 16vw, 120px);
+  height: clamp(96px, 16vw, 120px);
+  object-fit: contain;
+}
+
+.icon {
+  width: 76px;
+  height: 76px;
+  display: grid;
+  place-items: center;
+  margin: 0 auto 30px;
+  color: #08704e;
+  background: rgba(8, 112, 78, .09);
+  border: 1.5px solid rgba(8, 112, 78, .3);
+  border-radius: 10px;
+}
+
+.icon svg {
+  width: 40px;
+  height: 40px;
+}
+
+.office {
+  margin: 0 0 18px;
+  color: #0b6d4d;
+  font-size: clamp(19px, 3vw, 24px);
+  font-weight: 800;
+  line-height: 1.5;
+}
+
+.message {
+  display: grid;
+  gap: 10px;
+  margin: 0 0 30px;
+  color: #315f52;
+  font-size: clamp(16px, 2.6vw, 20px);
+  font-weight: 600;
+  line-height: 1.7;
+}
+
+.message strong {
+  color: #0b6d4d;
+  font-weight: 800;
+}
+
+.actions {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.primary,
+.secondary {
+  min-height: 52px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 0 24px;
+  border-radius: 5px;
+  font-size: 15px;
+  font-weight: 800;
+  text-decoration: none;
+}
+
+.primary {
+  color: #fff;
+  background: #08704e;
+  box-shadow: 0 12px 26px rgba(8, 112, 78, .21);
+}
+
+.secondary {
+  color: #08704e;
+  background: transparent;
+  border: 1px solid #a9cbba;
+}
+
+.primary svg,
+.secondary svg {
+  width: 18px;
+  height: 18px;
+}
+
+@media (max-width: 680px) {
+  .page {
+    padding: 0;
+  }
+
+  .shell {
+    min-height: 100svh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 34px 22px;
+    border: 0;
+  }
+
+  .actions {
+    flex-direction: column;
+  }
+
+  .primary,
+  .secondary {
+    width: 100%;
+  }
+}

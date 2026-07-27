@@ -47,7 +47,7 @@ CREATE TABLE "hospitals" (
 CREATE TABLE "complaints" (
     "id" SERIAL NOT NULL,
     "cid_hash" VARCHAR(128) NOT NULL,
-    "cid" VARCHAR(13) NOT NULL,
+    "cid" VARCHAR(255) NOT NULL,
     "gender" "gender" NOT NULL,
     "birth_year" SMALLINT NOT NULL,
     "birth_date" DATE,
@@ -56,6 +56,7 @@ CREATE TABLE "complaints" (
     "visit_date" DATE NOT NULL,
     "detail" TEXT NOT NULL,
     "image" BYTEA[] DEFAULT ARRAY[]::BYTEA[],
+    "created_at" TIMESTAMPTZ(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "complaints_pkey" PRIMARY KEY ("id")
 );
@@ -91,6 +92,9 @@ CREATE INDEX "complaints_cid_hash_idx" ON "complaints"("cid_hash");
 
 -- CreateIndex
 CREATE INDEX "complaints_hospcode_visit_date_idx" ON "complaints"("hospcode", "visit_date");
+
+-- CreateIndex
+CREATE INDEX "complaints_created_at_idx" ON "complaints"("created_at");
 
 -- CreateIndex
 CREATE INDEX "complaint_status_complaint_id_idx" ON "complaint_status"("complaint_id");

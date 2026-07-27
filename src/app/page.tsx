@@ -1,11 +1,19 @@
 import Image from "next/image";
 import { ClipboardCheck, CircleCheckBig, CircleX } from "lucide-react";
 import { getPrisma } from "@/lib/prisma";
+import ConsentComplaintLink from "./ConsentComplaintLink";
 import VisitCount from "./VisitCount";
 
 export const dynamic = "force-dynamic";
 
-export default async function Home() {
+type HomeProps = {
+  searchParams: Promise<{
+    consent?: string;
+  }>;
+};
+
+export default async function Home({ searchParams }: HomeProps) {
+  const { consent } = await searchParams;
   const prisma = getPrisma();
   const [receivedCount, resolvedCount, visitCounter] = await prisma.$transaction([
     prisma.complaint.count(),
@@ -69,13 +77,7 @@ export default async function Home() {
               หากข้อมูลสุขภาพของคุณในแอปพลิเคชันหมอพร้อมไม่ถูกต้อง
               สามารถแจ้งรายละเอียดให้เราตรวจสอบและประสานการแก้ไขได้ที่นี่
             </p>
-            <a className="complaint-button" href="/complaint">
-              <span className="complaint-label">
-                <span>แจ้งแก้ไขประวัติสุขภาพในหมอพร้อม</span>
-                <strong>คลิกที่นี่</strong>
-              </span>
-              <b aria-hidden="true">↗</b>
-            </a>
+            <ConsentComplaintLink autoPrompt={consent === "required"} />
           </div>
 
           <div className="visual" aria-hidden="true">

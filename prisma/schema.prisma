@@ -60,7 +60,7 @@ model Hospital {
 model Complaint {
   id        Int      @id @default(autoincrement())
   cidHash   String   @map("cid_hash") @db.VarChar(128)
-  cid       String   @db.VarChar(13)
+  cid       String   @db.VarChar(255)
   gender    Gender
   birthYear Int      @map("birth_year") @db.SmallInt
   birthDate DateTime? @map("birth_date") @db.Date
@@ -69,10 +69,12 @@ model Complaint {
   visitDate DateTime @map("visit_date") @db.Date
   detail    String   @db.Text
   image     Bytes[]  @default([]) @db.ByteA
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
   statuses  ComplaintStatus[]
 
   @@index([cidHash])
   @@index([hospcode, visitDate])
+  @@index([createdAt])
   @@map("complaints")
 }
 

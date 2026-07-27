@@ -46,3 +46,6 @@ yarn-error.log*
 next-env.d.ts
 
 DEPLOY_PROD.md
+
+# local decryption helper (not for the public repo)
+scripts/decrypt_cid.py
