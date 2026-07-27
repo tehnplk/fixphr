@@ -230,6 +230,14 @@
   font-weight: 750;
 }
 
+.fieldGroup > span > small {
+  display: block;
+  margin-top: 3px;
+  color: #8ba39a;
+  font-size: 11px;
+  font-weight: 400;
+}
+
 .grid input,
 .grid textarea,
 .grid select,

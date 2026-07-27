@@ -152,7 +152,10 @@ export default async function ComplaintPage({
                 <ThaiDateControl name="visit_date" />
               </div>
               <div className={`${styles.full} ${styles.fieldGroup}`}>
-                <span>โรงพยาบาลที่บันทึกข้อมูลของท่านผิดพลาด</span>
+                <span>
+                  โรงพยาบาลที่บันทึกข้อมูลของท่านผิดพลาด
+                  <small>(เฉพาะโรงพยาบาลของรัฐในจังหวัดพิษณุโลกเท่านั้น)</small>
+                </span>
                 <HospitalAutocomplete hospitals={hospitals} />
               </div>
               <label className={styles.full}>
