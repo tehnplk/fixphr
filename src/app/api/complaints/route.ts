@@ -2,7 +2,7 @@ import { createHash } from "node:crypto";
 import { type NextRequest, NextResponse } from "next/server";
 import { isValidThaiCid } from "@/lib/cid";
 import { encryptCid } from "@/lib/cid-crypto";
-import { isSameOrigin } from "@/lib/http";
+import { getExternalOrigin, isSameOrigin } from "@/lib/http";
 import {
   CONSENT_COOKIE,
   isValidConsentToken,
@@ -27,7 +27,7 @@ function redirectTo(
   path: string,
   params: Record<string, string> = {},
 ) {
-  const url = new URL(path, request.url);
+  const url = new URL(path, getExternalOrigin(request));
   Object.entries(params).forEach(([key, value]) => url.searchParams.set(key, value));
   return NextResponse.redirect(url, 303);
 }
