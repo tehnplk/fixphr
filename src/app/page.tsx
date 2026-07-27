@@ -78,6 +78,19 @@ export default async function Home({ searchParams }: HomeProps) {
               สามารถแจ้งรายละเอียดให้เราตรวจสอบและประสานการแก้ไขได้ที่นี่
             </p>
             <ConsentComplaintLink autoPrompt={consent === "required"} />
+
+            <div className="qr-invite">
+              <Image
+                src="/fixphr-qrcode.png"
+                alt="คิวอาร์โค้ดสำหรับเข้าใช้งาน https://fixphr.plkhealth.go.th"
+                width={1200}
+                height={1156}
+              />
+              <div>
+                <strong>สแกนเพื่อเปิดบนมือถือ</strong>
+                <span>หรือส่งต่อให้ผู้อื่นแจ้งแก้ไขประวัติสุขภาพ</span>
+              </div>
+            </div>
           </div>
 
           <div className="visual" aria-hidden="true">
