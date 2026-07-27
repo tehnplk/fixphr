@@ -26,6 +26,7 @@ export default function HospitalAutocomplete({
   const [selected, setSelected] = useState<HospitalOption | null>(null);
   const [isOpen, setIsOpen] = useState(false);
   const [activeIndex, setActiveIndex] = useState(-1);
+  const [isTouched, setIsTouched] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
 
   const suggestions = useMemo(() => {
@@ -43,6 +44,7 @@ export default function HospitalAutocomplete({
   function chooseHospital(hospital: HospitalOption) {
     setQuery(hospital.hospname);
     setSelected(hospital);
+    inputRef.current?.setCustomValidity("");
     setIsOpen(false);
     setActiveIndex(-1);
   }
@@ -69,15 +71,21 @@ export default function HospitalAutocomplete({
           autoComplete="off"
           required
           onChange={(event) => {
+            setIsTouched(true);
             setQuery(event.target.value);
             setSelected(null);
+            event.currentTarget.setCustomValidity(
+              "กรุณาเลือกโรงพยาบาลหรือหน่วยบริการจากรายการ",
+            );
             setIsOpen(true);
             setActiveIndex(-1);
           }}
           onFocus={() => setIsOpen(true)}
           onBlur={() => {
+            setIsTouched(true);
             window.setTimeout(() => setIsOpen(false), 120);
           }}
+          onInvalid={() => setIsTouched(true)}
           onKeyDown={(event) => {
             if (event.key === "ArrowDown" && suggestions.length > 0) {
               event.preventDefault();
@@ -103,6 +111,12 @@ export default function HospitalAutocomplete({
 
       <input type="hidden" name="hospcode" value={selected?.hospcode ?? ""} />
       <input type="hidden" name="hospname" value={selected?.hospname ?? ""} />
+
+      {isTouched && !selected && (
+        <span className={styles.fieldError} role="alert">
+          กรุณาเลือกโรงพยาบาลหรือหน่วยบริการจากรายการ
+        </span>
+      )}
 
       {isOpen && query && (
         <div

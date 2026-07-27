@@ -1,6 +1,7 @@
 import { createHash } from "node:crypto";
 import { NextResponse } from "next/server";
 import { isValidThaiCid } from "@/lib/cid";
+import { isValidFormToken } from "@/lib/form-token";
 import { getPrisma } from "@/lib/prisma";
 
 const MAX_IMAGES = 5;
@@ -21,9 +22,21 @@ function redirectToForm(request: Request, params: Record<string, string>) {
   return NextResponse.redirect(url, 303);
 }
 
+function isSameOrigin(request: Request) {
+  const origin = request.headers.get("origin");
+
+  return origin !== null && origin === new URL(request.url).origin;
+}
+
 export async function POST(request: Request) {
   try {
     const formData = await request.formData();
+    const formToken = String(formData.get("form_token") ?? "");
+
+    if (!isSameOrigin(request) || !isValidFormToken(formToken)) {
+      return redirectToForm(request, { error: "forbidden" });
+    }
+
     const cid = String(formData.get("cid") ?? "").trim();
     const gender = String(formData.get("gender") ?? "").trim();
     const birthDate = String(formData.get("birth_date") ?? "").trim();
@@ -39,6 +52,8 @@ export async function POST(request: Request) {
     const birthYearValue = Number(birthYear);
     const hasBirthDay = birthDay !== "" && birthDay !== "unknown";
     const hasBirthMonth = birthMonth !== "" && birthMonth !== "unknown";
+    const hasUnknownBirthDayAndMonth =
+      birthDay === "unknown" && birthMonth === "unknown";
     const currentYear = Number(
       new Intl.DateTimeFormat("en-US", {
         year: "numeric",
@@ -56,7 +71,7 @@ export async function POST(request: Request) {
       birthYearValue < currentYear - 120 ||
       birthYearValue > currentYear ||
       hasBirthDay !== hasBirthMonth ||
-      (birthDate && !birthDateValue) ||
+      (!birthDateValue && !hasUnknownBirthDayAndMonth) ||
       (birthDateValue && birthDateValue.getUTCFullYear() !== birthYearValue) ||
       !hospcode ||
       hospcode.length > 10 ||

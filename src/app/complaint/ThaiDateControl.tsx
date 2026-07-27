@@ -41,6 +41,7 @@ export default function ThaiDateControl({
   const [day, setDay] = useState("");
   const [month, setMonth] = useState("");
   const [thaiYear, setThaiYear] = useState("");
+  const [isTouched, setIsTouched] = useState(false);
   const hasDay = day !== "" && day !== "unknown";
   const hasMonth = month !== "" && month !== "unknown";
 
@@ -94,14 +95,27 @@ export default function ThaiDateControl({
     }
   }
 
+  const hasKnownDay = Boolean(day && day !== "unknown");
+  const hasKnownMonth = Boolean(month && month !== "unknown");
+  const hasCompleteDate = Boolean(
+    thaiYear &&
+      ((hasKnownDay && hasKnownMonth) ||
+        (allowYearOnly && day === "unknown" && month === "unknown")),
+  );
+
   return (
-    <div className={styles.dateControl}>
+    <>
+      <div className={styles.dateControl}>
       <div className={styles.datePart}>
         <select
           name={`${name}_day`}
           aria-label="วัน"
           value={day}
-          onChange={(event) => setDay(event.target.value)}
+          onChange={(event) => {
+            setIsTouched(true);
+            setDay(event.target.value);
+          }}
+          onInvalid={() => setIsTouched(true)}
           required={!allowYearOnly}
         >
           <option value="">เลือกวัน</option>
@@ -121,7 +135,11 @@ export default function ThaiDateControl({
           name={`${name}_month`}
           aria-label="เดือน"
           value={month}
-          onChange={(event) => updateMonth(event.target.value)}
+          onChange={(event) => {
+            setIsTouched(true);
+            updateMonth(event.target.value);
+          }}
+          onInvalid={() => setIsTouched(true)}
           required={!allowYearOnly}
         >
           <option value="">เลือกเดือน</option>
@@ -139,7 +157,11 @@ export default function ThaiDateControl({
           name={`${name}_year`}
           aria-label="ปี พ.ศ."
           value={thaiYear}
-          onChange={(event) => updateYear(event.target.value)}
+          onChange={(event) => {
+            setIsTouched(true);
+            updateYear(event.target.value);
+          }}
+          onInvalid={() => setIsTouched(true)}
           required
         >
           <option value="">เลือกปี</option>
@@ -160,6 +182,12 @@ export default function ThaiDateControl({
           readOnly
         />
       )}
-    </div>
+      </div>
+      {isTouched && !hasCompleteDate && (
+        <span className={styles.fieldError} role="alert">
+          กรุณาเลือกวัน เดือน และปีให้ครบถ้วน หรือเลือกไม่มีทั้งวันและเดือน
+        </span>
+      )}
+    </>
   );
 }

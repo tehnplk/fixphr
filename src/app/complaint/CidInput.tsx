@@ -19,6 +19,7 @@ function formatThaiCid(cid: string) {
 
 export default function CidInput() {
   const [cid, setCid] = useState("");
+  const [isTouched, setIsTouched] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const hasInvalidChecksum = cid.length === 13 && !isValidThaiCid(cid);
   const hasIncompleteCid = cid.length > 0 && cid.length < 13;
@@ -37,6 +38,7 @@ export default function CidInput() {
           value={formatThaiCid(cid)}
           aria-invalid={hasInvalidChecksum}
           onChange={(event) => {
+            setIsTouched(true);
             const value = event.target.value.replace(/\D/g, "").slice(0, 13);
             setCid(value);
 
@@ -53,6 +55,7 @@ export default function CidInput() {
             }
           }}
           onInvalid={(event) => {
+            setIsTouched(true);
             if (!event.currentTarget.value) {
               event.currentTarget.setCustomValidity(
                 "กรุณากรอกเลขประจำตัวประชาชนให้ครบ 13 หลัก",
@@ -79,6 +82,11 @@ export default function CidInput() {
         )}
       </span>
       <input name="cid" type="hidden" value={cid} readOnly />
+      {isTouched && !cid && (
+        <span className={styles.fieldError} role="alert">
+          กรุณากรอกเลขประจำตัวประชาชน
+        </span>
+      )}
       {hasIncompleteCid && (
         <span className={styles.fieldError} role="alert">
           เลขบัตรต้องครบ 13 หลัก

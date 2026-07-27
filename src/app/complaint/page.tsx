@@ -9,8 +9,11 @@ import {
   ShieldCheck,
 } from "lucide-react";
 import { getPrisma } from "@/lib/prisma";
+import { createFormToken } from "@/lib/form-token";
 import CidInput from "./CidInput";
 import HospitalAutocomplete from "./HospitalAutocomplete";
+import RequiredDetailTextarea from "./RequiredDetailTextarea";
+import RequiredGenderSelect from "./RequiredGenderSelect";
 import ThaiDateControl from "./ThaiDateControl";
 import styles from "./page.module.css";
 
@@ -18,6 +21,8 @@ export const metadata: Metadata = {
   title: "แจ้งแก้ไขประวัติสุขภาพ | หมอพร้อม",
   description: "แบบฟอร์มแจ้งแก้ไขประวัติสุขภาพในแอปพลิเคชันหมอพร้อม",
 };
+
+export const dynamic = "force-dynamic";
 
 type ComplaintPageProps = {
   searchParams: Promise<{
@@ -28,6 +33,7 @@ type ComplaintPageProps = {
 };
 
 const errorMessages: Record<string, string> = {
+  forbidden: "ไม่สามารถส่งเรื่องแจ้งจากแหล่งที่มาไม่ถูกต้องได้",
   invalid: "กรุณาตรวจสอบข้อมูลที่กรอกให้ครบถ้วนและถูกต้อง",
   image: "แนบรูปภาพได้ไม่เกิน 5 รูป และแต่ละรูปต้องมีขนาดไม่เกิน 5 MB",
   server: "ระบบไม่สามารถบันทึกข้อมูลได้ในขณะนี้ กรุณาลองใหม่อีกครั้ง",
@@ -38,6 +44,7 @@ export default async function ComplaintPage({
 }: ComplaintPageProps) {
   const params = await searchParams;
   const errorMessage = params.error ? errorMessages[params.error] : undefined;
+  const formToken = createFormToken();
   const hospitals = await getPrisma().hospital.findMany({
     select: {
       hospcode: true,
@@ -104,6 +111,7 @@ export default async function ComplaintPage({
           method="post"
           encType="multipart/form-data"
         >
+          <input name="form_token" type="hidden" value={formToken} />
           <fieldset>
             <legend>ข้อมูลผู้รับบริการ</legend>
             <div className={styles.grid}>
@@ -113,11 +121,7 @@ export default async function ComplaintPage({
               </div>
               <label>
                 <span>เพศ</span>
-                <select name="gender" defaultValue="" required>
-                  <option value="" disabled>เลือกเพศ</option>
-                  <option value="1">ชาย</option>
-                  <option value="2">หญิง</option>
-                </select>
+                <RequiredGenderSelect />
               </label>
               <div className={styles.fieldGroup}>
                 <span>วันเดือนปีเกิด</span>
@@ -140,7 +144,6 @@ export default async function ComplaintPage({
               <div className={`${styles.full} ${styles.fieldGroup}`}>
                 <span>วันที่เข้ารับบริการและพบข้อมูลผิด</span>
                 <ThaiDateControl name="visit_date" />
-                <small>วันที่ตามเวลาประเทศไทย (UTC+7)</small>
               </div>
               <div className={`${styles.full} ${styles.fieldGroup}`}>
                 <span>โรงพยาบาลที่ทำข้อมูลของท่านผิด</span>
@@ -148,12 +151,7 @@ export default async function ComplaintPage({
               </div>
               <label className={styles.full}>
                 <span>รายละเอียดที่ต้องการแจ้งแก้ไข</span>
-                <textarea
-                  name="detail"
-                  rows={5}
-                  placeholder="อธิบายข้อมูลที่ไม่ถูกต้องและข้อมูลที่ควรแก้ไข"
-                  required
-                />
+                <RequiredDetailTextarea />
               </label>
             </div>
           </fieldset>

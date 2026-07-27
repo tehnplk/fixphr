@@ -9,6 +9,7 @@ services:
     environment:
       NODE_ENV: production
       DATABASE_URL: postgresql://${POSTGRES_USER:-fixphr}:${POSTGRES_PASSWORD:-change-me}@postgres:5432/${POSTGRES_DB:-fixphr}
+      FORM_TOKEN_SECRET: ${FORM_TOKEN_SECRET:?Set FORM_TOKEN_SECRET in .env}
     ports:
       - "${WEBAPP_PORT:-3016}:3000"
     depends_on:
@@ -37,7 +38,7 @@ services:
       POSTGRES_USER: ${POSTGRES_USER:-fixphr}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-change-me}
     ports:
-      - "${POSTGRES_PORT:-5432}:5432"
+      - "${POSTGRES_PORT:-54329}:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
