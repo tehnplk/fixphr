@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
-import { ChevronDown, LogIn, LogOut, UserCog } from "lucide-react";
+import { ChevronDown, LogIn, LogOut, Upload, UserCog } from "lucide-react";
 import { logoutAction } from "./auth-actions";
 import styles from "./AppNav.module.css";
 
@@ -82,10 +82,16 @@ export default function AppNav({ user }: { user?: NavUser | null }) {
             {open ? (
               <div className={styles.dropdown} role="menu">
                 {user.canManage ? (
-                  <Link href="/manage-user" role="menuitem" className={styles.dropdownItem}>
-                    <UserCog aria-hidden="true" />
-                    จัดการผู้ใช้
-                  </Link>
+                  <>
+                    <Link href="/upload" role="menuitem" className={styles.dropdownItem}>
+                      <Upload aria-hidden="true" />
+                      อัปโหลดข้อมูล
+                    </Link>
+                    <Link href="/manage-user" role="menuitem" className={styles.dropdownItem}>
+                      <UserCog aria-hidden="true" />
+                      จัดการผู้ใช้
+                    </Link>
+                  </>
                 ) : null}
                 <form action={logoutAction}>
                   <button type="submit" role="menuitem" className={`${styles.dropdownItem} ${styles.logoutItem}`}>

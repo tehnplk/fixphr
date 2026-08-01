@@ -2,6 +2,7 @@
 
 import { ClipboardList, Plus } from "lucide-react";
 import { useState } from "react";
+import Swal from "sweetalert2";
 import styles from "./page.module.css";
 
 type ReportRow = {
@@ -115,6 +116,24 @@ export default function ReportTable({
       delete next[row.item_no];
       return next;
     });
+  }
+
+  async function confirmClearRow(row: ReportRow) {
+    const result = await Swal.fire({
+      title: `ล้างรายการที่ ${row.item_no.toLocaleString("th-TH")}?`,
+      text: "ข้อมูลในรายการนี้จะถูกลบออกจากระบบ",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "ยืนยันการล้าง",
+      cancelButtonText: "ยกเลิก",
+      confirmButtonColor: "#a83f3f",
+      cancelButtonColor: "#71877e",
+      focusCancel: true,
+      reverseButtons: true,
+    });
+
+    if (!result.isConfirmed) return;
+    await clearRow(row);
   }
 
   function updateText(
@@ -253,7 +272,7 @@ export default function ReportTable({
                 </td>
                 <td className={styles.actionCell}>
                   <button
-                    onClick={() => void clearRow(row)}
+                    onClick={() => void confirmClearRow(row)}
                     type="button"
                   >
                     ล้าง

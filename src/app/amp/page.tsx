@@ -206,7 +206,9 @@ export default async function TrendPage() {
     ? totalsByDate.get(previousTodayKey)?.masks ?? 0
     : 0;
   const todayTotal = todayAbsoluteTotal - previousTodayTotal;
-  const cumulativeTotal = todayAbsoluteTotal;
+  const cumulativeTotal = latestDataKey
+    ? totalsByDate.get(latestDataKey)?.masks ?? 0
+    : 0;
 
   function getDisplayValue(district: District, date: Date) {
     const key = dateKey(date);

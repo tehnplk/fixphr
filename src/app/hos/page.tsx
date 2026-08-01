@@ -247,6 +247,9 @@ export default async function HospitalPage({
     ? totalsByDate.get(previousTodayKey)?.masks ?? 0
     : 0;
   const todayTotal = todayAbsoluteTotal - previousTodayTotal;
+  const cumulativeTotal = latestDataKey
+    ? totalsByDate.get(latestDataKey)?.masks ?? 0
+    : 0;
 
   function getDisplayValue(hospitalCode: string, date: Date) {
     const key = dateKey(date);
@@ -290,7 +293,7 @@ export default async function HospitalPage({
           </div>
           <div>
             <span>สะสม</span>
-            <strong>{todayAbsoluteTotal.toLocaleString("th-TH")} <small>รายการ</small></strong>
+            <strong>{cumulativeTotal.toLocaleString("th-TH")} <small>รายการ</small></strong>
           </div>
           <div className={`${ampStyles.latest} ${ampStyles.latestCompact}`}>
             <CalendarRange aria-hidden="true" />

@@ -6,6 +6,10 @@ services:
       dockerfile: Dockerfile
     restart: unless-stopped
     init: true
+    # ค่าลับของแอป (AUTH_SECRET, AES_SECRET, HEALTH_*, PROVIDER_*) มาจาก .env
+    # ส่วน environment ด้านล่างมีลำดับสูงกว่า จึงทับ DATABASE_URL ใน .env เสมอ
+    env_file:
+      - .env
     environment:
       NODE_ENV: production
       DATABASE_URL: postgresql://${POSTGRES_USER:-fixphr}:${POSTGRES_PASSWORD:-change-me}@postgres:5432/${POSTGRES_DB:-fixphr}
