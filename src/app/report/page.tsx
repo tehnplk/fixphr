@@ -18,19 +18,25 @@ export default async function ReportPage({
   if (!hospitalCode || hospitalCode.length > 10) notFound();
 
   const prisma = getPrisma();
-  const latestSummary = await prisma.complaintHosCount.findFirst({
-    where: { hospital_code: hospitalCode },
-    orderBy: [{ date_up: "desc" }, { time_up: "desc" }],
-    select: { masks: true },
-  });
+  const [latestSummary, hospital, savedReports] = await Promise.all([
+    prisma.complaintHosCount.findFirst({
+      where: { hospital_code: hospitalCode },
+      orderBy: [{ date_up: "desc" }, { time_up: "desc" }],
+      select: { masks: true },
+    }),
+    prisma.hospital.findUnique({
+      where: { hospcode: hospitalCode },
+      select: { hospnameShort: true },
+    }),
+    prisma.report.findMany({
+      where: { hospital_code: hospitalCode },
+      orderBy: { item_no: "asc" },
+    }),
+  ]);
 
   if (!latestSummary) notFound();
 
   const total = latestSummary.masks;
-  const savedReports = await prisma.report.findMany({
-    where: { hospital_code: hospitalCode },
-    orderBy: { item_no: "asc" },
-  });
   const rows = savedReports.map((report) => ({
       item_no: report.item_no,
       hn: decryptHn(report.hn),
@@ -47,6 +53,7 @@ export default async function ReportPage({
       <section className={styles.shell}>
         <ReportTable
           hospitalCode={hospitalCode}
+          hospitalNameShort={hospital?.hospnameShort ?? ""}
           initialRows={rows}
           inspectionResults={inspectionResults}
           total={total}

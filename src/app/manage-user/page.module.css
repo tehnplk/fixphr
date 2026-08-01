@@ -1,0 +1,207 @@
+.page {
+  --green: #126049;
+  --deep: #17352b;
+  position: relative;
+  min-height: 100svh;
+  overflow-x: hidden;
+  padding: clamp(14px, 2vw, 28px) clamp(16px, 3vw, 42px) 42px;
+  background:
+    radial-gradient(circle at 92% 8%, rgba(213, 232, 108, .46), transparent 25rem),
+    linear-gradient(145deg, #edf3ed 0%, #f7f5e9 100%);
+}
+
+.grid {
+  position: fixed;
+  inset: 0;
+  opacity: .32;
+  pointer-events: none;
+  background-image:
+    linear-gradient(rgba(23, 53, 43, .08) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(23, 53, 43, .08) 1px, transparent 1px);
+  background-size: 32px 32px;
+  mask-image: linear-gradient(to bottom, black, transparent 82%);
+}
+
+.shell {
+  position: relative;
+  width: min(1180px, 100%);
+  margin: 0 auto;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-height: 58px;
+  padding: 12px 18px;
+  border: 1px solid rgba(18, 96, 73, .15);
+  border-radius: 14px;
+  background: rgba(249, 251, 247, .92);
+  box-shadow: 0 18px 46px rgba(30, 70, 56, .09);
+}
+
+.header > svg {
+  width: 27px;
+  height: 27px;
+  color: var(--green);
+}
+
+.header h1 {
+  margin: 0;
+  color: var(--deep);
+  font-size: 19px;
+}
+
+.header p {
+  margin: 2px 0 0;
+  color: #6c837b;
+  font-size: 12.5px;
+}
+
+.count {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin-left: auto;
+  padding: 7px 13px;
+  border: 1px solid rgba(18, 96, 73, .2);
+  border-radius: 999px;
+  color: var(--green);
+  background: rgba(18, 96, 73, .07);
+  font-size: 13px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.count svg {
+  width: 16px;
+  height: 16px;
+}
+
+.panel {
+  margin-top: 16px;
+  padding: 6px 16px 12px;
+  border: 1px solid rgba(18, 96, 73, .15);
+  border-radius: 14px;
+  background: rgba(249, 251, 247, .94);
+  box-shadow: 0 18px 46px rgba(30, 70, 56, .09);
+}
+
+.tableWrap {
+  overflow-x: auto;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13.5px;
+}
+
+.table th {
+  padding: 12px 10px 9px;
+  border-bottom: 2px solid rgba(18, 96, 73, .18);
+  color: #4c6a5f;
+  font-size: 12px;
+  font-weight: 700;
+  text-align: left;
+  white-space: nowrap;
+}
+
+.table td {
+  padding: 9px 10px;
+  border-bottom: 1px solid rgba(23, 53, 43, .09);
+  color: var(--deep);
+  vertical-align: middle;
+}
+
+.inactive td {
+  opacity: .55;
+}
+
+.name {
+  font-weight: 600;
+}
+
+.mono {
+  font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+  font-size: 12.5px;
+}
+
+.center {
+  text-align: center;
+}
+
+.hname {
+  color: #4c6a5f;
+  font-size: 12.5px;
+}
+
+.orgList {
+  display: grid;
+  gap: 3px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.roleForm {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.roleForm select {
+  padding: 6px 8px;
+  border: 1px solid rgba(23, 53, 43, .22);
+  border-radius: 8px;
+  background: #fff;
+  font-size: 12.5px;
+}
+
+.roleForm button {
+  padding: 6px 12px;
+  border: 1px solid rgba(18, 96, 73, .35);
+  border-radius: 8px;
+  color: var(--green);
+  background: rgba(18, 96, 73, .08);
+  font-size: 12.5px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.roleForm button:hover {
+  background: rgba(18, 96, 73, .15);
+}
+
+.activeBtn,
+.inactiveBtn {
+  padding: 6px 12px;
+  border-radius: 999px;
+  font-size: 12.5px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.activeBtn {
+  border: 1px solid rgba(18, 96, 73, .3);
+  color: var(--green);
+  background: rgba(18, 96, 73, .09);
+}
+
+.inactiveBtn {
+  border: 1px solid rgba(178, 58, 58, .3);
+  color: #8f2626;
+  background: rgba(178, 58, 58, .08);
+}
+
+.empty {
+  padding: 26px 6px;
+  color: #6c837b;
+  text-align: center;
+}
+
+.hint {
+  margin: 12px 2px 4px;
+  color: #6c837b;
+  font-size: 12px;
+}

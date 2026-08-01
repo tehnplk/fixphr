@@ -1,0 +1,177 @@
+.page {
+  --green: #126049;
+  --deep: #17352b;
+  position: relative;
+  display: grid;
+  place-items: center;
+  min-height: 100svh;
+  overflow-x: hidden;
+  padding: 24px;
+  background:
+    radial-gradient(circle at 92% 8%, rgba(213, 232, 108, .46), transparent 25rem),
+    linear-gradient(145deg, #edf3ed 0%, #f7f5e9 100%);
+}
+
+.grid {
+  position: fixed;
+  inset: 0;
+  opacity: .32;
+  pointer-events: none;
+  background-image:
+    linear-gradient(rgba(23, 53, 43, .08) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(23, 53, 43, .08) 1px, transparent 1px);
+  background-size: 32px 32px;
+  mask-image: linear-gradient(to bottom, black, transparent 82%);
+}
+
+.panel {
+  position: relative;
+  width: min(420px, 100%);
+  padding: 30px 28px 28px;
+  border: 1px solid rgba(18, 96, 73, .15);
+  border-radius: 18px;
+  background: rgba(249, 251, 247, .94);
+  box-shadow: 0 18px 46px rgba(30, 70, 56, .12);
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 20px;
+}
+
+.header h1 {
+  margin: 2px 0 0;
+  color: var(--deep);
+  font-size: 22px;
+}
+
+.eyebrow {
+  margin: 0;
+  color: #6c837b;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+.iconBadge {
+  display: grid;
+  place-items: center;
+  width: 46px;
+  height: 46px;
+  border-radius: 14px;
+  color: #f4f9e9;
+  background: linear-gradient(150deg, var(--green), var(--deep));
+  box-shadow: 0 10px 24px rgba(18, 96, 73, .28);
+}
+
+.iconBadge svg {
+  width: 24px;
+  height: 24px;
+}
+
+.error {
+  margin-bottom: 16px;
+  padding: 10px 14px;
+  border: 1px solid rgba(178, 58, 58, .28);
+  border-radius: 10px;
+  background: rgba(178, 58, 58, .08);
+  color: #8f2626;
+  font-size: 13.5px;
+  white-space: pre-line;
+}
+
+.providerButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  padding: 13px 16px;
+  border: 0;
+  border-radius: 12px;
+  color: #f4f9e9;
+  background: linear-gradient(150deg, var(--green), var(--deep));
+  font-size: 15.5px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform .12s ease, box-shadow .12s ease;
+}
+
+.providerButton:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 12px 26px rgba(18, 96, 73, .3);
+}
+
+.providerButton svg {
+  width: 21px;
+  height: 21px;
+}
+
+.divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 18px 0;
+  color: #6c837b;
+  font-size: 12.5px;
+}
+
+.divider::before,
+.divider::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: rgba(23, 53, 43, .14);
+}
+
+.form {
+  display: grid;
+  gap: 12px;
+}
+
+.form label {
+  display: grid;
+  gap: 6px;
+  color: var(--deep);
+  font-size: 13.5px;
+  font-weight: 600;
+}
+
+.form input {
+  padding: 10px 12px;
+  border: 1px solid rgba(23, 53, 43, .2);
+  border-radius: 10px;
+  background: #fff;
+}
+
+.form input:focus {
+  outline: 2px solid rgba(18, 96, 73, .35);
+  outline-offset: 1px;
+}
+
+.primary {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 4px;
+  padding: 11px 16px;
+  border: 1px solid rgba(18, 96, 73, .35);
+  border-radius: 10px;
+  color: var(--green);
+  background: rgba(18, 96, 73, .08);
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.primary:hover {
+  background: rgba(18, 96, 73, .14);
+}
+
+.primary svg {
+  width: 18px;
+  height: 18px;
+}

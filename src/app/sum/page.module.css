@@ -103,6 +103,7 @@
 .contentGrid {
   display: grid;
   grid-template-columns: minmax(560px, 1.08fr) minmax(420px, .92fr);
+  gap: 10px;
 }
 
 .tableWrap table {
@@ -116,7 +117,6 @@
   position: relative;
   min-height: 496px;
   padding: 18px 18px 14px;
-  border-left: 1px solid #dce5df;
   background:
     linear-gradient(rgba(251, 252, 248, .92), rgba(247, 250, 245, .96)),
     repeating-linear-gradient(
@@ -213,7 +213,5 @@
 
   .chartPanel {
     min-height: 420px;
-    border-top: 1px solid #dce5df;
-    border-left: 0;
   }
 }

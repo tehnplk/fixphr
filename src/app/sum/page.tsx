@@ -195,42 +195,40 @@ export default async function SummaryPage({
             <div className={styles.chartPanel}>
               {activeTab === "district" ? (
                 <SummaryChart
-                  ariaLabel="กราฟเปรียบเทียบจำนวนรายการและจำนวนที่ตรวจสอบแล้ว แยกตามอำเภอ"
+                  ariaLabel="กราฟร้อยละการตรวจสอบแล้ว แยกตามอำเภอ"
                   labels={districtRows.map((row) => row.district)}
                   series={[
                     {
-                      label: "จำนวนรายการ",
-                      data: districtRows.map((row) => row.total),
+                      label: "ตรวจสอบแล้ว",
+                      data: districtRows.map((row) => (
+                        row.total === 0 ? 0 : (row.checked / row.total) * 100
+                      )),
                       backgroundColor: "rgba(18, 96, 73, .78)",
                       borderColor: "#126049",
                     },
-                    {
-                      label: "ตรวจสอบแล้ว",
-                      data: districtRows.map((row) => row.checked),
-                      backgroundColor: "rgba(213, 232, 108, .82)",
-                      borderColor: "#aabc4c",
-                    },
                   ]}
+                  valueFormat="percent"
                 />
               ) : (
                 <SummaryChart
                   ariaLabel="กราฟจำนวนผลการตรวจสอบ แยกตามประเภท"
-                  labels={typeRows.map((row) => row.code)}
+                  chartType="pie"
+                  labels={typeRows.map((row) => row.label)}
                   series={[
                     {
                       label: "จำนวน",
                       data: typeRows.map((row) => row.count),
                       backgroundColor: [
-                        "rgba(18, 96, 73, .88)",
-                        "rgba(41, 125, 91, .84)",
-                        "rgba(72, 145, 103, .82)",
-                        "rgba(103, 165, 112, .80)",
-                        "rgba(139, 183, 113, .78)",
-                        "rgba(173, 201, 108, .78)",
-                        "rgba(197, 216, 104, .80)",
-                        "rgba(213, 232, 108, .86)",
+                        "#edb83d",
+                        "#2a9d76",
+                        "#e15759",
+                        "#f28e2b",
+                        "#4e79a7",
+                        "#8f63b8",
+                        "#36a2ae",
+                        "#d65f8d",
                       ],
-                      borderColor: "rgba(18, 96, 73, .72)",
+                      borderColor: "#fbfcf8",
                     },
                   ]}
                 />

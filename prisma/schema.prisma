@@ -84,3 +84,20 @@ model Report {
   @@id([hospital_code, item_no])
   @@map("report")
 }
+
+model UserProvider {
+  id           Int       @id @default(autoincrement())
+  provider_id  String    @unique @db.VarChar(64)
+  cid_hash     String?   @db.VarChar(64)
+  fullname     String?   @db.VarChar(255)
+  hoscode      String?   @db.VarChar(10)
+  hname        String?   @db.VarChar(255)
+  role         String    @default("guest") @db.VarChar(20)
+  login_count  Int       @default(0)
+  last_activity DateTime? @db.Timestamptz(3)
+  is_active    Boolean   @default(true)
+  profile      Json?
+  created_at   DateTime  @default(now()) @db.Timestamptz(3)
+
+  @@map("user_provider")
+}

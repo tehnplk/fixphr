@@ -28,11 +28,13 @@ const STATUS_LABELS: Record<SaveStatus, string> = {
 
 export default function ReportTable({
   hospitalCode,
+  hospitalNameShort,
   initialRows,
   inspectionResults,
   total,
 }: {
   hospitalCode: string;
+  hospitalNameShort: string;
   initialRows: ReportRow[];
   inspectionResults: InspectionResult[];
   total: number;
@@ -127,7 +129,15 @@ export default function ReportTable({
     <>
       <header className={styles.header}>
         <ClipboardList aria-hidden="true" />
-        <strong className={styles.hospitalCode}>{hospitalCode}</strong>
+        <div className={styles.hospitalIdentity}>
+          <strong className={styles.hospitalCode}>{hospitalCode}</strong>
+          {hospitalNameShort ? (
+            <>
+              <span aria-hidden="true">-</span>
+              <span className={styles.hospitalNameShort}>{hospitalNameShort}</span>
+            </>
+          ) : null}
+        </div>
         <p>
           <span>ตรวจสอบแล้ว</span>
           <strong>{inspectedTotal.toLocaleString("th-TH")}</strong>
@@ -136,6 +146,17 @@ export default function ReportTable({
           <span>รายการ</span>
         </p>
       </header>
+
+      <div className={styles.tableTools}>
+        <a
+          className={styles.externalLink}
+          href="https://phr1.moph.go.th/dashboard/"
+          rel="noopener noreferrer"
+          target="_blank"
+        >
+          เว็บตรวจสอบคำร้อง
+        </a>
+      </div>
 
       <div className={styles.tableCard}>
       <table>

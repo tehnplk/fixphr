@@ -50,6 +50,23 @@
   font: 800 15px ui-monospace, SFMono-Regular, Consolas, monospace;
 }
 
+.hospitalIdentity {
+  display: flex;
+  min-width: 0;
+  align-items: baseline;
+  gap: 6px;
+  color: #71877e;
+  white-space: nowrap;
+}
+
+.hospitalNameShort {
+  overflow: hidden;
+  color: var(--deep);
+  font-size: 13px;
+  font-weight: 800;
+  text-overflow: ellipsis;
+}
+
 .header p {
   display: flex;
   align-items: baseline;
@@ -66,8 +83,30 @@
   font-size: 20px;
 }
 
+.tableTools {
+  display: flex;
+  min-height: 18px;
+  align-items: center;
+  justify-content: flex-end;
+  margin-top: 7px;
+}
+
+.externalLink {
+  color: var(--green);
+  font-size: 11px;
+  font-weight: 800;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.externalLink:hover {
+  color: var(--deep);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
 .tableCard {
-  margin-top: 10px;
+  margin-top: 4px;
   overflow: hidden;
   border: 1px solid rgba(18, 96, 73, .15);
   background: #fbfcf8;

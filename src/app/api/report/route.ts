@@ -1,3 +1,4 @@
+import { auth } from "@/auth";
 import { getPrisma } from "@/lib/prisma";
 import { encryptHn } from "@/lib/hn-crypto";
 import inspectionResults from "../../../../inspection-result.json";
@@ -17,6 +18,15 @@ export async function POST(request: Request) {
     if (!origin || origin !== new URL(request.url).origin) {
       return Response.json({ message: "คำขอไม่ได้มาจากระบบนี้" }, { status: 403 });
     }
+
+    const session = await auth();
+    if (!session?.user) {
+      return Response.json({ message: "กรุณาเข้าสู่ระบบก่อนใช้งาน" }, { status: 401 });
+    }
+    if (session.user.role === "guest") {
+      return Response.json({ message: "บัญชีของคุณยังไม่ได้รับสิทธิ์เข้าใช้งาน" }, { status: 403 });
+    }
+    const actor = (session.user.fullname || session.user.name || session.user.providerId || "").slice(0, 100) || null;
 
     const body = await request.json();
     const hospitalCode = typeof body.hospital_code === "string"
@@ -80,6 +90,8 @@ export async function POST(request: Request) {
         issue,
         inspection_result: inspectionResult,
         note,
+        created_by: actor,
+        updated_by: actor,
       },
       update: {
         hn: encryptedHn,
@@ -87,6 +99,7 @@ export async function POST(request: Request) {
         issue,
         inspection_result: inspectionResult,
         note,
+        updated_by: actor,
       },
     });
 

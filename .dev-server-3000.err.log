@@ -1,0 +1,397 @@
+[browser] The final argument passed to useEffect changed size between renders. The order and size of this array must remain constant.
+
+Previous: [เมืองพิษณุโลก,นครไทย,ชาติตระการ,บางระกำ,บางกระทุ่ม,พรหมพิราม,วัดโบสถ์,วังทอง,เนินมะปราง, [object Object],[object Object]]
+Incoming: [bar, เมืองพิษณุโลก,นครไทย,ชาติตระการ,บางระกำ,บางกระทุ่ม,พรหมพิราม,วัดโบสถ์,วังทอง,เนินมะปราง, [object Object],[object Object]] 
+    at SummaryChart (file://E:/NextJS/fixphr/.next/dev/static/chunks/src_app_sum_SummaryChart_tsx_10f726_._.js?id=%255Bproject%255D%252Fsrc%252Fapp%252Fsum%252FSummaryChart.tsx+%255Bapp-client%255D+%2528ecmascript%2529:171:180)
+    at Set.forEach (<anonymous>) (file://E:/NextJS/fixphr/.next/dev/static/chunks/src_app_sum_SummaryChart_tsx_10f726_._.js?id=%255Bproject%255D%252Fsrc%252Fapp%252Fsum%252FSummaryChart.tsx+%255Bapp-client%255D+%2528ecmascript%2529:171:180)
+[31m[auth][error][0m MissingSecret: Please define a `secret`. Read more at https://errors.authjs.dev#missingsecret
+    at assertConfig (E:\NextJS\fixphr\.next\dev\server\chunks\node_modules_@auth_core_1wpnri1._.js:513:16)
+    at Auth (E:\NextJS\fixphr\.next\dev\server\chunks\node_modules_@auth_core_1wpnri1._.js:5363:202)
+[31m[auth][error][0m MissingSecret: Please define a `secret`. Read more at https://errors.authjs.dev#missingsecret
+    at assertConfig (E:\NextJS\fixphr\.next\dev\server\chunks\node_modules_@auth_core_1wpnri1._.js:513:16)
+    at Auth (E:\NextJS\fixphr\.next\dev\server\chunks\node_modules_@auth_core_1wpnri1._.js:5363:202)
+[31m[auth][error][0m MissingSecret: Please define a `secret`. Read more at https://errors.authjs.dev#missingsecret
+    at assertConfig (E:\NextJS\fixphr\.next\dev\server\chunks\node_modules_@auth_core_1wpnri1._.js:513:16)
+    at Auth (E:\NextJS\fixphr\.next\dev\server\chunks\node_modules_@auth_core_1wpnri1._.js:5363:202)
+[31m[auth][error][0m MissingSecret: Please define a `secret`. Read more at https://errors.authjs.dev#missingsecret
+    at assertConfig (E:\NextJS\fixphr\.next\dev\server\chunks\node_modules_@auth_core_1wpnri1._.js:513:16)
+    at Auth (E:\NextJS\fixphr\.next\dev\server\chunks\node_modules_@auth_core_1wpnri1._.js:5363:202)
+[31m[auth][error][0m MissingSecret: Please define a `secret`. Read more at https://errors.authjs.dev#missingsecret
+    at assertConfig (E:\NextJS\fixphr\.next\dev\server\chunks\node_modules_@auth_core_1wpnri1._.js:513:16)
+    at Auth (E:\NextJS\fixphr\.next\dev\server\chunks\node_modules_@auth_core_1wpnri1._.js:5363:202)
+[31m[auth][error][0m MissingSecret: Please define a `secret`. Read more at https://errors.authjs.dev#missingsecret
+    at assertConfig (E:\NextJS\fixphr\.next\dev\server\chunks\node_modules_@auth_core_1wpnri1._.js:513:16)
+    at Auth (E:\NextJS\fixphr\.next\dev\server\chunks\node_modules_@auth_core_1wpnri1._.js:5363:202)
+[31m[auth][error][0m MissingSecret: Please define a `secret`. Read more at https://errors.authjs.dev#missingsecret
+    at assertConfig (E:\NextJS\fixphr\.next\dev\server\chunks\node_modules_@auth_core_1wpnri1._.js:513:16)
+    at Auth (E:\NextJS\fixphr\.next\dev\server\chunks\node_modules_@auth_core_1wpnri1._.js:5363:202)
+[31m[auth][error][0m MissingSecret: Please define a `secret`. Read more at https://errors.authjs.dev#missingsecret
+    at assertConfig (E:\NextJS\fixphr\.next\dev\server\chunks\node_modules_@auth_core_1wpnri1._.js:513:16)
+    at Auth (E:\NextJS\fixphr\.next\dev\server\chunks\node_modules_@auth_core_1wpnri1._.js:5363:202)
+[31m[auth][error][0m MissingSecret: Please define a `secret`. Read more at https://errors.authjs.dev#missingsecret
+    at assertConfig (E:\NextJS\fixphr\.next\dev\server\chunks\node_modules_@auth_core_1wpnri1._.js:513:16)
+    at Auth (E:\NextJS\fixphr\.next\dev\server\chunks\node_modules_@auth_core_1wpnri1._.js:5363:202)
+[31m[auth][error][0m MissingSecret: Please define a `secret`. Read more at https://errors.authjs.dev#missingsecret
+    at assertConfig (E:\NextJS\fixphr\.next\dev\server\chunks\node_modules_@auth_core_1wpnri1._.js:513:16)
+    at Auth (E:\NextJS\fixphr\.next\dev\server\chunks\node_modules_@auth_core_1wpnri1._.js:5363:202)
+[31m[auth][error][0m MissingSecret: Please define a `secret`. Read more at https://errors.authjs.dev#missingsecret
+    at assertConfig (E:\NextJS\fixphr\.next\dev\server\chunks\node_modules_@auth_core_1wpnri1._.js:513:16)
+    at Auth (E:\NextJS\fixphr\.next\dev\server\chunks\node_modules_@auth_core_1wpnri1._.js:5363:202)
+[31m[auth][error][0m MissingSecret: Please define a `secret`. Read more at https://errors.authjs.dev#missingsecret
+    at assertConfig (E:\NextJS\fixphr\.next\dev\server\chunks\node_modules_@auth_core_1wpnri1._.js:513:16)
+    at Auth (E:\NextJS\fixphr\.next\dev\server\chunks\node_modules_@auth_core_1wpnri1._.js:5363:202)
+[31m[auth][error][0m MissingSecret: Please define a `secret`. Read more at https://errors.authjs.dev#missingsecret
+    at assertConfig (E:\NextJS\fixphr\.next\dev\server\chunks\node_modules_@auth_core_1wpnri1._.js:513:16)
+    at Auth (E:\NextJS\fixphr\.next\dev\server\chunks\node_modules_@auth_core_1wpnri1._.js:5363:202)
+[31m[auth][error][0m MissingSecret: Please define a `secret`. Read more at https://errors.authjs.dev#missingsecret
+    at assertConfig (E:\NextJS\fixphr\.next\dev\server\chunks\node_modules_@auth_core_1wpnri1._.js:513:16)
+    at Auth (E:\NextJS\fixphr\.next\dev\server\chunks\node_modules_@auth_core_1wpnri1._.js:5363:202)
+[31m[auth][error][0m MissingSecret: Please define a `secret`. Read more at https://errors.authjs.dev#missingsecret
+    at assertConfig (E:\NextJS\fixphr\.next\dev\server\chunks\node_modules_@auth_core_1wpnri1._.js:513:16)
+    at Auth (E:\NextJS\fixphr\.next\dev\server\chunks\node_modules_@auth_core_1wpnri1._.js:5363:202)
+[31m[auth][error][0m MissingSecret: Please define a `secret`. Read more at https://errors.authjs.dev#missingsecret
+    at assertConfig (E:\NextJS\fixphr\.next\dev\server\chunks\node_modules_@auth_core_1wpnri1._.js:513:16)
+    at Auth (E:\NextJS\fixphr\.next\dev\server\chunks\node_modules_@auth_core_1wpnri1._.js:5363:202)
+[31m[auth][error][0m MissingSecret: Please define a `secret`. Read more at https://errors.authjs.dev#missingsecret
+    at assertConfig (E:\NextJS\fixphr\.next\dev\server\chunks\node_modules_@auth_core_1wpnri1._.js:513:16)
+    at Auth (E:\NextJS\fixphr\.next\dev\server\chunks\node_modules_@auth_core_1wpnri1._.js:5363:202)
+[31m[auth][error][0m MissingSecret: Please define a `secret`. Read more at https://errors.authjs.dev#missingsecret
+    at assertConfig (E:\NextJS\fixphr\.next\dev\server\chunks\node_modules_@auth_core_1wpnri1._.js:513:16)
+    at Auth (E:\NextJS\fixphr\.next\dev\server\chunks\node_modules_@auth_core_1wpnri1._.js:5363:202)
+[31m[auth][error][0m MissingSecret: Please define a `secret`. Read more at https://errors.authjs.dev#missingsecret
+    at assertConfig (E:\NextJS\fixphr\.next\dev\server\chunks\node_modules_@auth_core_1wpnri1._.js:513:16)
+    at Auth (E:\NextJS\fixphr\.next\dev\server\chunks\node_modules_@auth_core_1wpnri1._.js:5363:202)
+[31m[auth][error][0m MissingSecret: Please define a `secret`. Read more at https://errors.authjs.dev#missingsecret
+    at assertConfig (E:\NextJS\fixphr\.next\dev\server\chunks\node_modules_@auth_core_1wpnri1._.js:513:16)
+    at Auth (E:\NextJS\fixphr\.next\dev\server\chunks\node_modules_@auth_core_1wpnri1._.js:5363:202)
+[31m[auth][error][0m MissingSecret: Please define a `secret`. Read more at https://errors.authjs.dev#missingsecret
+    at assertConfig (E:\NextJS\fixphr\.next\dev\server\chunks\node_modules_@auth_core_1wpnri1._.js:513:16)
+    at Auth (E:\NextJS\fixphr\.next\dev\server\chunks\node_modules_@auth_core_1wpnri1._.js:5363:202)
+[31m[auth][error][0m MissingSecret: Please define a `secret`. Read more at https://errors.authjs.dev#missingsecret
+    at assertConfig (E:\NextJS\fixphr\.next\dev\server\chunks\node_modules_@auth_core_1wpnri1._.js:513:16)
+    at Auth (E:\NextJS\fixphr\.next\dev\server\chunks\node_modules_@auth_core_1wpnri1._.js:5363:202)
+[31m[auth][error][0m MissingSecret: Please define a `secret`. Read more at https://errors.authjs.dev#missingsecret
+    at assertConfig (E:\NextJS\fixphr\.next\dev\server\chunks\node_modules_@auth_core_1wpnri1._.js:513:16)
+    at Auth (E:\NextJS\fixphr\.next\dev\server\chunks\node_modules_@auth_core_1wpnri1._.js:5363:202)
+[31m[auth][error][0m MissingSecret: Please define a `secret`. Read more at https://errors.authjs.dev#missingsecret
+    at assertConfig (E:\NextJS\fixphr\.next\dev\server\chunks\node_modules_@auth_core_1wpnri1._.js:513:16)
+    at Auth (E:\NextJS\fixphr\.next\dev\server\chunks\node_modules_@auth_core_1wpnri1._.js:5363:202)
+[31m[auth][error][0m MissingSecret: Please define a `secret`. Read more at https://errors.authjs.dev#missingsecret
+    at assertConfig (E:\NextJS\fixphr\.next\dev\server\chunks\node_modules_@auth_core_1wpnri1._.js:513:16)
+    at Auth (E:\NextJS\fixphr\.next\dev\server\chunks\node_modules_@auth_core_1wpnri1._.js:5363:202)
+[31m[auth][error][0m MissingSecret: Please define a `secret`. Read more at https://errors.authjs.dev#missingsecret
+    at assertConfig (E:\NextJS\fixphr\.next\dev\server\chunks\node_modules_@auth_core_1wpnri1._.js:513:16)
+    at Auth (E:\NextJS\fixphr\.next\dev\server\chunks\node_modules_@auth_core_1wpnri1._.js:5363:202)
+[31m[auth][error][0m MissingSecret: Please define a `secret`. Read more at https://errors.authjs.dev#missingsecret
+    at assertConfig (E:\NextJS\fixphr\.next\dev\server\chunks\node_modules_@auth_core_1wpnri1._.js:513:16)
+    at Auth (E:\NextJS\fixphr\.next\dev\server\chunks\node_modules_@auth_core_1wpnri1._.js:5363:202)
+[31m[auth][error][0m MissingSecret: Please define a `secret`. Read more at https://errors.authjs.dev#missingsecret
+    at assertConfig (E:\NextJS\fixphr\.next\dev\server\chunks\node_modules_@auth_core_1wpnri1._.js:513:16)
+    at Auth (E:\NextJS\fixphr\.next\dev\server\chunks\node_modules_@auth_core_1wpnri1._.js:5363:202)
+[31m[auth][error][0m MissingSecret: Please define a `secret`. Read more at https://errors.authjs.dev#missingsecret
+    at assertConfig (E:\NextJS\fixphr\.next\dev\server\chunks\node_modules_@auth_core_1wpnri1._.js:513:16)
+    at Auth (E:\NextJS\fixphr\.next\dev\server\chunks\node_modules_@auth_core_1wpnri1._.js:5363:202)
+[31m[auth][error][0m MissingSecret: Please define a `secret`. Read more at https://errors.authjs.dev#missingsecret
+    at assertConfig (E:\NextJS\fixphr\.next\dev\server\chunks\node_modules_@auth_core_1wpnri1._.js:513:16)
+    at Auth (E:\NextJS\fixphr\.next\dev\server\chunks\node_modules_@auth_core_1wpnri1._.js:5363:202)
+[31m[auth][error][0m MissingSecret: Please define a `secret`. Read more at https://errors.authjs.dev#missingsecret
+    at assertConfig (E:\NextJS\fixphr\.next\dev\server\chunks\node_modules_@auth_core_1wpnri1._.js:513:16)
+    at Auth (E:\NextJS\fixphr\.next\dev\server\chunks\node_modules_@auth_core_1wpnri1._.js:5363:202)
+[31m[auth][error][0m MissingSecret: Please define a `secret`. Read more at https://errors.authjs.dev#missingsecret
+    at assertConfig (E:\NextJS\fixphr\.next\dev\server\chunks\node_modules_@auth_core_1wpnri1._.js:513:16)
+    at Auth (E:\NextJS\fixphr\.next\dev\server\chunks\node_modules_@auth_core_1wpnri1._.js:5363:202)
+[31m[auth][error][0m MissingSecret: Please define a `secret`. Read more at https://errors.authjs.dev#missingsecret
+    at assertConfig (E:\NextJS\fixphr\.next\dev\server\chunks\node_modules_@auth_core_1wpnri1._.js:513:16)
+    at Auth (E:\NextJS\fixphr\.next\dev\server\chunks\node_modules_@auth_core_1wpnri1._.js:5363:202)
+[31m[auth][error][0m MissingSecret: Please define a `secret`. Read more at https://errors.authjs.dev#missingsecret
+    at assertConfig (E:\NextJS\fixphr\.next\dev\server\chunks\node_modules_@auth_core_1wpnri1._.js:513:16)
+    at Auth (E:\NextJS\fixphr\.next\dev\server\chunks\node_modules_@auth_core_1wpnri1._.js:5363:202)
+[31m[auth][error][0m MissingSecret: Please define a `secret`. Read more at https://errors.authjs.dev#missingsecret
+    at assertConfig (E:\NextJS\fixphr\.next\dev\server\chunks\node_modules_@auth_core_1wpnri1._.js:513:16)
+    at Auth (E:\NextJS\fixphr\.next\dev\server\chunks\node_modules_@auth_core_1wpnri1._.js:5363:202)
+[31m[auth][error][0m MissingSecret: Please define a `secret`. Read more at https://errors.authjs.dev#missingsecret
+    at assertConfig (E:\NextJS\fixphr\.next\dev\server\chunks\node_modules_@auth_core_1wpnri1._.js:513:16)
+    at Auth (E:\NextJS\fixphr\.next\dev\server\chunks\node_modules_@auth_core_1wpnri1._.js:5363:202)
+[31m[auth][error][0m MissingSecret: Please define a `secret`. Read more at https://errors.authjs.dev#missingsecret
+    at assertConfig (E:\NextJS\fixphr\.next\dev\server\chunks\node_modules_@auth_core_1wpnri1._.js:513:16)
+    at Auth (E:\NextJS\fixphr\.next\dev\server\chunks\node_modules_@auth_core_1wpnri1._.js:5363:202)
+[31m[auth][error][0m MissingSecret: Please define a `secret`. Read more at https://errors.authjs.dev#missingsecret
+    at assertConfig (E:\NextJS\fixphr\.next\dev\server\chunks\node_modules_@auth_core_1wpnri1._.js:513:16)
+    at Auth (E:\NextJS\fixphr\.next\dev\server\chunks\node_modules_@auth_core_1wpnri1._.js:5363:202)
+[31m[auth][error][0m MissingSecret: Please define a `secret`. Read more at https://errors.authjs.dev#missingsecret
+    at assertConfig (E:\NextJS\fixphr\.next\dev\server\chunks\node_modules_@auth_core_1wpnri1._.js:513:16)
+    at Auth (E:\NextJS\fixphr\.next\dev\server\chunks\node_modules_@auth_core_1wpnri1._.js:5363:202)
+[31m[auth][error][0m MissingSecret: Please define a `secret`. Read more at https://errors.authjs.dev#missingsecret
+    at assertConfig (E:\NextJS\fixphr\.next\dev\server\chunks\node_modules_@auth_core_1wpnri1._.js:513:16)
+    at Auth (E:\NextJS\fixphr\.next\dev\server\chunks\node_modules_@auth_core_1wpnri1._.js:5363:202)
+[31m[auth][error][0m MissingSecret: Please define a `secret`. Read more at https://errors.authjs.dev#missingsecret
+    at assertConfig (E:\NextJS\fixphr\.next\dev\server\chunks\node_modules_@auth_core_1wpnri1._.js:513:16)
+    at Auth (E:\NextJS\fixphr\.next\dev\server\chunks\node_modules_@auth_core_1wpnri1._.js:5363:202)
+[31m[auth][error][0m MissingSecret: Please define a `secret`. Read more at https://errors.authjs.dev#missingsecret
+    at assertConfig (E:\NextJS\fixphr\.next\dev\server\chunks\node_modules_@auth_core_1wpnri1._.js:513:16)
+    at Auth (E:\NextJS\fixphr\.next\dev\server\chunks\node_modules_@auth_core_1wpnri1._.js:5363:202)
+[31m[auth][error][0m MissingSecret: Please define a `secret`. Read more at https://errors.authjs.dev#missingsecret
+    at assertConfig (E:\NextJS\fixphr\.next\dev\server\chunks\node_modules_@auth_core_1wpnri1._.js:513:16)
+    at Auth (E:\NextJS\fixphr\.next\dev\server\chunks\node_modules_@auth_core_1wpnri1._.js:5363:202)
+[31m[auth][error][0m MissingSecret: Please define a `secret`. Read more at https://errors.authjs.dev#missingsecret
+    at assertConfig (E:\NextJS\fixphr\.next\dev\server\chunks\node_modules_@auth_core_1wpnri1._.js:513:16)
+    at Auth (E:\NextJS\fixphr\.next\dev\server\chunks\node_modules_@auth_core_1wpnri1._.js:5363:202)
+[31m[auth][error][0m MissingSecret: Please define a `secret`. Read more at https://errors.authjs.dev#missingsecret
+    at assertConfig (E:\NextJS\fixphr\.next\dev\server\chunks\node_modules_@auth_core_1wpnri1._.js:513:16)
+    at Auth (E:\NextJS\fixphr\.next\dev\server\chunks\node_modules_@auth_core_1wpnri1._.js:5363:202)
+[31m[auth][error][0m MissingSecret: Please define a `secret`. Read more at https://errors.authjs.dev#missingsecret
+    at assertConfig (E:\NextJS\fixphr\.next\dev\server\chunks\node_modules_@auth_core_1wpnri1._.js:513:16)
+    at Auth (E:\NextJS\fixphr\.next\dev\server\chunks\node_modules_@auth_core_1wpnri1._.js:5363:202)
+[31m[auth][error][0m MissingSecret: Please define a `secret`. Read more at https://errors.authjs.dev#missingsecret
+    at assertConfig (E:\NextJS\fixphr\.next\dev\server\chunks\node_modules_@auth_core_1wpnri1._.js:513:16)
+    at Auth (E:\NextJS\fixphr\.next\dev\server\chunks\node_modules_@auth_core_1wpnri1._.js:5363:202)
+[31m[auth][error][0m MissingSecret: Please define a `secret`. Read more at https://errors.authjs.dev#missingsecret
+    at assertConfig (E:\NextJS\fixphr\.next\dev\server\chunks\node_modules_@auth_core_1wpnri1._.js:513:16)
+    at Auth (E:\NextJS\fixphr\.next\dev\server\chunks\node_modules_@auth_core_1wpnri1._.js:5363:202)
+[31m[auth][error][0m MissingSecret: Please define a `secret`. Read more at https://errors.authjs.dev#missingsecret
+    at assertConfig (E:\NextJS\fixphr\.next\dev\server\chunks\node_modules_@auth_core_1wpnri1._.js:513:16)
+    at Auth (E:\NextJS\fixphr\.next\dev\server\chunks\node_modules_@auth_core_1wpnri1._.js:5363:202)
+[31m[auth][error][0m MissingSecret: Please define a `secret`. Read more at https://errors.authjs.dev#missingsecret
+    at assertConfig (E:\NextJS\fixphr\.next\dev\server\chunks\node_modules_@auth_core_1wpnri1._.js:513:16)
+    at Auth (E:\NextJS\fixphr\.next\dev\server\chunks\node_modules_@auth_core_1wpnri1._.js:5363:202)
+[31m[auth][error][0m MissingSecret: Please define a `secret`. Read more at https://errors.authjs.dev#missingsecret
+    at assertConfig (E:\NextJS\fixphr\.next\dev\server\chunks\node_modules_@auth_core_1wpnri1._.js:513:16)
+    at Auth (E:\NextJS\fixphr\.next\dev\server\chunks\node_modules_@auth_core_1wpnri1._.js:5363:202)
+[31m[auth][error][0m MissingSecret: Please define a `secret`. Read more at https://errors.authjs.dev#missingsecret
+    at assertConfig (E:\NextJS\fixphr\.next\dev\server\chunks\node_modules_@auth_core_1wpnri1._.js:513:16)
+    at Auth (E:\NextJS\fixphr\.next\dev\server\chunks\node_modules_@auth_core_1wpnri1._.js:5363:202)
+[31m[auth][error][0m MissingSecret: Please define a `secret`. Read more at https://errors.authjs.dev#missingsecret
+    at assertConfig (E:\NextJS\fixphr\.next\dev\server\chunks\node_modules_@auth_core_1wpnri1._.js:513:16)
+    at Auth (E:\NextJS\fixphr\.next\dev\server\chunks\node_modules_@auth_core_1wpnri1._.js:5363:202)
+[31m[auth][error][0m MissingSecret: Please define a `secret`. Read more at https://errors.authjs.dev#missingsecret
+    at assertConfig (E:\NextJS\fixphr\.next\dev\server\chunks\node_modules_@auth_core_1wpnri1._.js:513:16)
+    at Auth (E:\NextJS\fixphr\.next\dev\server\chunks\node_modules_@auth_core_1wpnri1._.js:5363:202)
+[31m[auth][error][0m MissingSecret: Please define a `secret`. Read more at https://errors.authjs.dev#missingsecret
+    at assertConfig (E:\NextJS\fixphr\.next\dev\server\chunks\node_modules_@auth_core_1wpnri1._.js:513:16)
+    at Auth (E:\NextJS\fixphr\.next\dev\server\chunks\node_modules_@auth_core_1wpnri1._.js:5363:202)
+[31m[auth][error][0m MissingSecret: Please define a `secret`. Read more at https://errors.authjs.dev#missingsecret
+    at assertConfig (E:\NextJS\fixphr\.next\dev\server\chunks\node_modules_@auth_core_1wpnri1._.js:513:16)
+    at Auth (E:\NextJS\fixphr\.next\dev\server\chunks\node_modules_@auth_core_1wpnri1._.js:5363:202)
+[31m[auth][error][0m MissingSecret: Please define a `secret`. Read more at https://errors.authjs.dev#missingsecret
+    at assertConfig (E:\NextJS\fixphr\.next\dev\server\chunks\node_modules_@auth_core_1wpnri1._.js:513:16)
+    at Auth (E:\NextJS\fixphr\.next\dev\server\chunks\node_modules_@auth_core_1wpnri1._.js:5363:202)
+[31m[auth][error][0m MissingSecret: Please define a `secret`. Read more at https://errors.authjs.dev#missingsecret
+    at assertConfig (E:\NextJS\fixphr\.next\dev\server\chunks\node_modules_@auth_core_1wpnri1._.js:513:16)
+    at Auth (E:\NextJS\fixphr\.next\dev\server\chunks\node_modules_@auth_core_1wpnri1._.js:5363:202)
+[31m[auth][error][0m MissingSecret: Please define a `secret`. Read more at https://errors.authjs.dev#missingsecret
+    at assertConfig (E:\NextJS\fixphr\.next\dev\server\chunks\node_modules_@auth_core_1wpnri1._.js:513:16)
+    at Auth (E:\NextJS\fixphr\.next\dev\server\chunks\node_modules_@auth_core_1wpnri1._.js:5363:202)
+[31m[auth][error][0m MissingSecret: Please define a `secret`. Read more at https://errors.authjs.dev#missingsecret
+    at assertConfig (E:\NextJS\fixphr\.next\dev\server\chunks\node_modules_@auth_core_1wpnri1._.js:513:16)
+    at Auth (E:\NextJS\fixphr\.next\dev\server\chunks\node_modules_@auth_core_1wpnri1._.js:5363:202)
+[31m[auth][error][0m MissingSecret: Please define a `secret`. Read more at https://errors.authjs.dev#missingsecret
+    at assertConfig (E:\NextJS\fixphr\.next\dev\server\chunks\node_modules_@auth_core_1wpnri1._.js:513:16)
+    at Auth (E:\NextJS\fixphr\.next\dev\server\chunks\node_modules_@auth_core_1wpnri1._.js:5363:202)
+[31m[auth][error][0m MissingSecret: Please define a `secret`. Read more at https://errors.authjs.dev#missingsecret
+    at assertConfig (E:\NextJS\fixphr\.next\dev\server\chunks\node_modules_@auth_core_1wpnri1._.js:513:16)
+    at Auth (E:\NextJS\fixphr\.next\dev\server\chunks\node_modules_@auth_core_1wpnri1._.js:5363:202)
+[31m[auth][error][0m MissingSecret: Please define a `secret`. Read more at https://errors.authjs.dev#missingsecret
+    at assertConfig (E:\NextJS\fixphr\.next\dev\server\chunks\node_modules_@auth_core_1wpnri1._.js:513:16)
+    at Auth (E:\NextJS\fixphr\.next\dev\server\chunks\node_modules_@auth_core_1wpnri1._.js:5363:202)
+[31m[auth][error][0m MissingSecret: Please define a `secret`. Read more at https://errors.authjs.dev#missingsecret
+    at assertConfig (E:\NextJS\fixphr\.next\dev\server\chunks\node_modules_@auth_core_1wpnri1._.js:513:16)
+    at Auth (E:\NextJS\fixphr\.next\dev\server\chunks\node_modules_@auth_core_1wpnri1._.js:5363:202)
+[31m[auth][error][0m MissingSecret: Please define a `secret`. Read more at https://errors.authjs.dev#missingsecret
+    at assertConfig (E:\NextJS\fixphr\.next\dev\server\chunks\node_modules_@auth_core_1wpnri1._.js:513:16)
+    at Auth (E:\NextJS\fixphr\.next\dev\server\chunks\node_modules_@auth_core_1wpnri1._.js:5363:202)
+[31m[auth][error][0m MissingSecret: Please define a `secret`. Read more at https://errors.authjs.dev#missingsecret
+    at assertConfig (E:\NextJS\fixphr\.next\dev\server\chunks\node_modules_@auth_core_1wpnri1._.js:513:16)
+    at Auth (E:\NextJS\fixphr\.next\dev\server\chunks\node_modules_@auth_core_1wpnri1._.js:5363:202)
+[31m[auth][error][0m MissingSecret: Please define a `secret`. Read more at https://errors.authjs.dev#missingsecret
+    at assertConfig (E:\NextJS\fixphr\.next\dev\server\chunks\node_modules_@auth_core_1wpnri1._.js:513:16)
+    at Auth (E:\NextJS\fixphr\.next\dev\server\chunks\node_modules_@auth_core_1wpnri1._.js:5363:202)
+[31m[auth][error][0m MissingSecret: Please define a `secret`. Read more at https://errors.authjs.dev#missingsecret
+    at assertConfig (E:\NextJS\fixphr\.next\dev\server\chunks\node_modules_@auth_core_1wpnri1._.js:513:16)
+    at Auth (E:\NextJS\fixphr\.next\dev\server\chunks\node_modules_@auth_core_1wpnri1._.js:5363:202)
+[31m[auth][error][0m MissingSecret: Please define a `secret`. Read more at https://errors.authjs.dev#missingsecret
+    at assertConfig (E:\NextJS\fixphr\.next\dev\server\chunks\node_modules_@auth_core_1wpnri1._.js:513:16)
+    at Auth (E:\NextJS\fixphr\.next\dev\server\chunks\node_modules_@auth_core_1wpnri1._.js:5363:202)
+[31m[auth][error][0m MissingSecret: Please define a `secret`. Read more at https://errors.authjs.dev#missingsecret
+    at assertConfig (E:\NextJS\fixphr\.next\dev\server\chunks\node_modules_@auth_core_1wpnri1._.js:513:16)
+    at Auth (E:\NextJS\fixphr\.next\dev\server\chunks\node_modules_@auth_core_1wpnri1._.js:5363:202)
+[31m[auth][error][0m MissingSecret: Please define a `secret`. Read more at https://errors.authjs.dev#missingsecret
+    at assertConfig (E:\NextJS\fixphr\.next\dev\server\chunks\node_modules_@auth_core_1wpnri1._.js:513:16)
+    at Auth (E:\NextJS\fixphr\.next\dev\server\chunks\node_modules_@auth_core_1wpnri1._.js:5363:202)
+[31m[auth][error][0m MissingSecret: Please define a `secret`. Read more at https://errors.authjs.dev#missingsecret
+    at assertConfig (E:\NextJS\fixphr\.next\dev\server\chunks\node_modules_@auth_core_1wpnri1._.js:513:16)
+    at Auth (E:\NextJS\fixphr\.next\dev\server\chunks\node_modules_@auth_core_1wpnri1._.js:5363:202)
+[31m[auth][error][0m MissingSecret: Please define a `secret`. Read more at https://errors.authjs.dev#missingsecret
+    at assertConfig (E:\NextJS\fixphr\.next\dev\server\chunks\node_modules_@auth_core_1wpnri1._.js:513:16)
+    at Auth (E:\NextJS\fixphr\.next\dev\server\chunks\node_modules_@auth_core_1wpnri1._.js:5363:202)
+[31m[auth][error][0m MissingSecret: Please define a `secret`. Read more at https://errors.authjs.dev#missingsecret
+    at assertConfig (E:\NextJS\fixphr\.next\dev\server\chunks\node_modules_@auth_core_1wpnri1._.js:513:16)
+    at Auth (E:\NextJS\fixphr\.next\dev\server\chunks\node_modules_@auth_core_1wpnri1._.js:5363:202)
+[31m[auth][error][0m MissingSecret: Please define a `secret`. Read more at https://errors.authjs.dev#missingsecret
+    at assertConfig (E:\NextJS\fixphr\.next\dev\server\chunks\node_modules_@auth_core_1wpnri1._.js:513:16)
+    at Auth (E:\NextJS\fixphr\.next\dev\server\chunks\node_modules_@auth_core_1wpnri1._.js:5363:202)
+[31m[auth][error][0m MissingSecret: Please define a `secret`. Read more at https://errors.authjs.dev#missingsecret
+    at assertConfig (E:\NextJS\fixphr\.next\dev\server\chunks\node_modules_@auth_core_1wpnri1._.js:513:16)
+    at Auth (E:\NextJS\fixphr\.next\dev\server\chunks\node_modules_@auth_core_1wpnri1._.js:5363:202)
+[31m[auth][error][0m MissingSecret: Please define a `secret`. Read more at https://errors.authjs.dev#missingsecret
+    at assertConfig (E:\NextJS\fixphr\.next\dev\server\chunks\node_modules_@auth_core_1wpnri1._.js:513:16)
+    at Auth (E:\NextJS\fixphr\.next\dev\server\chunks\node_modules_@auth_core_1wpnri1._.js:5363:202)
+[31m[auth][error][0m MissingSecret: Please define a `secret`. Read more at https://errors.authjs.dev#missingsecret
+    at assertConfig (E:\NextJS\fixphr\.next\dev\server\chunks\node_modules_@auth_core_1wpnri1._.js:513:16)
+    at Auth (E:\NextJS\fixphr\.next\dev\server\chunks\node_modules_@auth_core_1wpnri1._.js:5363:202)
+[31m[auth][error][0m MissingSecret: Please define a `secret`. Read more at https://errors.authjs.dev#missingsecret
+    at assertConfig (E:\NextJS\fixphr\.next\dev\server\chunks\node_modules_@auth_core_1wpnri1._.js:513:16)
+    at Auth (E:\NextJS\fixphr\.next\dev\server\chunks\node_modules_@auth_core_1wpnri1._.js:5363:202)
+[31m[auth][error][0m MissingSecret: Please define a `secret`. Read more at https://errors.authjs.dev#missingsecret
+    at assertConfig (E:\NextJS\fixphr\.next\dev\server\chunks\node_modules_@auth_core_1wpnri1._.js:513:16)
+    at Auth (E:\NextJS\fixphr\.next\dev\server\chunks\node_modules_@auth_core_1wpnri1._.js:5363:202)
+[31m[auth][error][0m MissingSecret: Please define a `secret`. Read more at https://errors.authjs.dev#missingsecret
+    at assertConfig (E:\NextJS\fixphr\.next\dev\server\chunks\node_modules_@auth_core_1wpnri1._.js:513:16)
+    at Auth (E:\NextJS\fixphr\.next\dev\server\chunks\node_modules_@auth_core_1wpnri1._.js:5363:202)
+[31m[auth][error][0m MissingSecret: Please define a `secret`. Read more at https://errors.authjs.dev#missingsecret
+    at assertConfig (E:\NextJS\fixphr\.next\dev\server\chunks\node_modules_@auth_core_1wpnri1._.js:513:16)
+    at Auth (E:\NextJS\fixphr\.next\dev\server\chunks\node_modules_@auth_core_1wpnri1._.js:5363:202)
+[31m[auth][error][0m MissingSecret: Please define a `secret`. Read more at https://errors.authjs.dev#missingsecret
+    at assertConfig (E:\NextJS\fixphr\.next\dev\server\chunks\node_modules_@auth_core_1wpnri1._.js:513:16)
+    at Auth (E:\NextJS\fixphr\.next\dev\server\chunks\node_modules_@auth_core_1wpnri1._.js:5363:202)
+[31m[auth][error][0m MissingSecret: Please define a `secret`. Read more at https://errors.authjs.dev#missingsecret
+    at assertConfig (E:\NextJS\fixphr\.next\dev\server\chunks\node_modules_@auth_core_1wpnri1._.js:513:16)
+    at Auth (E:\NextJS\fixphr\.next\dev\server\chunks\node_modules_@auth_core_1wpnri1._.js:5363:202)
+[31m[auth][error][0m MissingSecret: Please define a `secret`. Read more at https://errors.authjs.dev#missingsecret
+    at assertConfig (E:\NextJS\fixphr\.next\dev\server\chunks\node_modules_@auth_core_1wpnri1._.js:513:16)
+    at Auth (E:\NextJS\fixphr\.next\dev\server\chunks\node_modules_@auth_core_1wpnri1._.js:5363:202)
+[31m[auth][error][0m MissingSecret: Please define a `secret`. Read more at https://errors.authjs.dev#missingsecret
+    at assertConfig (E:\NextJS\fixphr\.next\dev\server\chunks\node_modules_@auth_core_1wpnri1._.js:513:16)
+    at Auth (E:\NextJS\fixphr\.next\dev\server\chunks\node_modules_@auth_core_1wpnri1._.js:5363:202)
+[31m[auth][error][0m MissingSecret: Please define a `secret`. Read more at https://errors.authjs.dev#missingsecret
+    at assertConfig (E:\NextJS\fixphr\.next\dev\server\chunks\node_modules_@auth_core_1wpnri1._.js:513:16)
+    at Auth (E:\NextJS\fixphr\.next\dev\server\chunks\node_modules_@auth_core_1wpnri1._.js:5363:202)
+[31m[auth][error][0m MissingSecret: Please define a `secret`. Read more at https://errors.authjs.dev#missingsecret
+    at assertConfig (E:\NextJS\fixphr\.next\dev\server\chunks\node_modules_@auth_core_1wpnri1._.js:513:16)
+    at Auth (E:\NextJS\fixphr\.next\dev\server\chunks\node_modules_@auth_core_1wpnri1._.js:5363:202)
+[31m[auth][error][0m MissingSecret: Please define a `secret`. Read more at https://errors.authjs.dev#missingsecret
+    at assertConfig (E:\NextJS\fixphr\.next\dev\server\chunks\node_modules_@auth_core_1wpnri1._.js:513:16)
+    at Auth (E:\NextJS\fixphr\.next\dev\server\chunks\node_modules_@auth_core_1wpnri1._.js:5363:202)
+[31m[auth][error][0m MissingSecret: Please define a `secret`. Read more at https://errors.authjs.dev#missingsecret
+    at assertConfig (E:\NextJS\fixphr\.next\dev\server\chunks\node_modules_@auth_core_1wpnri1._.js:513:16)
+    at Auth (E:\NextJS\fixphr\.next\dev\server\chunks\node_modules_@auth_core_1wpnri1._.js:5363:202)
+[31m[auth][error][0m MissingSecret: Please define a `secret`. Read more at https://errors.authjs.dev#missingsecret
+    at assertConfig (E:\NextJS\fixphr\.next\dev\server\chunks\node_modules_@auth_core_1wpnri1._.js:513:16)
+    at Auth (E:\NextJS\fixphr\.next\dev\server\chunks\node_modules_@auth_core_1wpnri1._.js:5363:202)
+[31m[auth][error][0m MissingSecret: Please define a `secret`. Read more at https://errors.authjs.dev#missingsecret
+    at assertConfig (E:\NextJS\fixphr\.next\dev\server\chunks\node_modules_@auth_core_1wpnri1._.js:513:16)
+    at Auth (E:\NextJS\fixphr\.next\dev\server\chunks\node_modules_@auth_core_1wpnri1._.js:5363:202)
+[31m[auth][error][0m MissingSecret: Please define a `secret`. Read more at https://errors.authjs.dev#missingsecret
+    at assertConfig (E:\NextJS\fixphr\.next\dev\server\chunks\ssr\[root-of-the-server]__1i8jcig._.js:720:16)
+    at Auth (E:\NextJS\fixphr\.next\dev\server\chunks\ssr\[root-of-the-server]__1i8jcig._.js:12372:202)
+[31m[auth][error][0m MissingSecret: Please define a `secret`. Read more at https://errors.authjs.dev#missingsecret
+    at assertConfig (E:\NextJS\fixphr\.next\dev\server\chunks\ssr\[root-of-the-server]__1i8jcig._.js:720:16)
+    at Auth (E:\NextJS\fixphr\.next\dev\server\chunks\ssr\[root-of-the-server]__1i8jcig._.js:12372:202)
+[31m[auth][error][0m MissingSecret: Please define a `secret`. Read more at https://errors.authjs.dev#missingsecret
+    at assertConfig (E:\NextJS\fixphr\.next\dev\server\chunks\node_modules_@auth_core_1wpnri1._.js:513:16)
+    at Auth (E:\NextJS\fixphr\.next\dev\server\chunks\node_modules_@auth_core_1wpnri1._.js:5363:202)
+[31m[auth][error][0m MissingSecret: Please define a `secret`. Read more at https://errors.authjs.dev#missingsecret
+    at assertConfig (E:\NextJS\fixphr\.next\dev\server\chunks\node_modules_@auth_core_1wpnri1._.js:513:16)
+    at Auth (E:\NextJS\fixphr\.next\dev\server\chunks\node_modules_@auth_core_1wpnri1._.js:5363:202)
+[31m[auth][error][0m MissingSecret: Please define a `secret`. Read more at https://errors.authjs.dev#missingsecret
+    at assertConfig (E:\NextJS\fixphr\.next\dev\server\chunks\node_modules_@auth_core_1wpnri1._.js:513:16)
+    at Auth (E:\NextJS\fixphr\.next\dev\server\chunks\node_modules_@auth_core_1wpnri1._.js:5363:202)
+[31m[auth][error][0m MissingSecret: Please define a `secret`. Read more at https://errors.authjs.dev#missingsecret
+    at assertConfig (E:\NextJS\fixphr\.next\dev\server\chunks\node_modules_@auth_core_1wpnri1._.js:513:16)
+    at Auth (E:\NextJS\fixphr\.next\dev\server\chunks\node_modules_@auth_core_1wpnri1._.js:5363:202)
+[31m[auth][error][0m MissingSecret: Please define a `secret`. Read more at https://errors.authjs.dev#missingsecret
+    at assertConfig (E:\NextJS\fixphr\.next\dev\server\chunks\node_modules_@auth_core_1wpnri1._.js:513:16)
+    at Auth (E:\NextJS\fixphr\.next\dev\server\chunks\node_modules_@auth_core_1wpnri1._.js:5363:202)
+[31m[auth][error][0m MissingSecret: Please define a `secret`. Read more at https://errors.authjs.dev#missingsecret
+    at assertConfig (E:\NextJS\fixphr\.next\dev\server\chunks\node_modules_@auth_core_1wpnri1._.js:513:16)
+    at Auth (E:\NextJS\fixphr\.next\dev\server\chunks\node_modules_@auth_core_1wpnri1._.js:5363:202)
+[31m[auth][error][0m MissingSecret: Please define a `secret`. Read more at https://errors.authjs.dev#missingsecret
+    at assertConfig (E:\NextJS\fixphr\.next\dev\server\chunks\ssr\[root-of-the-server]__1i8jcig._.js:720:16)
+    at Auth (E:\NextJS\fixphr\.next\dev\server\chunks\ssr\[root-of-the-server]__1i8jcig._.js:12372:202)
+    at runNextTicks (node:internal/process/task_queues:65:5)
+    at process.processTimers (node:internal/timers:538:9)
+[31m[auth][error][0m MissingSecret: Please define a `secret`. Read more at https://errors.authjs.dev#missingsecret
+    at assertConfig (E:\NextJS\fixphr\.next\dev\server\chunks\ssr\[root-of-the-server]__1i8jcig._.js:720:16)
+    at Auth (E:\NextJS\fixphr\.next\dev\server\chunks\ssr\[root-of-the-server]__1i8jcig._.js:12372:202)
+    at runNextTicks (node:internal/process/task_queues:65:5)
+    at listOnTimeout (node:internal/timers:567:9)
+    at process.processTimers (node:internal/timers:541:7)
+[31m[auth][error][0m MissingSecret: Please define a `secret`. Read more at https://errors.authjs.dev#missingsecret
+    at assertConfig (E:\NextJS\fixphr\.next\dev\server\chunks\ssr\[root-of-the-server]__1i8jcig._.js:720:16)
+    at Auth (E:\NextJS\fixphr\.next\dev\server\chunks\ssr\[root-of-the-server]__1i8jcig._.js:12372:202)
+    at runNextTicks (node:internal/process/task_queues:65:5)
+    at listOnTimeout (node:internal/timers:567:9)
+    at process.processTimers (node:internal/timers:541:7)
+[31m[auth][error][0m MissingSecret: Please define a `secret`. Read more at https://errors.authjs.dev#missingsecret
+    at assertConfig (E:\NextJS\fixphr\.next\dev\server\chunks\ssr\[root-of-the-server]__1i8jcig._.js:720:16)
+    at Auth (E:\NextJS\fixphr\.next\dev\server\chunks\ssr\[root-of-the-server]__1i8jcig._.js:12372:202)
+    at runNextTicks (node:internal/process/task_queues:65:5)
+    at listOnTimeout (node:internal/timers:567:9)
+    at process.processTimers (node:internal/timers:541:7)
+[31m[auth][error][0m MissingSecret: Please define a `secret`. Read more at https://errors.authjs.dev#missingsecret
+    at assertConfig (E:\NextJS\fixphr\.next\dev\server\chunks\node_modules_@auth_core_1wpnri1._.js:513:16)
+    at Auth (E:\NextJS\fixphr\.next\dev\server\chunks\node_modules_@auth_core_1wpnri1._.js:5363:202)
+[31m[auth][error][0m MissingSecret: Please define a `secret`. Read more at https://errors.authjs.dev#missingsecret
+    at assertConfig (E:\NextJS\fixphr\.next\dev\server\chunks\node_modules_@auth_core_1wpnri1._.js:513:16)
+    at Auth (E:\NextJS\fixphr\.next\dev\server\chunks\node_modules_@auth_core_1wpnri1._.js:5363:202)
+[31m[auth][error][0m MissingSecret: Please define a `secret`. Read more at https://errors.authjs.dev#missingsecret
+    at assertConfig (E:\NextJS\fixphr\.next\dev\server\chunks\node_modules_@auth_core_1wpnri1._.js:513:16)
+    at Auth (E:\NextJS\fixphr\.next\dev\server\chunks\node_modules_@auth_core_1wpnri1._.js:5363:202)
+[31m[auth][error][0m MissingSecret: Please define a `secret`. Read more at https://errors.authjs.dev#missingsecret
+    at assertConfig (E:\NextJS\fixphr\.next\dev\server\chunks\node_modules_@auth_core_1wpnri1._.js:513:16)
+    at Auth (E:\NextJS\fixphr\.next\dev\server\chunks\node_modules_@auth_core_1wpnri1._.js:5363:202)
+[31m[auth][error][0m MissingSecret: Please define a `secret`. Read more at https://errors.authjs.dev#missingsecret
+    at assertConfig (E:\NextJS\fixphr\.next\dev\server\chunks\ssr\[root-of-the-server]__1i8jcig._.js:720:16)
+    at Auth (E:\NextJS\fixphr\.next\dev\server\chunks\ssr\[root-of-the-server]__1i8jcig._.js:12372:202)
+    at runNextTicks (node:internal/process/task_queues:65:5)
+    at listOnTimeout (node:internal/timers:567:9)
+    at process.processTimers (node:internal/timers:541:7)
+[31m[auth][error][0m MissingSecret: Please define a `secret`. Read more at https://errors.authjs.dev#missingsecret
+    at assertConfig (E:\NextJS\fixphr\.next\dev\server\chunks\ssr\[root-of-the-server]__1i8jcig._.js:720:16)
+    at Auth (E:\NextJS\fixphr\.next\dev\server\chunks\ssr\[root-of-the-server]__1i8jcig._.js:12372:202)
+    at runNextTicks (node:internal/process/task_queues:65:5)
+    at listOnTimeout (node:internal/timers:567:9)
+    at process.processTimers (node:internal/timers:541:7)
+[31m[auth][error][0m MissingSecret: Please define a `secret`. Read more at https://errors.authjs.dev#missingsecret
+    at assertConfig (E:\NextJS\fixphr\.next\dev\server\chunks\ssr\[root-of-the-server]__1i8jcig._.js:720:16)
+    at Auth (E:\NextJS\fixphr\.next\dev\server\chunks\ssr\[root-of-the-server]__1i8jcig._.js:12372:202)
+    at runNextTicks (node:internal/process/task_queues:65:5)
+    at process.processTimers (node:internal/timers:538:9)
+[31m[auth][error][0m MissingSecret: Please define a `secret`. Read more at https://errors.authjs.dev#missingsecret
+    at assertConfig (E:\NextJS\fixphr\.next\dev\server\chunks\ssr\[root-of-the-server]__1i8jcig._.js:720:16)
+    at Auth (E:\NextJS\fixphr\.next\dev\server\chunks\ssr\[root-of-the-server]__1i8jcig._.js:12372:202)
+[31m[auth][error][0m MissingSecret: Please define a `secret`. Read more at https://errors.authjs.dev#missingsecret
+    at assertConfig (E:\NextJS\fixphr\.next\dev\server\chunks\node_modules_@auth_core_1wpnri1._.js:513:16)
+    at Auth (E:\NextJS\fixphr\.next\dev\server\chunks\node_modules_@auth_core_1wpnri1._.js:5363:202)
+[31m[auth][error][0m MissingSecret: Please define a `secret`. Read more at https://errors.authjs.dev#missingsecret
+    at assertConfig (E:\NextJS\fixphr\.next\dev\server\chunks\node_modules_@auth_core_1wpnri1._.js:513:16)
+    at Auth (E:\NextJS\fixphr\.next\dev\server\chunks\node_modules_@auth_core_1wpnri1._.js:5363:202)
+[31m[auth][error][0m MissingSecret: Please define a `secret`. Read more at https://errors.authjs.dev#missingsecret
+    at assertConfig (E:\NextJS\fixphr\.next\dev\server\chunks\node_modules_@auth_core_1wpnri1._.js:513:16)
+    at Auth (E:\NextJS\fixphr\.next\dev\server\chunks\node_modules_@auth_core_1wpnri1._.js:5363:202)
+[31m[auth][error][0m MissingSecret: Please define a `secret`. Read more at https://errors.authjs.dev#missingsecret
+    at assertConfig (E:\NextJS\fixphr\.next\dev\server\chunks\node_modules_@auth_core_1wpnri1._.js:513:16)
+    at Auth (E:\NextJS\fixphr\.next\dev\server\chunks\node_modules_@auth_core_1wpnri1._.js:5363:202)
+[31m[auth][error][0m MissingSecret: Please define a `secret`. Read more at https://errors.authjs.dev#missingsecret
+    at assertConfig (E:\NextJS\fixphr\.next\dev\server\chunks\node_modules_@auth_core_1wpnri1._.js:513:16)
+    at Auth (E:\NextJS\fixphr\.next\dev\server\chunks\node_modules_@auth_core_1wpnri1._.js:5363:202)
+[31m[auth][error][0m MissingSecret: Please define a `secret`. Read more at https://errors.authjs.dev#missingsecret
+    at assertConfig (E:\NextJS\fixphr\.next\dev\server\chunks\node_modules_@auth_core_1wpnri1._.js:513:16)
+    at Auth (E:\NextJS\fixphr\.next\dev\server\chunks\node_modules_@auth_core_1wpnri1._.js:5363:202)
+[31m[auth][error][0m MissingSecret: Please define a `secret`. Read more at https://errors.authjs.dev#missingsecret
+    at assertConfig (E:\NextJS\fixphr\.next\dev\server\chunks\node_modules_@auth_core_1wpnri1._.js:513:16)
+    at Auth (E:\NextJS\fixphr\.next\dev\server\chunks\node_modules_@auth_core_1wpnri1._.js:5363:202)
+[31m[auth][error][0m MissingSecret: Please define a `secret`. Read more at https://errors.authjs.dev#missingsecret
+    at assertConfig (E:\NextJS\fixphr\.next\dev\server\chunks\node_modules_@auth_core_1wpnri1._.js:513:16)
+    at Auth (E:\NextJS\fixphr\.next\dev\server\chunks\node_modules_@auth_core_1wpnri1._.js:5363:202)
+[31m[auth][error][0m MissingSecret: Please define a `secret`. Read more at https://errors.authjs.dev#missingsecret
+    at assertConfig (E:\NextJS\fixphr\.next\dev\server\chunks\node_modules_@auth_core_1wpnri1._.js:513:16)
+    at Auth (E:\NextJS\fixphr\.next\dev\server\chunks\node_modules_@auth_core_1wpnri1._.js:5363:202)
+[31m[auth][error][0m MissingSecret: Please define a `secret`. Read more at https://errors.authjs.dev#missingsecret
+    at assertConfig (E:\NextJS\fixphr\.next\dev\server\chunks\node_modules_@auth_core_1wpnri1._.js:513:16)
+    at Auth (E:\NextJS\fixphr\.next\dev\server\chunks\node_modules_@auth_core_1wpnri1._.js:5363:202)
+[browser] The final argument passed to useEffect changed size between renders. The order and size of this array must remain constant.
+
+Previous: [bar, เมืองพิษณุโลก,นครไทย,ชาติตระการ,บางระกำ,บางกระทุ่ม,พรหมพิราม,วัดโบสถ์,วังทอง,เนินมะปราง, [object Object],[object Object]]
+Incoming: [bar, เมืองพิษณุโลก,นครไทย,ชาติตระการ,บางระกำ,บางกระทุ่ม,พรหมพิราม,วัดโบสถ์,วังทอง,เนินมะปราง, [object Object],[object Object], count] 
+    at SummaryChart (file://E:/NextJS/fixphr/.next/dev/static/chunks/src_app_sum_SummaryChart_tsx_10f726_._.js?id=%255Bproject%255D%252Fsrc%252Fapp%252Fsum%252FSummaryChart.tsx+%255Bapp-client%255D+%2528ecmascript%2529:184:180)
+    at Set.forEach (<anonymous>) (file://E:/NextJS/fixphr/.next/dev/static/chunks/src_app_sum_SummaryChart_tsx_10f726_._.js?id=%255Bproject%255D%252Fsrc%252Fapp%252Fsum%252FSummaryChart.tsx+%255Bapp-client%255D+%2528ecmascript%2529:184:180)
