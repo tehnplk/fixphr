@@ -5,7 +5,7 @@ import { NextResponse, type NextRequest } from "next/server";
 import { signIn } from "@/auth";
 import { signProviderProfile } from "@/lib/provider-auth";
 
-const DEFAULT_CALLBACK_URL = "/report";
+const DEFAULT_CALLBACK_URL = "/";
 
 function loginErrorUrl(request: NextRequest, error: string) {
   const url = new URL("/login", request.nextUrl);

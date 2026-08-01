@@ -5,7 +5,7 @@ import { IdCard, LockKeyhole, LogIn } from "lucide-react";
 import { signIn } from "@/auth";
 import styles from "./page.module.css";
 
-const DEFAULT_CALLBACK_URL = "/report";
+const DEFAULT_CALLBACK_URL = "/";
 
 function localCallbackUrl(value: unknown) {
   const callbackUrl = String(value || "");
