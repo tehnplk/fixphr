@@ -103,7 +103,7 @@ export default function ReportTable({
           <col className={styles.vstdateColumn} />
           <col className={styles.issueColumn} />
           <col className={styles.resultColumn} />
-          <col />
+          <col className={styles.noteColumn} />
           <col className={styles.actionColumn} />
         </colgroup>
         <thead>
@@ -179,11 +179,12 @@ export default function ReportTable({
                   </select>
                 </td>
                 <td className={styles.editableCell}>
-                  <input
+                  <textarea
                     aria-label={`หมายเหตุ รายการที่ ${row.item_no}`}
                     maxLength={5000}
                     onBlur={() => void saveRow(row)}
                     onChange={(event) => updateText(row, "note", event.target.value)}
+                    rows={1}
                     value={row.note}
                   />
                 </td>
