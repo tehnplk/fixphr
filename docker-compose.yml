@@ -9,8 +9,6 @@ services:
     environment:
       NODE_ENV: production
       DATABASE_URL: postgresql://${POSTGRES_USER:-fixphr}:${POSTGRES_PASSWORD:-change-me}@postgres:5432/${POSTGRES_DB:-fixphr}
-      FORM_TOKEN_SECRET: ${FORM_TOKEN_SECRET:?Set FORM_TOKEN_SECRET in .env}
-      CID_ENCRYPTION_KEY: ${CID_ENCRYPTION_KEY:?Set CID_ENCRYPTION_KEY in .env}
     ports:
       - "${WEBAPP_PORT:-3016}:3000"
     depends_on:

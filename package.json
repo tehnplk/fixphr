@@ -10,9 +10,7 @@
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate dev",
     "prisma:studio": "prisma studio",
-    "prisma:seed:hospitals": "tsx prisma/seed-hospitals.ts",
-    "cid:encrypt-existing": "tsx scripts/encrypt-existing-cids.ts",
-    "cid:decrypt": "tsx scripts/decrypt-cid.ts"
+    "prisma:seed:hospitals": "tsx prisma/seed-hospitals.ts"
   },
   "dependencies": {
     "@prisma/adapter-pg": "^7.6.0",

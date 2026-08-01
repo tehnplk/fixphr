@@ -1,0 +1,3 @@
+ALTER TABLE "report"
+ALTER COLUMN "hn" TYPE TEXT
+USING "hn"::TEXT;

@@ -1,0 +1,6 @@
+ALTER TABLE "report"
+ALTER COLUMN "vstdate" TYPE VARCHAR(20)
+USING CASE
+    WHEN "vstdate" IS NULL THEN NULL
+    ELSE TO_CHAR("vstdate", 'YYYY-MM-DD')
+END;

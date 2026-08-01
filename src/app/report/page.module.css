@@ -1,0 +1,223 @@
+.page {
+  --green: #126049;
+  --deep: #17352b;
+  position: relative;
+  min-height: 100svh;
+  overflow-x: hidden;
+  padding: clamp(14px, 2vw, 28px) clamp(16px, 3vw, 42px) 42px;
+  background:
+    radial-gradient(circle at 92% 8%, rgba(213, 232, 108, .46), transparent 25rem),
+    linear-gradient(145deg, #edf3ed 0%, #f7f5e9 100%);
+}
+
+.grid {
+  position: fixed;
+  inset: 0;
+  opacity: .32;
+  pointer-events: none;
+  background-image:
+    linear-gradient(rgba(23, 53, 43, .08) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(23, 53, 43, .08) 1px, transparent 1px);
+  background-size: 32px 32px;
+  mask-image: linear-gradient(to bottom, black, transparent 82%);
+}
+
+.shell {
+  position: relative;
+  width: min(1480px, 100%);
+  margin: 0 auto;
+}
+
+.header {
+  display: grid;
+  grid-template-columns: 24px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 10px;
+  min-height: 58px;
+  padding: 10px 16px;
+  border: 1px solid rgba(18, 96, 73, .15);
+  background: rgba(249, 251, 247, .92);
+  box-shadow: 0 18px 46px rgba(30, 70, 56, .09);
+}
+
+.header > svg {
+  width: 25px;
+  color: var(--green);
+}
+
+.hospitalCode {
+  color: var(--deep);
+  font: 800 15px ui-monospace, SFMono-Regular, Consolas, monospace;
+}
+
+.header p {
+  display: flex;
+  align-items: baseline;
+  justify-content: flex-end;
+  gap: 4px;
+  margin: 0;
+  color: #6c837b;
+  font-size: 11px;
+  white-space: nowrap;
+}
+
+.header p strong {
+  color: var(--green);
+  font-size: 20px;
+}
+
+.tableCard {
+  margin-top: 10px;
+  overflow: hidden;
+  border: 1px solid rgba(18, 96, 73, .15);
+  background: #fbfcf8;
+  box-shadow: 0 24px 65px rgba(30, 70, 56, .12);
+}
+
+.tableCard table {
+  width: 100%;
+  table-layout: fixed;
+  border-collapse: collapse;
+}
+
+.tableCard th,
+.tableCard td {
+  height: 44px;
+  padding: 8px 12px;
+  border-right: 1px solid #e1e8e3;
+  border-bottom: 1px solid #e1e8e3;
+}
+
+.tableCard thead th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  color: #48675c;
+  font-size: 12px;
+  font-weight: 800;
+  text-align: left;
+  background: #edf2ec;
+}
+
+.tableCard thead th:first-child,
+.tableCard tbody th {
+  text-align: center;
+}
+
+.tableCard tbody th {
+  color: var(--green);
+  font: 800 12px ui-monospace, SFMono-Regular, Consolas, monospace;
+  background: #f7f9f5;
+}
+
+.tableCard tbody tr:hover th,
+.tableCard tbody tr:hover td {
+  background: #f0f6ed;
+}
+
+.tableCard .editableCell {
+  padding: 0;
+}
+
+.editableCell input,
+.editableCell select {
+  width: 100%;
+  min-height: 43px;
+  padding: 8px 10px;
+  color: var(--deep);
+  font: 500 12px "Noto Sans Thai", "Leelawadee UI", Tahoma, sans-serif;
+  border: 0;
+  outline: 0;
+  background: transparent;
+}
+
+.editableCell input:focus,
+.editableCell select:focus {
+  background: #fffef5;
+  box-shadow: inset 0 0 0 2px rgba(18, 96, 73, .42);
+}
+
+.editableCell select {
+  cursor: pointer;
+}
+
+.saveStatus {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  margin-left: 6px;
+  border-radius: 50%;
+  vertical-align: middle;
+}
+
+.saving {
+  background: #d39d28;
+}
+
+.saved {
+  background: #2a8b61;
+}
+
+.error {
+  background: #bf4a43;
+}
+
+.numberColumn {
+  width: 86px;
+}
+
+.hnColumn {
+  width: 90px;
+}
+
+.vstdateColumn {
+  width: 132px;
+}
+
+.issueColumn,
+.resultColumn {
+  width: 30%;
+}
+
+.actionColumn {
+  width: 64px;
+}
+
+.actionCell {
+  text-align: center;
+}
+
+.actionCell button {
+  padding: 4px 8px;
+  color: rgba(23, 53, 43, .48);
+  font-size: 10px;
+  font-weight: 700;
+  border: 1px solid rgba(18, 96, 73, .14);
+  border-radius: 4px;
+  background: rgba(237, 242, 236, .55);
+  cursor: pointer;
+}
+
+.actionCell button:hover {
+  color: var(--deep);
+  border-color: rgba(18, 96, 73, .32);
+  background: #edf2ec;
+}
+
+@media (max-width: 680px) {
+  .header {
+    grid-template-columns: 24px minmax(0, 1fr);
+  }
+
+  .header p {
+    grid-column: 2;
+  }
+
+  .tableCard {
+    overflow-x: auto;
+  }
+
+  .tableCard table {
+    min-width: 850px;
+  }
+}

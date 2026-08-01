@@ -1,0 +1,66 @@
+
+> fixphr@0.1.0 dev
+> next dev -p 3000
+
+▲ Next.js 16.2.12 (Turbopack)
+- Local:         http://localhost:3000
+- Network:       http://26.1.117.159:3000
+- Environments: .env.local, .env
+✓ Ready in 638ms
+Creating turbopack project { dir: 'E:\\NextJS\\fixphr', testMode: true }
+
+ GET /upload 200 in 480ms (next.js: 152ms, application-code: 328ms)
+ GET /report?hos=10676 200 in 465ms (next.js: 107ms, application-code: 358ms)
+ GET /report?hos=10612 200 in 164ms (next.js: 21ms, application-code: 144ms)
+✓ Compiled in 579ms
+ GET /upload 200 in 1171ms (next.js: 618ms, application-code: 553ms)
+ GET /report?hos=10676 200 in 1419ms (next.js: 521ms, application-code: 898ms)
+ GET /report?hos=10676 200 in 661ms (next.js: 36ms, application-code: 626ms)
+ GET /upload 200 in 675ms (next.js: 131ms, application-code: 545ms)
+ GET /upload 200 in 516ms (next.js: 15ms, application-code: 501ms)
+ GET /upload 200 in 438ms (next.js: 34ms, application-code: 404ms)
+ GET /upload 200 in 320ms (next.js: 16ms, application-code: 304ms)
+ GET /upload 200 in 212ms (next.js: 21ms, application-code: 191ms)
+ GET /upload 200 in 105ms (next.js: 11ms, application-code: 93ms)
+✓ Compiled in 1822ms
+ GET /report?hos=10676 200 in 2.8s (next.js: 1836ms, application-code: 934ms)
+ GET /report?hos=10676 200 in 2.4s (next.js: 1417ms, application-code: 1008ms)
+ GET /report?hos=10676 200 in 2.8s (next.js: 1887ms, application-code: 893ms)
+ GET /report?hos=10676 200 in 2.8s (next.js: 1948ms, application-code: 841ms)
+ GET /report?hos=10676 200 in 2.8s (next.js: 2.0s, application-code: 786ms)
+ GET /report?hos=10676 200 in 649ms (next.js: 202ms, application-code: 447ms)
+ GET /upload 200 in 652ms (next.js: 358ms, application-code: 294ms)
+ GET /upload 200 in 322ms (next.js: 25ms, application-code: 297ms)
+ GET /report?hos=10676 200 in 172ms (next.js: 26ms, application-code: 146ms)
+ GET /report?hos=10676 200 in 389ms (next.js: 13ms, application-code: 377ms)
+ GET /report?hos=10676 200 in 197ms (next.js: 11ms, application-code: 187ms)
+ GET /hos?amp=%E0%B9%80%E0%B8%A1%E0%B8%B7%E0%B8%AD%E0%B8%87%E0%B8%9E%E0%B8%B4%E0%B8%A9%E0%B8%93%E0%B8%B8%E0%B9%82%E0%B8%A5%E0%B8%81 200 in 431ms (next.js: 85ms, application-code: 347ms)
+ GET /report?hos=07491 200 in 77ms (next.js: 9ms, application-code: 68ms)
+ POST /api/report 200 in 236ms (next.js: 152ms, application-code: 84ms)
+ GET /report?hos=07491 200 in 89ms (next.js: 11ms, application-code: 78ms)
+ GET /report?hos=07495 200 in 82ms (next.js: 8ms, application-code: 74ms)
+ GET /report?hos=10612 200 in 177ms (next.js: 4ms, application-code: 173ms)
+ GET /hos?amp=%E0%B9%80%E0%B8%A1%E0%B8%B7%E0%B8%AD%E0%B8%87%E0%B8%9E%E0%B8%B4%E0%B8%A9%E0%B8%93%E0%B8%B8%E0%B9%82%E0%B8%A5%E0%B8%81 200 in 933ms (next.js: 10ms, application-code: 923ms)
+ GET /hos?amp=%E0%B9%80%E0%B8%A1%E0%B8%B7%E0%B8%AD%E0%B8%87%E0%B8%9E%E0%B8%B4%E0%B8%A9%E0%B8%93%E0%B8%B8%E0%B9%82%E0%B8%A5%E0%B8%81 200 in 700ms (next.js: 6ms, application-code: 694ms)
+ GET /report?hos=10676 200 in 108ms (next.js: 11ms, application-code: 97ms)
+ GET /report?hos=10676 200 in 197ms (next.js: 10ms, application-code: 187ms)
+ POST /api/report 200 in 24ms (next.js: 4ms, application-code: 20ms)
+ GET /report?hos=10676 200 in 180ms (next.js: 9ms, application-code: 171ms)
+ GET /report?hos=10676 200 in 172ms (next.js: 8ms, application-code: 163ms)
+ GET /hos?amp=%E0%B9%80%E0%B8%A1%E0%B8%B7%E0%B8%AD%E0%B8%87%E0%B8%9E%E0%B8%B4%E0%B8%A9%E0%B8%93%E0%B8%B8%E0%B9%82%E0%B8%A5%E0%B8%81 200 in 237ms (next.js: 8ms, application-code: 229ms)
+ GET /hos?amp=%E0%B9%80%E0%B8%A1%E0%B8%B7%E0%B8%AD%E0%B8%87%E0%B8%9E%E0%B8%B4%E0%B8%A9%E0%B8%93%E0%B8%B8%E0%B9%82%E0%B8%A5%E0%B8%81 200 in 557ms (next.js: 9ms, application-code: 548ms)
+ GET /report?hos=10676 200 in 66ms (next.js: 9ms, application-code: 57ms)
+ GET /report?hos=07491 200 in 70ms (next.js: 8ms, application-code: 62ms)
+ GET /report?hos=07495 200 in 56ms (next.js: 7ms, application-code: 49ms)
+ GET /amp 200 in 677ms (next.js: 74ms, application-code: 603ms)
+ GET /hos?amp=%E0%B8%9E%E0%B8%A3%E0%B8%AB%E0%B8%A1%E0%B8%9E%E0%B8%B4%E0%B8%A3%E0%B8%B2%E0%B8%A1 200 in 165ms (next.js: 10ms, application-code: 155ms)
+ GET /report?hos=07563 200 in 74ms (next.js: 9ms, application-code: 66ms)
+ GET /report?hos=07563 200 in 73ms (next.js: 7ms, application-code: 66ms)
+ GET /report?hos=07554 200 in 56ms (next.js: 9ms, application-code: 47ms)
+ GET /report?hos=11254 200 in 61ms (next.js: 8ms, application-code: 53ms)
+ GET /report?hos=07563 200 in 60ms (next.js: 7ms, application-code: 53ms)
+ GET /hos?amp=%E0%B8%99%E0%B8%84%E0%B8%A3%E0%B9%84%E0%B8%97%E0%B8%A2 200 in 131ms (next.js: 8ms, application-code: 123ms)
+ GET /report?hos=11455 200 in 76ms (next.js: 9ms, application-code: 67ms)
+ GET /report?hos=07515 200 in 70ms (next.js: 8ms, application-code: 61ms)
+ GET /report?hos=07498 200 in 56ms (next.js: 7ms, application-code: 49ms)
+✓ Compiled in 24ms

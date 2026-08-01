@@ -1,0 +1,39 @@
+.hospitalTable th:first-child {
+  width: 250px;
+}
+
+.hospitalName {
+  color: var(--deep);
+  font-size: 10px;
+  font-weight: 800;
+  line-height: 1.35;
+  white-space: nowrap;
+}
+
+.hospitalName span {
+  color: #7b8f87;
+  font: 700 9px ui-monospace, SFMono-Regular, Consolas, monospace;
+}
+
+.hospitalTable .actionColumn {
+  width: 38px;
+  padding-inline: 4px;
+  text-align: center;
+}
+
+.actionLink {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--green);
+}
+
+.actionLink:hover {
+  color: var(--deep);
+}
+
+.actionLink svg {
+  width: 17px;
+  height: 17px;
+  vertical-align: middle;
+}

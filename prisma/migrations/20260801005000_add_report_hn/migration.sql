@@ -1,0 +1,2 @@
+ALTER TABLE "report"
+ADD COLUMN "hn" VARCHAR(30);

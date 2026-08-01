@@ -7,13 +7,6 @@ datasource db {
   provider = "postgresql"
 }
 
-enum Gender {
-  MALE   @map("1")
-  FEMALE @map("2")
-
-  @@map("gender")
-}
-
 model Hospital {
   hospcode      String  @id @db.VarChar(10)
   hospname      String  @db.VarChar(255)
@@ -57,43 +50,37 @@ model Hospital {
   @@map("hospitals")
 }
 
-model Complaint {
-  id        Int      @id @default(autoincrement())
-  cidHash   String   @map("cid_hash") @db.VarChar(128)
-  cid       String   @db.VarChar(255)
-  gender    Gender
-  birthYear Int      @map("birth_year") @db.SmallInt
-  birthDate DateTime? @map("birth_date") @db.Date
-  hospcode  String   @db.VarChar(10)
-  hospname  String   @db.VarChar(255)
-  visitDate DateTime @map("visit_date") @db.Date
-  detail    String   @db.Text
-  image     Bytes[]  @default([]) @db.ByteA
-  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
-  statuses  ComplaintStatus[]
+model ComplaintHosCount {
+  province_name  String   @db.VarChar(100)
+  district_name  String   @db.VarChar(100)
+  hospital_code  String   @db.VarChar(10)
+  hospital_name  String   @db.VarChar(255)
+  hospital_type  String   @db.VarChar(100)
+  file_name      String   @db.VarChar(255)
+  masks          Int
+  citizens       Int
+  matched        Int
+  unmatched      Int
+  match_rate_pct Decimal  @db.Decimal(5, 1)
+  date_up        DateTime @default(dbgenerated("CURRENT_DATE")) @db.Date
+  time_up        DateTime @default(dbgenerated("LOCALTIME(0)")) @db.Time(0)
 
-  @@index([cidHash])
-  @@index([hospcode, visitDate])
-  @@index([createdAt])
-  @@map("complaints")
+  @@id([date_up, time_up, hospital_code])
 }
 
-model ComplaintStatus {
-  id          Int       @id @default(autoincrement())
-  complaintId Int       @map("complaint_id")
-  status      String    @db.VarChar(50)
-  note        String?   @db.Text
-  complaint   Complaint @relation(fields: [complaintId], references: [id], onDelete: Cascade)
+model Report {
+  hospital_code     String   @db.VarChar(10)
+  item_no           Int
+  hn                String?  @db.Text
+  vstdate           String?  @db.VarChar(20)
+  issue             String?  @db.Text
+  inspection_result String?  @db.Text
+  note              String?  @db.Text
+  created_at        DateTime @default(now()) @db.Timestamptz(3)
+  created_by        String?  @db.VarChar(100)
+  updated_at        DateTime @default(now()) @updatedAt @db.Timestamptz(3)
+  updated_by        String?  @db.VarChar(100)
 
-  @@index([complaintId])
-  @@map("complaint_status")
-}
-
-model VisitCounter {
-  key       String   @id @default("landing_page") @db.VarChar(50)
-  count     Int      @default(0)
-  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
-  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(3)
-
-  @@map("visit_counters")
+  @@id([hospital_code, item_no])
+  @@map("report")
 }
