@@ -31,6 +31,7 @@ type CellValue = {
 type Hospital = {
   code: string;
   name: string;
+  affiliation: string;
 };
 
 const IGNORED_HOSPITAL_CODES = ignoredHospitals.map(
@@ -112,6 +113,12 @@ function sumCellValues(values: Array<CellValue | undefined>) {
   );
 }
 
+function formatAffiliation(value: string | null | undefined) {
+  if (value === "กระทรวงสาธารณสุข") return "สธ";
+  if (value === "องค์กรปกครองส่วนท้องถิ่น") return "อปท";
+  return value ?? "—";
+}
+
 export default async function HospitalPage({
   searchParams,
 }: {
@@ -173,10 +180,11 @@ export default async function HospitalPage({
     select: {
       hospcode: true,
       hospnameShort: true,
+      mName: true,
     },
   });
-  const hospitalNameByCode = new Map(
-    hospitalNames.map((hospital) => [hospital.hospcode, hospital.hospnameShort]),
+  const hospitalMasterByCode = new Map(
+    hospitalNames.map((hospital) => [hospital.hospcode, hospital]),
   );
 
   const latestTimeByDate = new Map<string, number>();
@@ -192,9 +200,11 @@ export default async function HospitalPage({
     if (latestTime === undefined) latestTimeByDate.set(key, rowTime);
     if (latestTime !== undefined && latestTime !== rowTime) continue;
 
+    const hospitalMaster = hospitalMasterByCode.get(row.hospital_code);
     hospitalByCode.set(row.hospital_code, {
       code: row.hospital_code,
-      name: hospitalNameByCode.get(row.hospital_code) ?? row.hospital_name,
+      name: hospitalMaster?.hospnameShort ?? row.hospital_name,
+      affiliation: formatAffiliation(hospitalMaster?.mName),
     });
 
     const hospitalValues = valuesByHospital.get(row.hospital_code) ?? new Map<string, CellValue>();
@@ -294,6 +304,7 @@ export default async function HospitalPage({
               <thead>
                 <tr>
                   <th aria-label="โรงพยาบาล" scope="col" />
+                  <th className={styles.affiliationColumn} scope="col">สังกัด</th>
                   {dates.map((date) => {
                     const label = formatColumnDate(date);
                     const key = dateKey(date);
@@ -331,6 +342,7 @@ export default async function HospitalPage({
                       <th className={styles.hospitalName} scope="row">
                         <span>{hospital.code}</span> - {hospital.name}
                       </th>
+                      <td className={styles.affiliationColumn}>{hospital.affiliation}</td>
                       {dates.map((date) => {
                         const key = dateKey(date);
                         const isToday = key === todayKey;
@@ -360,6 +372,7 @@ export default async function HospitalPage({
                 })}
                 <tr className={ampStyles.totalRow}>
                   <th scope="row">รวม</th>
+                  <td className={styles.affiliationColumn} />
                   {dates.map((date) => {
                     const key = dateKey(date);
                     const isToday = key === todayKey;

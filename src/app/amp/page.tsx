@@ -1,4 +1,4 @@
-import { CalendarRange } from "lucide-react";
+import { CalendarRange, FileText } from "lucide-react";
 import Link from "next/link";
 import { getPrisma } from "@/lib/prisma";
 import ignoredHospitals from "../../../hos-ignore.json";
@@ -285,6 +285,7 @@ export default async function TrendPage() {
                     );
                   })}
                   <th className={styles.totalColumn} scope="col">รวม</th>
+                  <th aria-label="การดำเนินการ" className={styles.actionColumn} scope="col" />
                 </tr>
               </thead>
               <tbody>
@@ -295,14 +296,7 @@ export default async function TrendPage() {
 
                   return (
                     <tr key={district}>
-                    <th className={styles.districtName} scope="row">
-                      <Link
-                        className={styles.districtLink}
-                        href={{ pathname: "/hos", query: { amp: district } }}
-                      >
-                        {district}
-                      </Link>
-                    </th>
+                    <th className={styles.districtName} scope="row">{district}</th>
                     {dates.map((date) => {
                       const key = dateKey(date);
                       const isToday = key === todayKey;
@@ -318,6 +312,15 @@ export default async function TrendPage() {
                       );
                     })}
                     <td className={styles.totalColumn}>{renderCellValue(districtTotal)}</td>
+                    <td className={styles.actionColumn}>
+                      <Link
+                        aria-label={`เปิดรายชื่อโรงพยาบาล อำเภอ${district}`}
+                        className={styles.actionLink}
+                        href={{ pathname: "/hos", query: { amp: district } }}
+                      >
+                        <FileText aria-hidden="true" />
+                      </Link>
+                    </td>
                   </tr>
                   );
                 })}
@@ -335,6 +338,7 @@ export default async function TrendPage() {
                     );
                   })}
                   <td className={styles.totalColumn}>{renderCellValue(grandTotal)}</td>
+                  <td className={styles.actionColumn} />
                 </tr>
               </tbody>
             </table>

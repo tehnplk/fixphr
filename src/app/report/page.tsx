@@ -31,21 +31,14 @@ export default async function ReportPage({
     where: { hospital_code: hospitalCode },
     orderBy: { item_no: "asc" },
   });
-  const savedReportByNumber = new Map(
-    savedReports.map((report) => [report.item_no, report]),
-  );
-  const rows = Array.from({ length: total }, (_, index) => {
-    const itemNo = index + 1;
-    const savedReport = savedReportByNumber.get(itemNo);
-    return {
-      item_no: itemNo,
-      hn: decryptHn(savedReport?.hn),
-      vstdate: savedReport?.vstdate ?? "",
-      issue: savedReport?.issue ?? "",
-      inspection_result: savedReport?.inspection_result ?? "",
-      note: savedReport?.note ?? "",
-    };
-  });
+  const rows = savedReports.map((report) => ({
+      item_no: report.item_no,
+      hn: decryptHn(report.hn),
+      vstdate: report.vstdate ?? "",
+      issue: report.issue ?? "",
+      inspection_result: report.inspection_result ?? "",
+      note: report.note ?? "",
+    }));
 
   return (
     <main className={styles.page}>

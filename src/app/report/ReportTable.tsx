@@ -1,6 +1,6 @@
 "use client";
 
-import { ClipboardList } from "lucide-react";
+import { ClipboardList, Plus } from "lucide-react";
 import { useState } from "react";
 import styles from "./page.module.css";
 
@@ -40,6 +40,25 @@ export default function ReportTable({
   const [rows, setRows] = useState(initialRows);
   const [statuses, setStatuses] = useState<Record<number, SaveStatus>>({});
   const inspectedTotal = rows.filter((row) => row.inspection_result).length;
+  const displayTotal = Math.max(total, rows.length);
+
+  function addRow() {
+    const usedNumbers = new Set(rows.map((row) => row.item_no));
+    let itemNo = 1;
+    while (usedNumbers.has(itemNo)) itemNo += 1;
+
+    setRows((currentRows) => [
+      ...currentRows,
+      {
+        item_no: itemNo,
+        hn: "",
+        vstdate: "",
+        issue: "",
+        inspection_result: "",
+        note: "",
+      },
+    ].sort((left, right) => left.item_no - right.item_no));
+  }
 
   function updateRow(nextRow: ReportRow) {
     setRows((currentRows) =>
@@ -68,9 +87,32 @@ export default function ReportTable({
 
       if (!response.ok) throw new Error("Unable to save report row");
       setStatuses((current) => ({ ...current, [row.item_no]: "saved" }));
+      return true;
     } catch {
       setStatuses((current) => ({ ...current, [row.item_no]: "error" }));
+      return false;
     }
+  }
+
+  async function clearRow(row: ReportRow) {
+    const cleared = await saveRow({
+      ...row,
+      hn: "",
+      vstdate: "",
+      issue: "",
+      inspection_result: "",
+      note: "",
+    }, true);
+
+    if (!cleared) return;
+    setRows((currentRows) => currentRows.filter(
+      (currentRow) => currentRow.item_no !== row.item_no,
+    ));
+    setStatuses((current) => {
+      const next = { ...current };
+      delete next[row.item_no];
+      return next;
+    });
   }
 
   function updateText(
@@ -90,7 +132,7 @@ export default function ReportTable({
           <span>ตรวจสอบแล้ว</span>
           <strong>{inspectedTotal.toLocaleString("th-TH")}</strong>
           <span>/</span>
-          <strong>{total.toLocaleString("th-TH")}</strong>
+          <strong>{displayTotal.toLocaleString("th-TH")}</strong>
           <span>รายการ</span>
         </p>
       </header>
@@ -190,18 +232,7 @@ export default function ReportTable({
                 </td>
                 <td className={styles.actionCell}>
                   <button
-                    onClick={() => {
-                      const emptyRow = {
-                        ...row,
-                        hn: "",
-                        vstdate: "",
-                        issue: "",
-                        inspection_result: "",
-                        note: "",
-                      };
-                      updateRow(emptyRow);
-                      void saveRow(emptyRow, true);
-                    }}
+                    onClick={() => void clearRow(row)}
                     type="button"
                   >
                     ล้าง
@@ -210,6 +241,14 @@ export default function ReportTable({
               </tr>
             );
           })}
+          <tr className={styles.addRow}>
+            <td colSpan={7}>
+              <button onClick={addRow} type="button">
+                <Plus aria-hidden="true" />
+                เพิ่มรายการ
+              </button>
+            </td>
+          </tr>
         </tbody>
       </table>
       </div>

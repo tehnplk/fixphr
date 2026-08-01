@@ -51,7 +51,7 @@ export async function POST(request: Request) {
       select: { masks: true },
     });
 
-    if (!latestSummary || itemNo > latestSummary.masks) {
+    if (!latestSummary) {
       return Response.json({ message: "ไม่พบรายการที่ต้องการบันทึก" }, { status: 404 });
     }
 

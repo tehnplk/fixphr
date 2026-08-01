@@ -15,6 +15,14 @@
   font: 700 9px ui-monospace, SFMono-Regular, Consolas, monospace;
 }
 
+.hospitalTable .affiliationColumn {
+  width: 54px;
+  padding-inline: 3px;
+  text-align: center;
+  font-size: 10px;
+  font-weight: 800;
+}
+
 .hospitalTable .actionColumn {
   width: 38px;
   padding-inline: 4px;

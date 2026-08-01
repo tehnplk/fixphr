@@ -158,17 +158,6 @@
   white-space: nowrap;
 }
 
-.districtLink {
-  color: inherit;
-  text-decoration: none;
-}
-
-.districtLink:hover {
-  color: var(--green);
-  text-decoration: underline;
-  text-underline-offset: 3px;
-}
-
 .tableWrap tbody td {
   color: var(--green);
   font: 800 12px ui-monospace, SFMono-Regular, Consolas, monospace;
@@ -243,6 +232,29 @@
 
 .tableWrap tbody tr:hover .totalColumn {
   background: #dbe5d6;
+}
+
+.tableWrap .actionColumn {
+  width: 38px;
+  padding-inline: 4px;
+  text-align: center;
+}
+
+.actionLink {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--green);
+}
+
+.actionLink:hover {
+  color: var(--deep);
+}
+
+.actionLink svg {
+  width: 17px;
+  height: 17px;
+  vertical-align: middle;
 }
 
 .cellValue {

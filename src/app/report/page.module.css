@@ -115,6 +115,39 @@
   background: #f0f6ed;
 }
 
+.tableCard .addRow td {
+  height: 42px;
+  padding: 5px 10px;
+  text-align: center;
+  background: #f7f9f5;
+}
+
+.addRow button {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  min-width: 160px;
+  justify-content: center;
+  padding: 5px 10px;
+  color: var(--green);
+  font-size: 11px;
+  font-weight: 800;
+  border: 1px solid rgba(18, 96, 73, .2);
+  border-radius: 4px;
+  background: #fbfcf8;
+  cursor: pointer;
+}
+
+.addRow button:hover {
+  border-color: rgba(18, 96, 73, .42);
+  background: #edf4e9;
+}
+
+.addRow svg {
+  width: 14px;
+  height: 14px;
+}
+
 .tableCard .editableCell {
   padding: 0;
 }
