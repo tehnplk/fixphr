@@ -239,7 +239,10 @@ export default function ReportTable({
             <th scope="col">ประเด็น</th>
             <th scope="col">ผลการตรวจสอบ</th>
             <th scope="col">หมายเหตุ</th>
-            <th scope="col">การดำเนินการ</th>
+            <th className={styles.finalHeader} scope="col">
+              การดำเนินการ
+              <span>กับข้อมูล</span>
+            </th>
             <th aria-label="บันทึกหรือลบรายการ" scope="col" />
           </tr>
         </thead>

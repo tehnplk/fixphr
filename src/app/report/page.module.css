@@ -275,6 +275,19 @@
   width: 148px;
 }
 
+.tableCard thead .finalHeader {
+  font-size: 11px;
+  line-height: 1.25;
+  text-align: center;
+}
+
+.finalHeader span {
+  display: block;
+  font-size: 10px;
+  font-weight: 700;
+  color: #6c837b;
+}
+
 .actionColumn {
   width: 86px;
 }
