@@ -14,10 +14,26 @@ function normalizeText(value: unknown, maxLength: number) {
   return normalized || null;
 }
 
+// กัน CSRF แบบเทียบ host — บน prod แอปอยู่หลัง nginx (https ภายนอก, http ภายใน)
+// จึงเทียบ origin ตรง ๆ กับ request.url ไม่ได้ ให้เทียบกับ x-forwarded-host แทน
+function isTrustedOrigin(request: Request) {
+  const origin = request.headers.get("origin");
+  if (!origin) return false;
+
+  const forwardedHost = request.headers.get("x-forwarded-host");
+  const host = (forwardedHost ?? request.headers.get("host") ?? "").split(",")[0].trim();
+  if (!host) return false;
+
+  try {
+    return new URL(origin).host === host;
+  } catch {
+    return false;
+  }
+}
+
 export async function POST(request: Request) {
   try {
-    const origin = request.headers.get("origin");
-    if (!origin || origin !== new URL(request.url).origin) {
+    if (!isTrustedOrigin(request)) {
       return Response.json({ message: "คำขอไม่ได้มาจากระบบนี้" }, { status: 403 });
     }
 
