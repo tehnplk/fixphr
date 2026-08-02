@@ -1,6 +1,6 @@
 "use client";
 
-import { ClipboardList, Plus } from "lucide-react";
+import { Check, ClipboardList, Plus, X } from "lucide-react";
 import { useState } from "react";
 import Swal from "sweetalert2";
 import styles from "./page.module.css";
@@ -29,6 +29,14 @@ const STATUS_LABELS: Record<SaveStatus, string> = {
   error: "บันทึกไม่สำเร็จ",
 };
 
+const Toast = Swal.mixin({
+  toast: true,
+  position: "top-end",
+  showConfirmButton: false,
+  timer: 3000,
+  timerProgressBar: true,
+});
+
 export default function ReportTable({
   hospitalCode,
   hospitalNameShort,
@@ -46,6 +54,8 @@ export default function ReportTable({
 }) {
   const [rows, setRows] = useState(initialRows);
   const [statuses, setStatuses] = useState<Record<number, SaveStatus>>({});
+  // รายการที่เพิ่มใหม่หรือแก้ไขค้างอยู่ — แสดงปุ่ม "บันทึก" แทน "ลบ"
+  const [dirtyRows, setDirtyRows] = useState<Record<number, boolean>>({});
   const inspectedTotal = rows.filter((row) => row.inspection_result).length;
   const displayTotal = Math.max(total, rows.length);
 
@@ -67,12 +77,22 @@ export default function ReportTable({
         final_result: "",
       },
     ].sort((left, right) => left.item_no - right.item_no));
+    setDirtyRows((current) => ({ ...current, [itemNo]: true }));
   }
 
   function updateRow(nextRow: ReportRow) {
     setRows((currentRows) =>
       currentRows.map((row) => row.item_no === nextRow.item_no ? nextRow : row),
     );
+    setDirtyRows((current) => ({ ...current, [nextRow.item_no]: true }));
+  }
+
+  function clearDirty(itemNo: number) {
+    setDirtyRows((current) => {
+      const next = { ...current };
+      delete next[itemNo];
+      return next;
+    });
   }
 
   async function saveRow(row: ReportRow, clear = false) {
@@ -124,24 +144,39 @@ export default function ReportTable({
       delete next[row.item_no];
       return next;
     });
+    clearDirty(row.item_no);
   }
 
   async function confirmClearRow(row: ReportRow) {
     const result = await Swal.fire({
-      title: `ล้างรายการที่ ${row.item_no.toLocaleString("th-TH")}?`,
+      title: `ลบรายการที่ ${row.item_no.toLocaleString("th-TH")}?`,
       text: "ข้อมูลในรายการนี้จะถูกลบออกจากระบบ",
       icon: "warning",
       showCancelButton: true,
-      confirmButtonText: "ยืนยันการล้าง",
+      confirmButtonText: "ยืนยันการลบ",
       cancelButtonText: "ยกเลิก",
       confirmButtonColor: "#a83f3f",
       cancelButtonColor: "#71877e",
       focusCancel: true,
-      reverseButtons: true,
     });
 
     if (!result.isConfirmed) return;
     await clearRow(row);
+  }
+
+  async function submitRow(row: ReportRow) {
+    if (!row.inspection_result) {
+      void Toast.fire({ icon: "warning", title: "กรุณาเลือกผลการตรวจสอบก่อนบันทึก" });
+      return;
+    }
+
+    const saved = await saveRow(row);
+    if (saved) {
+      clearDirty(row.item_no);
+      void Toast.fire({ icon: "success", title: "บันทึกสำเร็จ" });
+    } else {
+      void Toast.fire({ icon: "error", title: "บันทึกไม่สำเร็จ" });
+    }
   }
 
   function updateText(
@@ -205,7 +240,7 @@ export default function ReportTable({
             <th scope="col">ผลการตรวจสอบ</th>
             <th scope="col">หมายเหตุ</th>
             <th scope="col">การดำเนินการ</th>
-            <th aria-label="ล้างรายการ" scope="col" />
+            <th aria-label="บันทึกหรือลบรายการ" scope="col" />
           </tr>
         </thead>
         <tbody>
@@ -227,7 +262,6 @@ export default function ReportTable({
                 <td className={styles.editableCell}>
                   <input
                     aria-label={`วันส่งคำร้อง รายการที่ ${row.item_no}`}
-                    onBlur={() => void saveRow(row)}
                     onChange={(event) => updateText(row, "comp_date", event.target.value)}
                     type="date"
                     value={row.comp_date}
@@ -237,7 +271,6 @@ export default function ReportTable({
                   <input
                     aria-label={`HN รายการที่ ${row.item_no}`}
                     maxLength={30}
-                    onBlur={() => void saveRow(row)}
                     onChange={(event) => updateText(row, "hn", event.target.value)}
                     value={row.hn}
                   />
@@ -245,7 +278,6 @@ export default function ReportTable({
                 <td className={styles.editableCell}>
                   <input
                     aria-label={`วันที่รับบริการ รายการที่ ${row.item_no}`}
-                    onBlur={() => void saveRow(row)}
                     onChange={(event) => updateText(row, "vstdate", event.target.value)}
                     type="date"
                     value={row.vstdate}
@@ -255,7 +287,6 @@ export default function ReportTable({
                   <input
                     aria-label={`ประเด็น รายการที่ ${row.item_no}`}
                     maxLength={5000}
-                    onBlur={() => void saveRow(row)}
                     onChange={(event) => updateText(row, "issue", event.target.value)}
                     value={row.issue}
                   />
@@ -263,11 +294,8 @@ export default function ReportTable({
                 <td className={styles.editableCell}>
                   <select
                     aria-label={`ผลการตรวจสอบ รายการที่ ${row.item_no}`}
-                    onChange={(event) => {
-                      const nextRow = { ...row, inspection_result: event.target.value };
-                      updateRow(nextRow);
-                      void saveRow(nextRow);
-                    }}
+                    onChange={(event) =>
+                      updateRow({ ...row, inspection_result: event.target.value })}
                     value={row.inspection_result}
                   >
                     <option value="" />
@@ -282,7 +310,6 @@ export default function ReportTable({
                   <textarea
                     aria-label={`หมายเหตุ รายการที่ ${row.item_no}`}
                     maxLength={5000}
-                    onBlur={() => void saveRow(row)}
                     onChange={(event) => updateText(row, "note", event.target.value)}
                     rows={1}
                     value={row.note}
@@ -291,11 +318,8 @@ export default function ReportTable({
                 <td className={styles.editableCell}>
                   <select
                     aria-label={`การดำเนินการ รายการที่ ${row.item_no}`}
-                    onChange={(event) => {
-                      const nextRow = { ...row, final_result: event.target.value };
-                      updateRow(nextRow);
-                      void saveRow(nextRow);
-                    }}
+                    onChange={(event) =>
+                      updateRow({ ...row, final_result: event.target.value })}
                     value={row.final_result}
                   >
                     <option value="" />
@@ -307,12 +331,24 @@ export default function ReportTable({
                   </select>
                 </td>
                 <td className={styles.actionCell}>
-                  <button
-                    onClick={() => void confirmClearRow(row)}
-                    type="button"
-                  >
-                    ล้าง
-                  </button>
+                  {dirtyRows[row.item_no] ? (
+                    <button
+                      className={styles.saveButton}
+                      onClick={() => void submitRow(row)}
+                      type="button"
+                    >
+                      <Check aria-hidden="true" />
+                      บันทึก
+                    </button>
+                  ) : (
+                    <button
+                      onClick={() => void confirmClearRow(row)}
+                      type="button"
+                    >
+                      <X aria-hidden="true" />
+                      ลบ
+                    </button>
+                  )}
                 </td>
               </tr>
             );

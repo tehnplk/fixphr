@@ -268,7 +268,7 @@
 .issueColumn,
 .resultColumn,
 .noteColumn {
-  width: calc((100% - 652px) / 3);
+  width: calc((100% - 674px) / 3);
 }
 
 .finalColumn {
@@ -276,7 +276,7 @@
 }
 
 .actionColumn {
-  width: 64px;
+  width: 86px;
 }
 
 .actionCell {
@@ -284,6 +284,9 @@
 }
 
 .actionCell button {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
   padding: 4px 8px;
   color: rgba(23, 53, 43, .48);
   font-size: 10px;
@@ -298,6 +301,23 @@
   color: var(--deep);
   border-color: rgba(18, 96, 73, .32);
   background: #edf2ec;
+}
+
+.actionCell button svg {
+  width: 12px;
+  height: 12px;
+}
+
+.actionCell .saveButton {
+  color: #f4f9e9;
+  border-color: var(--green);
+  background: var(--green);
+}
+
+.actionCell .saveButton:hover {
+  color: #fff;
+  border-color: var(--deep);
+  background: var(--deep);
 }
 
 @media (max-width: 680px) {
