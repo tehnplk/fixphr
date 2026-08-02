@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import { getPrisma } from "@/lib/prisma";
 import { decryptHn } from "@/lib/hn-crypto";
 import inspectionResults from "../../../inspection-result.json";
+import finalResults from "../../../final-result.json";
 import ReportTable from "./ReportTable";
 import styles from "./page.module.css";
 
@@ -40,10 +41,12 @@ export default async function ReportPage({
   const rows = savedReports.map((report) => ({
       item_no: report.item_no,
       hn: decryptHn(report.hn),
+      comp_date: report.comp_date ?? "",
       vstdate: report.vstdate ?? "",
       issue: report.issue ?? "",
       inspection_result: report.inspection_result ?? "",
       note: report.note ?? "",
+      final_result: report.final_result ?? "",
     }));
 
   return (
@@ -56,6 +59,7 @@ export default async function ReportPage({
           hospitalNameShort={hospital?.hospnameShort ?? ""}
           initialRows={rows}
           inspectionResults={inspectionResults}
+          finalResults={finalResults}
           total={total}
         />
       </section>

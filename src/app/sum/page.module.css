@@ -152,6 +152,11 @@
   width: 55%;
 }
 
+/* ตารางการดำเนินการมี 6 คอลัมน์ — คอลัมน์อำเภอแคบลงเพื่อให้ตัวเลขไม่ตัดบรรทัด */
+.tableWrap .finalTable thead th:first-child {
+  width: 26%;
+}
+
 .tableWrap tbody th {
   color: var(--deep);
   font-size: 12px;
@@ -231,13 +236,9 @@
 }
 
 .modalClose {
-  position: absolute;
-  z-index: 3;
-  top: 7px;
-  right: 9px;
   display: inline-grid;
-  width: 34px;
-  height: 34px;
+  width: 28px;
+  height: 28px;
   place-items: center;
   color: var(--deep);
   border: 1px solid rgba(18, 96, 73, .18);
@@ -258,8 +259,8 @@
 }
 
 .modalClose svg {
-  width: 18px;
-  height: 18px;
+  width: 16px;
+  height: 16px;
 }
 
 .modalTableWrap {
@@ -286,7 +287,7 @@
 .districtDialog .modalTable thead th {
   position: sticky;
   z-index: 1;
-  top: 0;
+  top: 34px;
   color: #48675c;
   font-size: 12px;
   font-weight: 900;
@@ -295,21 +296,29 @@
   padding-block: 12px;
 }
 
-.districtDialog .modalTable thead th:first-child {
+.districtDialog .modalTable thead .modalToolbarRow th {
+  top: 0;
+  z-index: 2;
+  height: 34px;
+  padding: 3px 9px;
+  text-align: right;
+  background: #fbfcf8;
+}
+
+.districtDialog .modalTable thead tr:not(.modalToolbarRow) th:first-child {
   width: 96px;
 }
 
-.districtDialog .modalTable thead th:nth-child(2) {
+.districtDialog .modalTable thead tr:not(.modalToolbarRow) th:nth-child(2) {
   min-width: 290px;
 }
 
-.districtDialog .modalTable thead th:nth-child(3) {
+.districtDialog .modalTable thead tr:not(.modalToolbarRow) th:nth-child(3) {
   min-width: 130px;
 }
 
-.districtDialog .modalTable thead th:last-child {
+.districtDialog .modalTable thead tr:not(.modalToolbarRow) th:last-child {
   width: 72px;
-  padding-right: 58px;
 }
 
 .districtDialog .modalTable thead th:nth-child(n + 4),

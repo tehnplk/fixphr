@@ -2,8 +2,10 @@ import { auth } from "@/auth";
 import { getPrisma } from "@/lib/prisma";
 import { encryptHn } from "@/lib/hn-crypto";
 import inspectionResults from "../../../../inspection-result.json";
+import finalResults from "../../../../final-result.json";
 
 const RESULT_CODES = new Set(inspectionResults.map((result) => result.code));
+const FINAL_RESULT_CODES = new Set(finalResults.map((result) => result.code));
 const MAX_TEXT_LENGTH = 5_000;
 
 function normalizeText(value: unknown, maxLength: number) {
@@ -34,20 +36,25 @@ export async function POST(request: Request) {
       : "";
     const itemNo = body.item_no;
     const hn = normalizeText(body.hn, 30);
+    const compDate = normalizeText(body.comp_date, 20);
     const vstdate = normalizeText(body.vstdate, 20);
     const issue = normalizeText(body.issue, MAX_TEXT_LENGTH);
     const note = normalizeText(body.note, MAX_TEXT_LENGTH);
     const inspectionResult = normalizeText(body.inspection_result, 10);
+    const finalResult = normalizeText(body.final_result, 10);
     const clear = body.clear === true;
 
     if (!hospitalCode || hospitalCode.length > 10 || !Number.isInteger(itemNo) || itemNo < 1) {
       return Response.json({ message: "รหัสโรงพยาบาลหรือรายการไม่ถูกต้อง" }, { status: 400 });
     }
-    if (hn === undefined || vstdate === undefined || issue === undefined || note === undefined || inspectionResult === undefined) {
+    if (hn === undefined || compDate === undefined || vstdate === undefined || issue === undefined || note === undefined || inspectionResult === undefined || finalResult === undefined) {
       return Response.json({ message: "ข้อมูลยาวเกินกำหนดหรือรูปแบบไม่ถูกต้อง" }, { status: 400 });
     }
     if (inspectionResult !== null && !RESULT_CODES.has(inspectionResult)) {
       return Response.json({ message: "ผลการตรวจสอบไม่อยู่ในรายการที่กำหนด" }, { status: 400 });
+    }
+    if (finalResult !== null && !FINAL_RESULT_CODES.has(finalResult)) {
+      return Response.json({ message: "การดำเนินการไม่อยู่ในรายการที่กำหนด" }, { status: 400 });
     }
     if (!clear && inspectionResult === null) {
       return Response.json({ message: "กรุณาเลือกผลการตรวจสอบก่อนบันทึก" }, { status: 400 });
@@ -86,19 +93,23 @@ export async function POST(request: Request) {
         hospital_code: hospitalCode,
         item_no: itemNo,
         hn: encryptedHn,
+        comp_date: compDate,
         vstdate,
         issue,
         inspection_result: inspectionResult,
         note,
+        final_result: finalResult,
         created_by: actor,
         updated_by: actor,
       },
       update: {
         hn: encryptedHn,
+        comp_date: compDate,
         vstdate,
         issue,
         inspection_result: inspectionResult,
         note,
+        final_result: finalResult,
         updated_by: actor,
       },
     });

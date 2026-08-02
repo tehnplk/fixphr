@@ -8,10 +8,12 @@ import styles from "./page.module.css";
 type ReportRow = {
   item_no: number;
   hn: string;
+  comp_date: string;
   vstdate: string;
   issue: string;
   inspection_result: string;
   note: string;
+  final_result: string;
 };
 
 type InspectionResult = {
@@ -32,12 +34,14 @@ export default function ReportTable({
   hospitalNameShort,
   initialRows,
   inspectionResults,
+  finalResults,
   total,
 }: {
   hospitalCode: string;
   hospitalNameShort: string;
   initialRows: ReportRow[];
   inspectionResults: InspectionResult[];
+  finalResults: InspectionResult[];
   total: number;
 }) {
   const [rows, setRows] = useState(initialRows);
@@ -55,10 +59,12 @@ export default function ReportTable({
       {
         item_no: itemNo,
         hn: "",
+        comp_date: "",
         vstdate: "",
         issue: "",
         inspection_result: "",
         note: "",
+        final_result: "",
       },
     ].sort((left, right) => left.item_no - right.item_no));
   }
@@ -101,10 +107,12 @@ export default function ReportTable({
     const cleared = await saveRow({
       ...row,
       hn: "",
+      comp_date: "",
       vstdate: "",
       issue: "",
       inspection_result: "",
       note: "",
+      final_result: "",
     }, true);
 
     if (!cleared) return;
@@ -138,7 +146,7 @@ export default function ReportTable({
 
   function updateText(
     row: ReportRow,
-    field: "hn" | "vstdate" | "issue" | "note",
+    field: "hn" | "comp_date" | "vstdate" | "issue" | "note",
     value: string,
   ) {
     updateRow({ ...row, [field]: value });
@@ -156,6 +164,14 @@ export default function ReportTable({
               <span className={styles.hospitalNameShort}>{hospitalNameShort}</span>
             </>
           ) : null}
+          <a
+            className={styles.externalLink}
+            href="https://phr1.moph.go.th/dashboard/"
+            rel="noopener noreferrer"
+            target="_blank"
+          >
+            ไปที่ระบบตรวจสอบคำร้อง PHR1
+          </a>
         </div>
         <p>
           <span>ตรวจสอบแล้ว</span>
@@ -166,37 +182,30 @@ export default function ReportTable({
         </p>
       </header>
 
-      <div className={styles.tableTools}>
-        <a
-          className={styles.externalLink}
-          href="https://phr1.moph.go.th/dashboard/"
-          rel="noopener noreferrer"
-          target="_blank"
-        >
-          เว็บตรวจสอบคำร้อง
-        </a>
-      </div>
-
       <div className={styles.tableCard}>
       <table>
         <colgroup>
           <col className={styles.numberColumn} />
+          <col className={styles.vstdateColumn} />
           <col className={styles.hnColumn} />
           <col className={styles.vstdateColumn} />
           <col className={styles.issueColumn} />
           <col className={styles.resultColumn} />
           <col className={styles.noteColumn} />
+          <col className={styles.finalColumn} />
           <col className={styles.actionColumn} />
         </colgroup>
         <thead>
           <tr>
             <th scope="col">รายการที่</th>
+            <th scope="col">วันส่งคำร้อง</th>
             <th scope="col">HN</th>
             <th scope="col">VISIT-DATE</th>
             <th scope="col">ประเด็น</th>
             <th scope="col">ผลการตรวจสอบ</th>
             <th scope="col">หมายเหตุ</th>
-            <th aria-label="การดำเนินการ" scope="col" />
+            <th scope="col">การดำเนินการ</th>
+            <th aria-label="ล้างรายการ" scope="col" />
           </tr>
         </thead>
         <tbody>
@@ -217,6 +226,15 @@ export default function ReportTable({
                 </th>
                 <td className={styles.editableCell}>
                   <input
+                    aria-label={`วันส่งคำร้อง รายการที่ ${row.item_no}`}
+                    onBlur={() => void saveRow(row)}
+                    onChange={(event) => updateText(row, "comp_date", event.target.value)}
+                    type="date"
+                    value={row.comp_date}
+                  />
+                </td>
+                <td className={styles.editableCell}>
+                  <input
                     aria-label={`HN รายการที่ ${row.item_no}`}
                     maxLength={30}
                     onBlur={() => void saveRow(row)}
@@ -227,9 +245,9 @@ export default function ReportTable({
                 <td className={styles.editableCell}>
                   <input
                     aria-label={`วันที่รับบริการ รายการที่ ${row.item_no}`}
-                    maxLength={20}
                     onBlur={() => void saveRow(row)}
                     onChange={(event) => updateText(row, "vstdate", event.target.value)}
+                    type="date"
                     value={row.vstdate}
                   />
                 </td>
@@ -270,6 +288,24 @@ export default function ReportTable({
                     value={row.note}
                   />
                 </td>
+                <td className={styles.editableCell}>
+                  <select
+                    aria-label={`การดำเนินการ รายการที่ ${row.item_no}`}
+                    onChange={(event) => {
+                      const nextRow = { ...row, final_result: event.target.value };
+                      updateRow(nextRow);
+                      void saveRow(nextRow);
+                    }}
+                    value={row.final_result}
+                  >
+                    <option value="" />
+                    {finalResults.map((result) => (
+                      <option key={result.code} value={result.code}>
+                        {result.label}
+                      </option>
+                    ))}
+                  </select>
+                </td>
                 <td className={styles.actionCell}>
                   <button
                     onClick={() => void confirmClearRow(row)}
@@ -282,7 +318,7 @@ export default function ReportTable({
             );
           })}
           <tr className={styles.addRow}>
-            <td colSpan={7}>
+            <td colSpan={9}>
               <button onClick={addRow} type="button">
                 <Plus aria-hidden="true" />
                 เพิ่มรายการ

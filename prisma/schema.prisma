@@ -72,10 +72,12 @@ model Report {
   hospital_code     String   @db.VarChar(10)
   item_no           Int
   hn                String?  @db.Text
+  comp_date         String?  @db.VarChar(20)
   vstdate           String?  @db.VarChar(20)
   issue             String?  @db.Text
   inspection_result String?  @db.Text
   note              String?  @db.Text
+  final_result      String?  @db.Text
   created_at        DateTime @default(now()) @db.Timestamptz(3)
   created_by        String?  @db.VarChar(100)
   updated_at        DateTime @default(now()) @updatedAt @db.Timestamptz(3)

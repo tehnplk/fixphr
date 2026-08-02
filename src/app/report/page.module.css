@@ -83,16 +83,14 @@
   font-size: 20px;
 }
 
-.tableTools {
-  display: flex;
-  min-height: 18px;
-  align-items: center;
-  justify-content: flex-end;
-  margin-top: 7px;
-}
-
 .externalLink {
+  align-self: center;
+  margin-left: 10px;
+  padding: 5px 12px;
+  border: 1px solid rgba(18, 96, 73, .35);
+  border-radius: 6px;
   color: var(--green);
+  background: rgba(18, 96, 73, .07);
   font-size: 11px;
   font-weight: 800;
   text-decoration: none;
@@ -100,13 +98,12 @@
 }
 
 .externalLink:hover {
-  color: var(--deep);
-  text-decoration: underline;
-  text-underline-offset: 3px;
+  color: #f4f9e9;
+  background: var(--green);
 }
 
 .tableCard {
-  margin-top: 4px;
+  margin-top: 10px;
   overflow: hidden;
   border: 1px solid rgba(18, 96, 73, .15);
   background: #fbfcf8;
@@ -271,7 +268,11 @@
 .issueColumn,
 .resultColumn,
 .noteColumn {
-  width: calc((100% - 372px) / 3);
+  width: calc((100% - 652px) / 3);
+}
+
+.finalColumn {
+  width: 148px;
 }
 
 .actionColumn {
