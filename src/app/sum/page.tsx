@@ -2,6 +2,7 @@ import { BarChart3 } from "lucide-react";
 import Link from "next/link";
 import inspectionResults from "../../../inspection-result.json";
 import { getPrisma } from "@/lib/prisma";
+import RealtimeTimestamp from "./RealtimeTimestamp";
 import SummaryChart from "./SummaryChart";
 import styles from "./page.module.css";
 
@@ -42,10 +43,18 @@ export default async function SummaryPage({
   const activeTab = params.tab === "type" ? "type" : "district";
   const prisma = getPrisma();
 
-  const [totalByHospital, checkedByHospital, typeGroups] = await Promise.all([
-    prisma.report.groupBy({
-      by: ["hospital_code"],
-      _count: { _all: true },
+  const [targetByHospital, resultByHospital, typeGroups] = await Promise.all([
+    prisma.complaintHosCount.findMany({
+      distinct: ["hospital_code"],
+      orderBy: [
+        { hospital_code: "asc" },
+        { date_up: "desc" },
+        { time_up: "desc" },
+      ],
+      select: {
+        hospital_code: true,
+        masks: true,
+      },
     }),
     prisma.report.groupBy({
       by: ["hospital_code"],
@@ -64,7 +73,10 @@ export default async function SummaryPage({
   ]);
 
   const hospitalCodes = Array.from(
-    new Set(totalByHospital.map((row) => row.hospital_code)),
+    new Set([
+      ...targetByHospital.map((row) => row.hospital_code),
+      ...resultByHospital.map((row) => row.hospital_code),
+    ]),
   );
   const hospitals = hospitalCodes.length > 0
     ? await prisma.hospital.findMany({
@@ -76,29 +88,34 @@ export default async function SummaryPage({
   const districtByHospital = new Map(
     hospitals.map((hospital) => [hospital.hospcode, hospital.ampName]),
   );
-  const checkedCountByHospital = new Map(
-    checkedByHospital.map((row) => [row.hospital_code, row._count._all]),
-  );
-  const districtSummary = new Map<District, { total: number; checked: number }>(
-    DISTRICTS.map((district) => [district, { total: 0, checked: 0 }]),
+  const districtSummary = new Map<District, { target: number; result: number }>(
+    DISTRICTS.map((district) => [district, { target: 0, result: 0 }]),
   );
 
-  for (const row of totalByHospital) {
+  for (const row of targetByHospital) {
     const district = districtByHospital.get(row.hospital_code);
     if (!district || !DISTRICTS.includes(district as District)) continue;
 
     const summary = districtSummary.get(district as District);
     if (!summary) continue;
-    summary.total += row._count._all;
-    summary.checked += checkedCountByHospital.get(row.hospital_code) ?? 0;
+    summary.target += row.masks;
+  }
+
+  for (const row of resultByHospital) {
+    const district = districtByHospital.get(row.hospital_code);
+    if (!district || !DISTRICTS.includes(district as District)) continue;
+
+    const summary = districtSummary.get(district as District);
+    if (!summary) continue;
+    summary.result += row._count._all;
   }
 
   const districtRows = DISTRICTS.map((district) => ({
     district,
-    ...(districtSummary.get(district) ?? { total: 0, checked: 0 }),
+    ...(districtSummary.get(district) ?? { target: 0, result: 0 }),
   }));
-  const grandTotal = districtRows.reduce((sum, row) => sum + row.total, 0);
-  const grandChecked = districtRows.reduce((sum, row) => sum + row.checked, 0);
+  const grandTarget = districtRows.reduce((sum, row) => sum + row.target, 0);
+  const grandResult = districtRows.reduce((sum, row) => sum + row.result, 0);
   const typeCountByCode = new Map(
     typeGroups.map((row) => [row.inspection_result, row._count._all]),
   );
@@ -152,16 +169,16 @@ export default async function SummaryPage({
                   {districtRows.map((row) => (
                     <tr key={row.district}>
                       <th scope="row">{row.district}</th>
-                      <td>{formatNumber(row.total)}</td>
-                      <td>{formatNumber(row.checked)}</td>
-                      <td>{formatPercent(row.checked, row.total)}</td>
+                      <td>{formatNumber(row.target)}</td>
+                      <td>{formatNumber(row.result)}</td>
+                      <td>{formatPercent(row.result, row.target)}</td>
                     </tr>
                   ))}
                   <tr className={styles.totalRow}>
                     <th scope="row">รวม</th>
-                    <td>{formatNumber(grandTotal)}</td>
-                    <td>{formatNumber(grandChecked)}</td>
-                    <td>{formatPercent(grandChecked, grandTotal)}</td>
+                    <td>{formatNumber(grandTarget)}</td>
+                    <td>{formatNumber(grandResult)}</td>
+                    <td>{formatPercent(grandResult, grandTarget)}</td>
                   </tr>
                 </tbody>
               </table>
@@ -190,18 +207,22 @@ export default async function SummaryPage({
                 </tbody>
               </table>
               )}
+              <RealtimeTimestamp
+                className={styles.dataTimestamp}
+                initialNow={new Date().toISOString()}
+              />
             </div>
 
             <div className={styles.chartPanel}>
               {activeTab === "district" ? (
                 <SummaryChart
-                  ariaLabel="กราฟร้อยละการตรวจสอบแล้ว แยกตามอำเภอ"
+                  ariaLabel="กราฟร้อยละผลงานเทียบเป้าหมาย แยกตามอำเภอ"
                   labels={districtRows.map((row) => row.district)}
                   series={[
                     {
-                      label: "ตรวจสอบแล้ว",
+                      label: "ผลงานเทียบเป้าหมาย",
                       data: districtRows.map((row) => (
-                        row.total === 0 ? 0 : (row.checked / row.total) * 100
+                        row.target === 0 ? 0 : (row.result / row.target) * 100
                       )),
                       backgroundColor: "rgba(18, 96, 73, .78)",
                       borderColor: "#126049",

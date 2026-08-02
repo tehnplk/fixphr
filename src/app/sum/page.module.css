@@ -183,6 +183,24 @@
   background: #dfe9d9;
 }
 
+.dataTimestamp {
+  margin: 0;
+  padding: 11px 18px 12px;
+  border-right: 1px solid #e1e8e3;
+  border-bottom: 1px solid #e1e8e3;
+  color: #71877e;
+  font-size: 11px;
+  font-weight: 700;
+  text-align: right;
+  background: #f8faf7;
+}
+
+.dataTimestamp time {
+  color: var(--deep);
+  font-variant-numeric: tabular-nums;
+  font-weight: 800;
+}
+
 @media (max-width: 680px) {
   .page {
     padding: 14px 16px 42px;
@@ -198,6 +216,10 @@
 
   .tableWrap th,
   .tableWrap td {
+    padding-inline: 10px;
+  }
+
+  .dataTimestamp {
     padding-inline: 10px;
   }
 
