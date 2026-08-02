@@ -35,9 +35,10 @@ export default async function ReportPage({
     }),
   ]);
 
-  if (!latestSummary) notFound();
+  // หน่วยบริการที่ยังไม่มีคำร้องก็เปิดหน้านี้เพื่อเพิ่มรายการเองได้ ขอแค่มีอยู่ในตาราง hospitals
+  if (!hospital) notFound();
 
-  const total = latestSummary.masks;
+  const total = latestSummary?.masks ?? 0;
   const rows = savedReports.map((report) => ({
       item_no: report.item_no,
       hn: decryptHn(report.hn),

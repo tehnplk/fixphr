@@ -77,15 +77,15 @@ export async function POST(request: Request) {
     }
     const encryptedHn = encryptHn(hn);
 
+    // ไม่บังคับว่าต้องมีคำร้องมาก่อน ขอแค่เป็นหน่วยบริการที่มีอยู่จริง
     const prisma = getPrisma();
-    const latestSummary = await prisma.complaintHosCount.findFirst({
-      where: { hospital_code: hospitalCode },
-      orderBy: [{ date_up: "desc" }, { time_up: "desc" }],
-      select: { masks: true },
+    const hospital = await prisma.hospital.findUnique({
+      where: { hospcode: hospitalCode },
+      select: { hospcode: true },
     });
 
-    if (!latestSummary) {
-      return Response.json({ message: "ไม่พบรายการที่ต้องการบันทึก" }, { status: 404 });
+    if (!hospital) {
+      return Response.json({ message: "ไม่พบหน่วยบริการที่ต้องการบันทึก" }, { status: 404 });
     }
 
     if (clear) {
