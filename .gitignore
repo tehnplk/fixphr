@@ -21,6 +21,9 @@
 # production
 /build
 
+# local PostgreSQL backups
+/backup/
+
 # misc
 .DS_Store
 *.pem
