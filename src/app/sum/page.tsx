@@ -354,14 +354,7 @@ export default async function SummaryPage({
               className={activeTab === "district" ? styles.activeTab : undefined}
               href="/sum/amp"
             >
-              รายอำเภอ
-            </Link>
-            <Link
-              aria-current={activeTab === "final" ? "page" : undefined}
-              className={activeTab === "final" ? styles.activeTab : undefined}
-              href="/sum/final"
-            >
-              การดำเนินการ
+              ยอดการตรวจสอบ
             </Link>
             <Link
               aria-current={activeTab === "type" ? "page" : undefined}
@@ -369,6 +362,13 @@ export default async function SummaryPage({
               href="/sum/type"
             >
               จำแนกผลการตรวจสอบ
+            </Link>
+            <Link
+              aria-current={activeTab === "final" ? "page" : undefined}
+              className={activeTab === "final" ? styles.activeTab : undefined}
+              href="/sum/final"
+            >
+              การดำเนินการ
             </Link>
           </nav>
 

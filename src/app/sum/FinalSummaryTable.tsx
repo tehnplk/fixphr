@@ -27,6 +27,7 @@ export type FinalSummaryRow = {
 };
 
 function formatNumber(value: number) {
+  if (value === 0) return <span className={styles.zeroCell}>-</span>;
   return value.toLocaleString("th-TH");
 }
 

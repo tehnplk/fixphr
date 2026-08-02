@@ -102,6 +102,7 @@
 
 .contentGrid {
   display: grid;
+  margin-top: 16px;
   grid-template-columns: minmax(480px, 1.08fr) minmax(360px, .92fr);
   gap: clamp(20px, 2.5vw, 40px);
 }
@@ -141,11 +142,11 @@
 }
 
 .tableWrap thead th {
-  color: #48675c;
+  color: #2f4f43;
   font-size: 12px;
   font-weight: 800;
   text-align: right;
-  background: #f0f4ef;
+  background: #dbe6d8;
 }
 
 .tableWrap thead th:first-child,
@@ -153,8 +154,10 @@
   text-align: left;
 }
 
+/* ตารางยอดการตรวจสอบมี 4 คอลัมน์ — ชื่ออำเภอกว้างพอสำหรับ "เมืองพิษณุโลก"
+   ที่เหลือแบ่งให้คอลัมน์ตัวเลขเท่า ๆ กัน ไม่ให้ตัวเลขไปกองชิดขวา */
 .tableWrap thead th:first-child {
-  width: 55%;
+  width: 34%;
 }
 
 /* ตารางการดำเนินการมี 6 คอลัมน์ — คอลัมน์อำเภอแคบลงเพื่อให้ตัวเลขไม่ตัดบรรทัด */
@@ -217,10 +220,26 @@
   background: #f8faf7;
 }
 
+/* ค่า 0 แสดงเป็นขีด — บางและจางกว่าตัวเลขจริงเพื่อไม่ให้แย่งสายตา */
+.zeroCell {
+  color: #b3c2ba;
+  font-weight: 400;
+}
+
 .tableWrap tbody td {
   color: var(--green);
-  font: 800 13px ui-monospace, SFMono-Regular, Consolas, monospace;
+  font: 800 16px ui-monospace, SFMono-Regular, Consolas, monospace;
   text-align: right;
+}
+
+/* zebra striping — ตั้งที่ระดับ cell เพราะ th/td มีพื้นหลังของตัวเองอยู่แล้ว
+   วางไว้ก่อน :hover และ .totalRow เพื่อให้สองกฎนั้นยังชนะ */
+.tableWrap tbody tr:nth-child(even) th {
+  background: #eef3ec;
+}
+
+.tableWrap tbody tr:nth-child(even) td {
+  background: #f4f8f2;
 }
 
 .tableWrap tbody tr:hover th,
@@ -228,16 +247,18 @@
   background: #f0f6ed;
 }
 
-.tableWrap .totalRow th,
-.tableWrap .totalRow td {
+/* ใช้ tbody tr.totalRow ให้ specificity เท่ากฎ zebra แล้วชนะด้วยลำดับ
+   ไม่งั้นแถวรวมจะโดนสี zebra ทับตอนตกเป็นแถวคู่ */
+.tableWrap tbody tr.totalRow th,
+.tableWrap tbody tr.totalRow td {
   color: var(--deep);
   font-weight: 900;
   background: #dfe9d9;
   border-top: 2px solid var(--green);
 }
 
-.tableWrap .totalRow:hover th,
-.tableWrap .totalRow:hover td {
+.tableWrap tbody tr.totalRow:hover th,
+.tableWrap tbody tr.totalRow:hover td {
   background: #dfe9d9;
 }
 
