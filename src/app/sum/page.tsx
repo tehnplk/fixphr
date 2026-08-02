@@ -3,6 +3,7 @@ import Link from "next/link";
 import ignoredHospitals from "../../../hos-ignore.json";
 import inspectionResults from "../../../inspection-result.json";
 import { getPrisma } from "@/lib/prisma";
+import DistrictSummaryTable, { type DistrictHospitalRow } from "./DistrictSummaryTable";
 import RealtimeTimestamp from "./RealtimeTimestamp";
 import SummaryChart from "./SummaryChart";
 import styles from "./page.module.css";
@@ -37,6 +38,12 @@ function formatPercent(value: number, total: number) {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,
   });
+}
+
+function formatAffiliation(value: string | null | undefined) {
+  if (value === "กระทรวงสาธารณสุข") return "สธ";
+  if (value === "องค์กรปกครองส่วนท้องถิ่น") return "อปท";
+  return value ?? "—";
 }
 
 export default async function SummaryPage({
@@ -83,43 +90,74 @@ export default async function SummaryPage({
     }),
   ]);
 
-  const targetByDistrict = latestTargetSnapshot
-    ? await prisma.complaintHosCount.groupBy({
-        by: ["district_name"],
+  const targetRows = latestTargetSnapshot
+    ? await prisma.complaintHosCount.findMany({
         where: {
           date_up: latestTargetSnapshot.date_up,
           time_up: latestTargetSnapshot.time_up,
           hospital_code: { notIn: IGNORED_HOSPITAL_CODES },
           district_name: { in: [...DISTRICTS] },
         },
-        _sum: { masks: true },
+        select: {
+          hospital_code: true,
+          hospital_name: true,
+          district_name: true,
+          masks: true,
+        },
+        orderBy: { hospital_name: "asc" },
       })
     : [];
 
   const hospitalCodes = Array.from(
-    new Set(resultByHospital.map((row) => row.hospital_code)),
+    new Set([
+      ...targetRows.map((row) => row.hospital_code),
+      ...resultByHospital.map((row) => row.hospital_code),
+    ]),
   );
   const hospitals = hospitalCodes.length > 0
     ? await prisma.hospital.findMany({
         where: { hospcode: { in: hospitalCodes } },
-        select: { hospcode: true, ampName: true },
+        select: {
+          hospcode: true,
+          hospname: true,
+          hospnameShort: true,
+          ampName: true,
+          mName: true,
+        },
       })
     : [];
 
+  const hospitalByCode = new Map(
+    hospitals.map((hospital) => [hospital.hospcode, hospital]),
+  );
   const districtByHospital = new Map(
     hospitals.map((hospital) => [hospital.hospcode, hospital.ampName]),
   );
   const districtSummary = new Map<District, { target: number; result: number }>(
     DISTRICTS.map((district) => [district, { target: 0, result: 0 }]),
   );
+  const hospitalRowsByDistrict = new Map<District, Map<string, DistrictHospitalRow>>(
+    DISTRICTS.map((district) => [district, new Map<string, DistrictHospitalRow>()]),
+  );
 
-  for (const row of targetByDistrict) {
+  for (const row of targetRows) {
     const district = row.district_name;
     if (!district || !DISTRICTS.includes(district as District)) continue;
 
     const summary = districtSummary.get(district as District);
     if (!summary) continue;
-    summary.target += row._sum.masks ?? 0;
+    summary.target += row.masks;
+
+    const hospital = hospitalByCode.get(row.hospital_code);
+    const districtHospitals = hospitalRowsByDistrict.get(district as District);
+    const currentHospital = districtHospitals?.get(row.hospital_code);
+    districtHospitals?.set(row.hospital_code, {
+      code: row.hospital_code,
+      name: hospital?.hospnameShort ?? hospital?.hospname ?? row.hospital_name,
+      affiliation: formatAffiliation(hospital?.mName),
+      target: row.masks,
+      result: currentHospital?.result ?? 0,
+    });
   }
 
   for (const row of resultByHospital) {
@@ -129,14 +167,26 @@ export default async function SummaryPage({
     const summary = districtSummary.get(district as District);
     if (!summary) continue;
     summary.result += row._count._all;
+
+    const hospital = hospitalByCode.get(row.hospital_code);
+    const districtHospitals = hospitalRowsByDistrict.get(district as District);
+    const currentHospital = districtHospitals?.get(row.hospital_code);
+    districtHospitals?.set(row.hospital_code, {
+      code: row.hospital_code,
+      name: hospital?.hospnameShort ?? hospital?.hospname ?? row.hospital_code,
+      affiliation: formatAffiliation(hospital?.mName),
+      target: currentHospital?.target ?? 0,
+      result: row._count._all,
+    });
   }
 
   const districtRows = DISTRICTS.map((district) => ({
     district,
     ...(districtSummary.get(district) ?? { target: 0, result: 0 }),
+    hospitals: Array.from(hospitalRowsByDistrict.get(district)?.values() ?? []).sort(
+      (left, right) => left.name.localeCompare(right.name, "th"),
+    ),
   }));
-  const grandTarget = districtRows.reduce((sum, row) => sum + row.target, 0);
-  const grandResult = districtRows.reduce((sum, row) => sum + row.result, 0);
   const typeCountByCode = new Map(
     typeGroups.map((row) => [row.inspection_result, row._count._all]),
   );
@@ -177,32 +227,7 @@ export default async function SummaryPage({
           <div className={styles.contentGrid}>
             <div className={styles.tableWrap}>
               {activeTab === "district" ? (
-              <table>
-                <thead>
-                  <tr>
-                    <th scope="col">อำเภอ</th>
-                    <th scope="col">จำนวนรายการ</th>
-                    <th scope="col">ตรวจสอบแล้ว</th>
-                    <th scope="col">ร้อยละ</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {districtRows.map((row) => (
-                    <tr key={row.district}>
-                      <th scope="row">{row.district}</th>
-                      <td>{formatNumber(row.target)}</td>
-                      <td>{formatNumber(row.result)}</td>
-                      <td>{formatPercent(row.result, row.target)}</td>
-                    </tr>
-                  ))}
-                  <tr className={styles.totalRow}>
-                    <th scope="row">รวม</th>
-                    <td>{formatNumber(grandTarget)}</td>
-                    <td>{formatNumber(grandResult)}</td>
-                    <td>{formatPercent(grandResult, grandTarget)}</td>
-                  </tr>
-                </tbody>
-              </table>
+              <DistrictSummaryTable rows={districtRows} />
               ) : (
               <table>
                 <thead>

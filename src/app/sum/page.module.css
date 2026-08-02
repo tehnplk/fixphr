@@ -183,6 +183,210 @@
   background: #dfe9d9;
 }
 
+.districtButton {
+  padding: 2px 0;
+  color: var(--green);
+  font: inherit;
+  font-weight: 800;
+  text-align: left;
+  border: 0;
+  border-bottom: 1px dashed rgba(18, 96, 73, .4);
+  background: transparent;
+  cursor: pointer;
+}
+
+.districtButton:hover {
+  color: #0d4f3d;
+  border-bottom-style: solid;
+}
+
+.districtButton:focus-visible {
+  outline: 3px solid rgba(18, 96, 73, .2);
+  outline-offset: 3px;
+}
+
+.districtDialog {
+  width: min(1180px, calc(100vw - 32px));
+  max-width: none;
+  max-height: calc(100svh - 32px);
+  padding: 0;
+  color: var(--deep);
+  border: 1px solid rgba(18, 96, 73, .22);
+  border-radius: 12px;
+  background: #fbfcf8;
+  box-shadow: 0 30px 90px rgba(8, 32, 24, .32);
+  overflow: hidden;
+}
+
+.districtDialog::backdrop {
+  background: rgba(8, 29, 23, .68);
+  backdrop-filter: blur(3px);
+}
+
+.modalShell {
+  position: relative;
+  display: flex;
+  max-height: calc(100svh - 32px);
+  flex-direction: column;
+}
+
+.modalClose {
+  position: absolute;
+  z-index: 3;
+  top: 7px;
+  right: 9px;
+  display: inline-grid;
+  width: 34px;
+  height: 34px;
+  place-items: center;
+  color: var(--deep);
+  border: 1px solid rgba(18, 96, 73, .18);
+  border-radius: 50%;
+  background: rgba(251, 252, 248, .78);
+  cursor: pointer;
+}
+
+.modalClose:hover {
+  color: #fff;
+  border-color: var(--green);
+  background: var(--green);
+}
+
+.modalClose:focus-visible {
+  outline: 3px solid rgba(18, 96, 73, .24);
+  outline-offset: 3px;
+}
+
+.modalClose svg {
+  width: 18px;
+  height: 18px;
+}
+
+.modalTableWrap {
+  overflow: auto;
+  overscroll-behavior: contain;
+}
+
+.districtDialog .modalTable {
+  width: 100%;
+  min-width: 900px;
+  table-layout: auto;
+  border-collapse: collapse;
+  border: 0;
+}
+
+.districtDialog .modalTable th,
+.districtDialog .modalTable td {
+  height: auto;
+  padding: 6px 10px;
+  border-right: 1px solid #e1e8e3;
+  border-bottom: 1px solid #e1e8e3;
+}
+
+.districtDialog .modalTable thead th {
+  position: sticky;
+  z-index: 1;
+  top: 0;
+  color: #48675c;
+  font-size: 12px;
+  font-weight: 900;
+  text-align: left;
+  background: #e9f0e8;
+  padding-block: 12px;
+}
+
+.districtDialog .modalTable thead th:first-child {
+  width: 96px;
+}
+
+.districtDialog .modalTable thead th:nth-child(2) {
+  min-width: 290px;
+}
+
+.districtDialog .modalTable thead th:nth-child(3) {
+  min-width: 130px;
+}
+
+.districtDialog .modalTable thead th:last-child {
+  width: 72px;
+  padding-right: 58px;
+}
+
+.districtDialog .modalTable thead th:nth-child(n + 4),
+.districtDialog .modalTable tbody td:nth-child(n + 4),
+.districtDialog .modalTable tfoot td {
+  text-align: right;
+}
+
+.districtDialog .modalTable tbody th {
+  color: var(--deep);
+  font-size: 12px;
+  font-weight: 700;
+  text-align: left;
+  background: #fbfcf8;
+}
+
+.districtDialog .modalTable tbody td {
+  color: #48675c;
+  font: 700 12px "Noto Sans Thai", "Leelawadee UI", Tahoma, sans-serif;
+  text-align: left;
+  background: #fff;
+}
+
+.districtDialog .modalTable tbody td:first-child,
+.districtDialog .modalTable tbody td:nth-child(n + 4) {
+  color: var(--green);
+  font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+  font-weight: 800;
+}
+
+.districtDialog .modalTable tbody tr:hover th,
+.districtDialog .modalTable tbody tr:hover td {
+  background: #f0f6ed;
+}
+
+.districtDialog .modalTable tfoot th,
+.districtDialog .modalTable tfoot td {
+  color: var(--deep);
+  font-size: 13px;
+  font-weight: 900;
+  background: #dfe9d9;
+  border-top: 2px solid var(--green);
+}
+
+.districtDialog .modalTable tbody td.modalActionColumn,
+.districtDialog .modalTable tfoot td.modalActionColumn {
+  width: 72px;
+  padding-inline: 6px;
+  text-align: center;
+  vertical-align: middle;
+}
+
+.modalActionLink {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  color: var(--green);
+  background: transparent;
+  transition: color .16s ease, transform .16s ease;
+}
+
+.modalActionLink:hover {
+  color: #0d4f3d;
+  transform: translateY(-1px);
+}
+
+.modalActionLink:focus-visible {
+  outline: 3px solid rgba(18, 96, 73, .22);
+  outline-offset: 2px;
+}
+
+.modalActionLink svg {
+  width: 19px;
+  height: 19px;
+}
+
 .dataTimestamp {
   margin: 0;
   padding: 11px 18px 12px;
@@ -221,6 +425,15 @@
 
   .dataTimestamp {
     padding-inline: 10px;
+  }
+
+  .districtDialog {
+    width: calc(100vw - 16px);
+    max-height: calc(100svh - 16px);
+  }
+
+  .modalShell {
+    max-height: calc(100svh - 16px);
   }
 
   .tableWrap tbody th {
