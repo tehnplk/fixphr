@@ -1,7 +1,8 @@
 import { AuthError } from "next-auth";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
-import { IdCard, LockKeyhole, LogIn } from "lucide-react";
+import Link from "next/link";
+import { Home, IdCard, LockKeyhole, LogIn } from "lucide-react";
 import { signIn } from "@/auth";
 import styles from "./page.module.css";
 
@@ -123,6 +124,11 @@ export default async function LoginPage({
             </form>
           </>
         ) : null}
+
+        <Link href="/" className={styles.home}>
+          <Home aria-hidden="true" />
+          กลับหน้าแรก
+        </Link>
       </section>
     </main>
   );

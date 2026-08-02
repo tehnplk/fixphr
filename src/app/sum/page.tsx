@@ -1,5 +1,6 @@
 import { BarChart3 } from "lucide-react";
 import Link from "next/link";
+import ignoredHospitals from "../../../hos-ignore.json";
 import inspectionResults from "../../../inspection-result.json";
 import { getPrisma } from "@/lib/prisma";
 import RealtimeTimestamp from "./RealtimeTimestamp";
@@ -22,6 +23,10 @@ const DISTRICTS = [
 
 type District = (typeof DISTRICTS)[number];
 
+const IGNORED_HOSPITAL_CODES = ignoredHospitals.map(
+  (hospital) => hospital.hospital_code,
+);
+
 function formatNumber(value: number) {
   return value.toLocaleString("th-TH");
 }
@@ -43,27 +48,33 @@ export default async function SummaryPage({
   const activeTab = params.tab === "type" ? "type" : "district";
   const prisma = getPrisma();
 
-  const [targetByHospital, resultByHospital, typeGroups] = await Promise.all([
-    prisma.complaintHosCount.findMany({
-      distinct: ["hospital_code"],
+  const [latestTargetSnapshot, resultByHospital, typeGroups] = await Promise.all([
+    prisma.complaintHosCount.findFirst({
+      where: {
+        hospital_code: { notIn: IGNORED_HOSPITAL_CODES },
+        district_name: { in: [...DISTRICTS] },
+      },
       orderBy: [
-        { hospital_code: "asc" },
         { date_up: "desc" },
         { time_up: "desc" },
       ],
       select: {
-        hospital_code: true,
-        masks: true,
+        date_up: true,
+        time_up: true,
       },
     }),
     prisma.report.groupBy({
       by: ["hospital_code"],
-      where: { inspection_result: { not: null } },
+      where: {
+        hospital_code: { notIn: IGNORED_HOSPITAL_CODES },
+        inspection_result: { not: null },
+      },
       _count: { _all: true },
     }),
     prisma.report.groupBy({
       by: ["inspection_result"],
       where: {
+        hospital_code: { notIn: IGNORED_HOSPITAL_CODES },
         inspection_result: {
           in: inspectionResults.map((result) => result.code),
         },
@@ -72,11 +83,21 @@ export default async function SummaryPage({
     }),
   ]);
 
+  const targetByDistrict = latestTargetSnapshot
+    ? await prisma.complaintHosCount.groupBy({
+        by: ["district_name"],
+        where: {
+          date_up: latestTargetSnapshot.date_up,
+          time_up: latestTargetSnapshot.time_up,
+          hospital_code: { notIn: IGNORED_HOSPITAL_CODES },
+          district_name: { in: [...DISTRICTS] },
+        },
+        _sum: { masks: true },
+      })
+    : [];
+
   const hospitalCodes = Array.from(
-    new Set([
-      ...targetByHospital.map((row) => row.hospital_code),
-      ...resultByHospital.map((row) => row.hospital_code),
-    ]),
+    new Set(resultByHospital.map((row) => row.hospital_code)),
   );
   const hospitals = hospitalCodes.length > 0
     ? await prisma.hospital.findMany({
@@ -92,13 +113,13 @@ export default async function SummaryPage({
     DISTRICTS.map((district) => [district, { target: 0, result: 0 }]),
   );
 
-  for (const row of targetByHospital) {
-    const district = districtByHospital.get(row.hospital_code);
+  for (const row of targetByDistrict) {
+    const district = row.district_name;
     if (!district || !DISTRICTS.includes(district as District)) continue;
 
     const summary = districtSummary.get(district as District);
     if (!summary) continue;
-    summary.target += row.masks;
+    summary.target += row._sum.masks ?? 0;
   }
 
   for (const row of resultByHospital) {
@@ -140,14 +161,14 @@ export default async function SummaryPage({
             <Link
               aria-current={activeTab === "district" ? "page" : undefined}
               className={activeTab === "district" ? styles.activeTab : undefined}
-              href="/sum?tab=district"
+              href="/sum/amp"
             >
               รายอำเภอ
             </Link>
             <Link
               aria-current={activeTab === "type" ? "page" : undefined}
               className={activeTab === "type" ? styles.activeTab : undefined}
-              href="/sum?tab=type"
+              href="/sum/type"
             >
               ประเภท
             </Link>

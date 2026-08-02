@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
-import { ChevronDown, ClipboardList, LogIn, LogOut, Upload, UserCog } from "lucide-react";
+import { ChevronDown, ClipboardList, FileText, Home, LogIn, LogOut, Upload, UserCog } from "lucide-react";
 import { logoutAction } from "./auth-actions";
 import styles from "./AppNav.module.css";
 
@@ -49,19 +49,17 @@ export default function AppNav({ user }: { user?: NavUser | null }) {
   return (
     <div className={styles.bar}>
       <nav aria-label="เมนูหลัก" className={styles.nav}>
-        <Link
-          aria-current={!isSummary ? "page" : undefined}
-          className={!isSummary ? styles.active : undefined}
-          href="/amp"
-        >
+        <Link href="/amp">
+          <Home aria-hidden="true" />
           หน้าแรก
         </Link>
         <span aria-hidden="true">|</span>
         <Link
           aria-current={isSummary ? "page" : undefined}
           className={isSummary ? styles.active : undefined}
-          href="/sum"
+          href="/sum/amp"
         >
+          <FileText aria-hidden="true" />
           สรุป
         </Link>
       </nav>
