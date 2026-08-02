@@ -106,6 +106,11 @@
   gap: clamp(20px, 2.5vw, 40px);
 }
 
+/* แท็บจำแนกผลการตรวจสอบไม่มีกราฟ — ตารางกินเต็มความกว้าง */
+.contentGridSingle {
+  grid-template-columns: 1fr;
+}
+
 .tableWrap table {
   width: 100%;
   table-layout: fixed;
@@ -155,6 +160,54 @@
 /* ตารางการดำเนินการมี 6 คอลัมน์ — คอลัมน์อำเภอแคบลงเพื่อให้ตัวเลขไม่ตัดบรรทัด */
 .tableWrap .finalTable thead th:first-child {
   width: 26%;
+}
+
+/* ตารางจำแนกผลการตรวจสอบ: อำเภอ + 8 ผลการตรวจสอบ + รวม */
+.typeTableScroll {
+  overflow-x: auto;
+}
+
+.tableWrap .typeTable {
+  min-width: 900px;
+}
+
+/* หัวคอลัมน์ผลการตรวจสอบตัดหลายบรรทัด — เลขข้อบรรทัดแรก แล้วข้อความตัดเองด้านล่าง */
+.tableWrap .typeTable thead th {
+  height: auto;
+  padding-block: 10px;
+  text-align: center;
+  vertical-align: top;
+}
+
+.tableWrap .typeTable thead th:first-child {
+  width: 11%;
+  text-align: left;
+  vertical-align: middle;
+}
+
+.tableWrap .typeTable th,
+.tableWrap .typeTable td {
+  padding-inline: 8px;
+}
+
+.tableWrap .typeTable tbody td {
+  text-align: center;
+}
+
+.typeCode {
+  display: block;
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.typeLabel {
+  display: block;
+  margin-top: 3px;
+  color: #5d7a6e;
+  font-size: 10px;
+  font-weight: 600;
+  line-height: 1.35;
+  overflow-wrap: break-word;
 }
 
 .tableWrap tbody th {

@@ -7,6 +7,7 @@ import DistrictSummaryTable, { type DistrictHospitalRow } from "./DistrictSummar
 import FinalSummaryTable, { type FinalHospitalRow } from "./FinalSummaryTable";
 import RealtimeTimestamp from "./RealtimeTimestamp";
 import SummaryChart from "./SummaryChart";
+import TypeSummaryTable, { type TypeHospitalRow } from "./TypeSummaryTable";
 import styles from "./page.module.css";
 
 export const dynamic = "force-dynamic";
@@ -28,18 +29,6 @@ type District = (typeof DISTRICTS)[number];
 const IGNORED_HOSPITAL_CODES = ignoredHospitals.map(
   (hospital) => hospital.hospital_code,
 );
-
-function formatNumber(value: number) {
-  return value.toLocaleString("th-TH");
-}
-
-function formatPercent(value: number, total: number) {
-  if (total === 0) return "0.00";
-  return ((value / total) * 100).toLocaleString("th-TH", {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-  });
-}
 
 function formatAffiliation(value: string | null | undefined) {
   if (value === "กระทรวงสาธารณสุข") return "สธ";
@@ -84,7 +73,7 @@ export default async function SummaryPage({
       _count: { _all: true },
     }),
     prisma.report.groupBy({
-      by: ["inspection_result"],
+      by: ["hospital_code", "inspection_result"],
       where: {
         hospital_code: { notIn: IGNORED_HOSPITAL_CODES },
         inspection_result: {
@@ -283,14 +272,70 @@ export default async function SummaryPage({
     { confirmed: 0, edited: 0, deleted: 0, pending: 0 },
   );
 
-  const typeCountByCode = new Map(
-    typeGroups.map((row) => [row.inspection_result, row._count._all]),
+  // ตารางจำแนกผลการตรวจสอบ: แถวเป็นอำเภอ คอลัมน์เป็นผลการตรวจสอบ 1) - 7)
+  // drilldown รายหน่วยบริการใช้โครงเดียวกัน — cells เรียงตามลำดับ inspectionResults
+  const typeColumnIndexByCode = new Map<string, number>(
+    inspectionResults.map((result, index) => [result.code, index] as const),
   );
-  const typeRows = inspectionResults.map((result) => ({
-    ...result,
-    count: typeCountByCode.get(result.code) ?? 0,
-  }));
-  const typeTotal = typeRows.reduce((sum, row) => sum + row.count, 0);
+  const emptyTypeCells = () => inspectionResults.map(() => 0);
+  const typeHospitalsByDistrict = new Map<
+    District,
+    Map<string, Omit<TypeHospitalRow, "total">>
+  >(DISTRICTS.map((district) => [district, new Map()]));
+
+  for (const row of targetRows) {
+    const district = row.district_name;
+    if (!district || !DISTRICTS.includes(district as District)) continue;
+
+    const hospital = hospitalByCode.get(row.hospital_code);
+    typeHospitalsByDistrict.get(district as District)?.set(row.hospital_code, {
+      code: row.hospital_code,
+      name: hospital?.hospnameShort ?? hospital?.hospname ?? row.hospital_name,
+      affiliation: formatAffiliation(hospital?.mName),
+      cells: emptyTypeCells(),
+    });
+  }
+
+  for (const row of typeGroups) {
+    const columnIndex = typeColumnIndexByCode.get(row.inspection_result ?? "");
+    if (columnIndex === undefined) continue;
+
+    const district = districtByHospital.get(row.hospital_code);
+    if (!district || !DISTRICTS.includes(district as District)) continue;
+
+    const districtHospitals = typeHospitalsByDistrict.get(district as District);
+    const hospital = hospitalByCode.get(row.hospital_code);
+    const currentHospital = districtHospitals?.get(row.hospital_code) ?? {
+      code: row.hospital_code,
+      name: hospital?.hospnameShort ?? hospital?.hospname ?? row.hospital_code,
+      affiliation: formatAffiliation(hospital?.mName),
+      cells: emptyTypeCells(),
+    };
+    const cells = [...currentHospital.cells];
+    cells[columnIndex] += row._count._all;
+    districtHospitals?.set(row.hospital_code, { ...currentHospital, cells });
+  }
+
+  const typeRows = DISTRICTS.map((district) => {
+    const hospitalRows = Array.from(
+      typeHospitalsByDistrict.get(district)?.values() ?? [],
+    )
+      .map((hospital) => ({
+        ...hospital,
+        total: hospital.cells.reduce((sum, count) => sum + count, 0),
+      }))
+      .sort((left, right) => left.name.localeCompare(right.name, "th"));
+    const cells = inspectionResults.map((_, index) => (
+      hospitalRows.reduce((sum, hospital) => sum + hospital.cells[index], 0)
+    ));
+
+    return {
+      district,
+      cells,
+      total: cells.reduce((sum, count) => sum + count, 0),
+      hospitals: hospitalRows,
+    };
+  });
 
   return (
     <main className={styles.page}>
@@ -323,40 +368,24 @@ export default async function SummaryPage({
               className={activeTab === "type" ? styles.activeTab : undefined}
               href="/sum/type"
             >
-              ประเภท
+              จำแนกผลการตรวจสอบ
             </Link>
           </nav>
 
-          <div className={styles.contentGrid}>
+          <div
+            className={
+              activeTab === "type"
+                ? `${styles.contentGrid} ${styles.contentGridSingle}`
+                : styles.contentGrid
+            }
+          >
             <div className={styles.tableWrap}>
               {activeTab === "district" ? (
               <DistrictSummaryTable rows={districtRows} />
               ) : activeTab === "final" ? (
               <FinalSummaryTable rows={finalRows} />
               ) : (
-              <table>
-                <thead>
-                  <tr>
-                    <th scope="col">ประเภท</th>
-                    <th scope="col">จำนวน</th>
-                    <th scope="col">ร้อยละ</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {typeRows.map((row) => (
-                    <tr key={row.code}>
-                      <th scope="row">{row.label}</th>
-                      <td>{formatNumber(row.count)}</td>
-                      <td>{formatPercent(row.count, typeTotal)}</td>
-                    </tr>
-                  ))}
-                  <tr className={styles.totalRow}>
-                    <th scope="row">รวม</th>
-                    <td>{formatNumber(typeTotal)}</td>
-                    <td>{formatPercent(typeTotal, typeTotal)}</td>
-                  </tr>
-                </tbody>
-              </table>
+              <TypeSummaryTable columns={inspectionResults} rows={typeRows} />
               )}
               <RealtimeTimestamp
                 className={styles.dataTimestamp}
@@ -364,6 +393,7 @@ export default async function SummaryPage({
               />
             </div>
 
+            {activeTab === "type" ? null : (
             <div className={styles.chartPanel}>
               {activeTab === "district" ? (
                 <SummaryChart
@@ -405,31 +435,9 @@ export default async function SummaryPage({
                     },
                   ]}
                 />
-              ) : (
-                <SummaryChart
-                  ariaLabel="กราฟจำนวนผลการตรวจสอบ แยกตามประเภท"
-                  chartType="pie"
-                  labels={typeRows.map((row) => row.label)}
-                  series={[
-                    {
-                      label: "จำนวน",
-                      data: typeRows.map((row) => row.count),
-                      backgroundColor: [
-                        "#edb83d",
-                        "#2a9d76",
-                        "#e15759",
-                        "#f28e2b",
-                        "#4e79a7",
-                        "#8f63b8",
-                        "#36a2ae",
-                        "#d65f8d",
-                      ],
-                      borderColor: "#fbfcf8",
-                    },
-                  ]}
-                />
-              )}
+              ) : null}
             </div>
+            )}
           </div>
         </section>
       </section>
