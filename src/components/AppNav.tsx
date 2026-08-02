@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
-import { ChevronDown, ClipboardList, FileText, Home, LogIn, LogOut, Upload, UserCog } from "lucide-react";
+import { ChevronDown, ClipboardList, Download, FileText, Home, LogIn, LogOut, Upload, UserCog } from "lucide-react";
 import { logoutAction } from "./auth-actions";
 import styles from "./AppNav.module.css";
 
@@ -94,6 +94,15 @@ export default function AppNav({ user }: { user?: NavUser | null }) {
                 </Link>
                 {user.canManage ? (
                   <>
+                    <a
+                      href="/api/report/export"
+                      role="menuitem"
+                      className={styles.dropdownItem}
+                      onClick={() => setOpen(false)}
+                    >
+                      <Download aria-hidden="true" />
+                      ส่งออก Excel
+                    </a>
                     <Link href="/upload" role="menuitem" className={styles.dropdownItem}>
                       <Upload aria-hidden="true" />
                       อัปโหลดข้อมูล
