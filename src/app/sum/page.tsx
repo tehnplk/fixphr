@@ -2,7 +2,9 @@ import { BarChart3 } from "lucide-react";
 import Link from "next/link";
 import ignoredHospitals from "../../../hos-ignore.json";
 import inspectionResults from "../../../inspection-result.json";
+import { auth } from "@/auth";
 import { getPrisma } from "@/lib/prisma";
+import CompSummaryTable, { type CompHospitalRow } from "./CompSummaryTable";
 import DistrictSummaryTable, { type DistrictHospitalRow } from "./DistrictSummaryTable";
 import FinalSummaryTable, { type FinalHospitalRow } from "./FinalSummaryTable";
 import RealtimeTimestamp from "./RealtimeTimestamp";
@@ -42,11 +44,17 @@ export default async function SummaryPage({
   searchParams: Promise<{ tab?: string | string[] }>;
 }) {
   const params = await searchParams;
-  const activeTab = params.tab === "type"
+  const session = await auth();
+  // แท็บจำนวนคำร้องเปิดให้เฉพาะผู้ดูแล — ใช้เกณฑ์เดียวกับ canManage ใน layout
+  const canViewComp = session?.user?.role === "super" || session?.user?.role === "admin";
+  const requestedTab = params.tab === "type"
     ? "type"
     : params.tab === "final"
       ? "final"
-      : "district";
+      : params.tab === "comp"
+        ? "comp"
+        : "district";
+  const activeTab = requestedTab === "comp" && !canViewComp ? "district" : requestedTab;
   const prisma = getPrisma();
 
   const [latestTargetSnapshot, resultByHospital, typeGroups, finalGroups] = await Promise.all([
@@ -102,6 +110,7 @@ export default async function SummaryPage({
           hospital_name: true,
           district_name: true,
           masks: true,
+          citizens: true,
         },
         orderBy: { hospital_name: "asc" },
       })
@@ -337,6 +346,41 @@ export default async function SummaryPage({
     };
   });
 
+  // ตารางจำนวนคำร้อง: masks = คำร้อง, citizens = ผู้ร้อง ของ snapshot ล่าสุด
+  // ผู้ร้องระดับอำเภอเป็นผลรวมรายหน่วยบริการ ไม่ใช่การนับคนแบบไม่ซ้ำ
+  const compHospitalsByDistrict = new Map<District, Map<string, CompHospitalRow>>(
+    DISTRICTS.map((district) => [district, new Map<string, CompHospitalRow>()]),
+  );
+
+  for (const row of targetRows) {
+    const district = row.district_name;
+    if (!district || !DISTRICTS.includes(district as District)) continue;
+
+    const hospital = hospitalByCode.get(row.hospital_code);
+    compHospitalsByDistrict.get(district as District)?.set(row.hospital_code, {
+      code: row.hospital_code,
+      name: hospital?.hospnameShort ?? hospital?.hospname ?? row.hospital_name,
+      affiliation: formatAffiliation(hospital?.mName),
+      complainants: row.citizens,
+      complaints: row.masks,
+    });
+  }
+
+  const compRows = DISTRICTS.map((district) => {
+    const hospitalRows = Array.from(
+      compHospitalsByDistrict.get(district)?.values() ?? [],
+    ).sort((left, right) => left.name.localeCompare(right.name, "th"));
+
+    return hospitalRows.reduce(
+      (summary, hospital) => ({
+        ...summary,
+        complainants: summary.complainants + hospital.complainants,
+        complaints: summary.complaints + hospital.complaints,
+      }),
+      { district, complainants: 0, complaints: 0, hospitals: hospitalRows },
+    );
+  });
+
   return (
     <main className={styles.page}>
       <div className={styles.grid} aria-hidden="true" />
@@ -349,6 +393,15 @@ export default async function SummaryPage({
 
         <section className={styles.card}>
           <nav aria-label="รูปแบบการสรุปผล" className={styles.tabs}>
+            {canViewComp ? (
+            <Link
+              aria-current={activeTab === "comp" ? "page" : undefined}
+              className={activeTab === "comp" ? styles.activeTab : undefined}
+              href="/sum/comp"
+            >
+              จำนวนคำร้อง
+            </Link>
+            ) : null}
             <Link
               aria-current={activeTab === "district" ? "page" : undefined}
               className={activeTab === "district" ? styles.activeTab : undefined}
@@ -374,7 +427,7 @@ export default async function SummaryPage({
 
           <div
             className={
-              activeTab === "type"
+              activeTab === "type" || activeTab === "comp"
                 ? `${styles.contentGrid} ${styles.contentGridSingle}`
                 : styles.contentGrid
             }
@@ -384,6 +437,8 @@ export default async function SummaryPage({
               <DistrictSummaryTable rows={districtRows} />
               ) : activeTab === "final" ? (
               <FinalSummaryTable rows={finalRows} />
+              ) : activeTab === "comp" ? (
+              <CompSummaryTable rows={compRows} />
               ) : (
               <TypeSummaryTable columns={inspectionResults} rows={typeRows} />
               )}
