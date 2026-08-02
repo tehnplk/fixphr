@@ -102,8 +102,8 @@
 
 .contentGrid {
   display: grid;
-  grid-template-columns: minmax(560px, 1.08fr) minmax(420px, .92fr);
-  gap: 10px;
+  grid-template-columns: minmax(480px, 1.08fr) minmax(360px, .92fr);
+  gap: clamp(20px, 2.5vw, 40px);
 }
 
 .tableWrap table {

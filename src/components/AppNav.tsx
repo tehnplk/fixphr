@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
-import { ChevronDown, LogIn, LogOut, Upload, UserCog } from "lucide-react";
+import { ChevronDown, ClipboardList, LogIn, LogOut, Upload, UserCog } from "lucide-react";
 import { logoutAction } from "./auth-actions";
 import styles from "./AppNav.module.css";
 
@@ -11,6 +11,7 @@ export type NavUser = {
   name: string;
   initial: string;
   hcode: string | null;
+  reportHcode: string | null;
   canManage: boolean;
 };
 
@@ -81,6 +82,18 @@ export default function AppNav({ user }: { user?: NavUser | null }) {
             </button>
             {open ? (
               <div className={styles.dropdown} role="menu">
+                <Link
+                  href={
+                    user.reportHcode
+                      ? `/report?hos=${encodeURIComponent(user.reportHcode)}`
+                      : `/err?msg=${encodeURIComponent("ไม่พบหน่วยงานของท่าน")}`
+                  }
+                  role="menuitem"
+                  className={styles.dropdownItem}
+                >
+                  <ClipboardList aria-hidden="true" />
+                  รายงานผล
+                </Link>
                 {user.canManage ? (
                   <>
                     <Link href="/upload" role="menuitem" className={styles.dropdownItem}>
