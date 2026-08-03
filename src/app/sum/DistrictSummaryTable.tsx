@@ -27,7 +27,7 @@ function formatNumber(value: number) {
 
 function formatPercent(value: number, total: number) {
   if (total === 0) return "0.00";
-  return ((value / total) * 100).toLocaleString("th-TH", {
+  return Math.min((value / total) * 100, 100).toLocaleString("th-TH", {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,
   });

@@ -429,7 +429,9 @@ export default async function SummaryPage({
             className={
               activeTab === "type" || activeTab === "comp"
                 ? `${styles.contentGrid} ${styles.contentGridSingle}`
-                : styles.contentGrid
+                : activeTab === "final"
+                  ? `${styles.contentGrid} ${styles.contentGridPie}`
+                  : styles.contentGrid
             }
           >
             <div className={styles.tableWrap}>
@@ -467,29 +469,32 @@ export default async function SummaryPage({
                   valueFormat="percent"
                 />
               ) : activeTab === "final" ? (
-                <SummaryChart
-                  ariaLabel="กราฟจำนวนการดำเนินการ แยกตามสถานะ"
-                  chartType="pie"
-                  labels={["ยืนยันคงเดิม", "แก้ไข", "ลบ", "อยู่ระหว่างดำเนินการ"]}
-                  series={[
-                    {
-                      label: "จำนวน",
-                      data: [
-                        finalTotals.confirmed,
-                        finalTotals.edited,
-                        finalTotals.deleted,
-                        finalTotals.pending,
-                      ],
-                      backgroundColor: [
-                        "#2a9d76",
-                        "#edb83d",
-                        "#e15759",
-                        "#9aa8a1",
-                      ],
-                      borderColor: "#fbfcf8",
-                    },
-                  ]}
-                />
+                <div className={styles.pieChartBox}>
+                  <SummaryChart
+                    ariaLabel="กราฟจำนวนการดำเนินการ แยกตามสถานะ"
+                    chartType="pie"
+                    labels={["ยืนยันคงเดิม", "แก้ไข", "ลบ", "อยู่ระหว่างดำเนินการ"]}
+                    series={[
+                      {
+                        label: "จำนวน",
+                        data: [
+                          finalTotals.confirmed,
+                          finalTotals.edited,
+                          finalTotals.deleted,
+                          finalTotals.pending,
+                        ],
+                        // ตรงกับสี badge ในตาราง (confirm/edit/delete/pending)
+                        backgroundColor: [
+                          "#16c060",
+                          "#f0c04a",
+                          "#f6a6a6",
+                          "#e0821c",
+                        ],
+                        borderColor: "#fbfcf8",
+                      },
+                    ]}
+                  />
+                </div>
               ) : null}
             </div>
             )}

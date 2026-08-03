@@ -112,6 +112,12 @@
   grid-template-columns: 1fr;
 }
 
+/* แท็บการดำเนินการใช้กราฟวงกลมขนาดคงที่ — ตรึงคอลัมน์กราฟไว้แล้วยกที่เหลือ
+   ให้ตาราง 6 คอลัมน์ ไม่ให้คอลัมน์อำเภอโดนบีบจนชื่ออำเภอตัดบรรทัด */
+.contentGridPie {
+  grid-template-columns: minmax(0, 1fr) 320px;
+}
+
 .tableWrap table {
   width: 100%;
   table-layout: fixed;
@@ -131,6 +137,14 @@
       transparent 31px,
       rgba(23, 53, 43, .05) 32px
     );
+}
+
+/* กราฟวงกลมไม่ต้องกินพื้นที่เต็มแผง — จำกัดขนาดแล้วจัดกลางแผง
+   (ความสูงรวม legend ด้านล่างของ chart.js แล้ว) */
+.pieChartBox {
+  width: min(100%, 330px);
+  height: 330px;
+  margin: 0 auto;
 }
 
 .tableWrap th,
@@ -160,9 +174,46 @@
   width: 34%;
 }
 
-/* ตารางการดำเนินการมี 6 คอลัมน์ — คอลัมน์อำเภอแคบลงเพื่อให้ตัวเลขไม่ตัดบรรทัด */
+/* ตารางการดำเนินการมี 6 คอลัมน์กว้างเท่ากันทั้งหมด — ป้ายที่ยาวที่สุด
+   ("อยู่ระหว่างดำเนินการ") ต้องอยู่ในหนึ่งช่องได้โดยไม่ตัดบรรทัด จึงคุมฟอนต์หัวตาราง
+   ไว้ที่ 11px และบีบ padding ลง */
+.tableWrap .finalTable th,
+.tableWrap .finalTable td {
+  padding-inline: 8px;
+}
+
+.tableWrap .finalTable thead th {
+  font-size: 13px;
+}
+
+/* คอลัมน์ลำดับแคบคงที่ ที่เหลืออีก 6 คอลัมน์แบ่งเท่ากันจากพื้นที่ที่เหลือ */
 .tableWrap .finalTable thead th:first-child {
-  width: 26%;
+  width: 36px;
+}
+
+.tableWrap .finalTable thead th:not(:first-child) {
+  width: calc((100% - 36px) / 6);
+}
+
+.tableWrap .finalTable tbody th {
+  font-size: 14px;
+}
+
+/* เลขลำดับเป็นข้อมูลรอง — เล็กและจางกว่าตัวเลขผลงาน */
+.tableWrap .finalTable tbody td.rowIndex {
+  color: #8fa39a;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+/* ตัวเลข/badge วางกลางช่อง และหัวคอลัมน์จัดกลางตามให้ตรงแนวกัน (คอลัมน์อำเภอยังชิดซ้าย) */
+.tableWrap .finalTable thead th,
+.tableWrap .finalTable tbody td {
+  text-align: center;
+}
+
+.tableWrap .finalTable thead th:nth-child(2) {
+  text-align: left;
 }
 
 /* ตารางจำนวนรายการมีแค่ 4 คอลัมน์ — จำกัดความกว้างไม่ให้ยืดเต็มการ์ด */
@@ -235,6 +286,61 @@
   color: var(--green);
   font: 800 16px ui-monospace, SFMono-Regular, Consolas, monospace;
   text-align: right;
+}
+
+/* หัวคอลัมน์แบบไอคอน + ข้อความ — บังคับบรรทัดเดียว ความกว้างคอลัมน์ถูกตั้งไว้
+   ให้พอดีป้ายที่ยาวที่สุดแล้ว และตารางเลื่อนแนวนอนแทนการตัดบรรทัด */
+.thLabel {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  vertical-align: middle;
+  white-space: nowrap;
+}
+
+.thLabel svg {
+  width: 14px;
+  height: 14px;
+  flex: none;
+  opacity: .68;
+}
+
+/* badge ของตารางการดำเนินการ — แยกสีตามสถานะ ยืนยัน/แก้ไข/ลบ */
+.confirmBadge,
+.editBadge,
+.deleteBadge,
+.pendingBadge {
+  display: inline-block;
+  min-width: 40px;
+  padding: 3px 9px;
+  color: #fff;
+  font: inherit;
+  text-align: center;
+  border-radius: 999px;
+}
+
+.confirmBadge {
+  background: #16c060;
+  box-shadow: 0 1px 3px rgba(11, 92, 52, .28);
+}
+
+/* เหลืองสว่างเกินกว่าจะใช้ตัวอักษรขาว — ใช้ตัวอักษรน้ำตาลเข้มให้อ่านออก */
+.editBadge {
+  color: #5a4106;
+  background: #f0c04a;
+  box-shadow: 0 1px 3px rgba(120, 88, 12, .26);
+}
+
+/* แดงอ่อนพื้นสว่างเกินกว่าจะใช้ตัวอักษรขาว — ใช้ตัวอักษรแดงเข้มให้อ่านออก */
+.deleteBadge {
+  color: #8a1c1c;
+  background: #f6a6a6;
+  box-shadow: 0 1px 3px rgba(122, 40, 40, .24);
+}
+
+.pendingBadge {
+  background: #e0821c;
+  box-shadow: 0 1px 3px rgba(120, 66, 10, .28);
 }
 
 /* zebra striping — ตั้งที่ระดับ cell เพราะ th/td มีพื้นหลังของตัวเองอยู่แล้ว
@@ -526,6 +632,14 @@
 
   .tableWrap tbody th {
     font-size: 11px;
+  }
+}
+
+/* 6 คอลัมน์เท่ากันที่ฟอนต์หัวตาราง 13px ต้องการราว 920px ขึ้นไปถึงจะไม่ตัดบรรทัด —
+   แคบกว่านี้ย้ายกราฟลงไปไว้ใต้ตารางเพื่อคืนความกว้างเต็มการ์ดให้ตาราง แทนการเลื่อนแนวนอน */
+@media (max-width: 1400px) {
+  .contentGridPie {
+    grid-template-columns: 1fr;
   }
 }
 

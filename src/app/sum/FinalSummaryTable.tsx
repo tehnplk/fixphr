@@ -2,7 +2,18 @@
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { FileText, X } from "lucide-react";
+import {
+  Building2,
+  ClipboardList,
+  Clock,
+  FileText,
+  Hash,
+  Landmark,
+  MapPin,
+  Pencil,
+  ShieldCheck,
+  X,
+} from "lucide-react";
 import styles from "./page.module.css";
 
 export type FinalHospitalRow = {
@@ -29,6 +40,27 @@ export type FinalSummaryRow = {
 function formatNumber(value: number) {
   if (value === 0) return <span className={styles.zeroCell}>-</span>;
   return value.toLocaleString("th-TH");
+}
+
+/* คอลัมน์สถานะใช้ badge แยกสี — ค่า 0 ยังคงเป็นขีดจาง ไม่ต้องมี badge */
+function formatBadge(value: number, className: string) {
+  if (value === 0) return <span className={styles.zeroCell}>-</span>;
+  return <span className={className}>{value.toLocaleString("th-TH")}</span>;
+}
+
+const formatConfirmed = (value: number) => formatBadge(value, styles.confirmBadge);
+const formatEdited = (value: number) => formatBadge(value, styles.editBadge);
+const formatDeleted = (value: number) => formatBadge(value, styles.deleteBadge);
+const formatPending = (value: number) => formatBadge(value, styles.pendingBadge);
+
+/* หัวคอลัมน์ = ไอคอน + ข้อความ ไอคอนเป็นภาพประกอบ ข้อความยังเป็นตัวบอกความหมายจริง */
+function ColumnHead({ icon: Icon, label }: { icon: typeof MapPin; label: string }) {
+  return (
+    <span className={styles.thLabel}>
+      <Icon aria-hidden="true" />
+      {label}
+    </span>
+  );
 }
 
 export default function FinalSummaryTable({ rows }: { rows: FinalSummaryRow[] }) {
@@ -59,17 +91,19 @@ export default function FinalSummaryTable({ rows }: { rows: FinalSummaryRow[] })
       <table className={styles.finalTable}>
         <thead>
           <tr>
-            <th scope="col">อำเภอ</th>
-            <th scope="col">จำนวนรายการ</th>
-            <th scope="col">ยืนยันคงเดิม</th>
-            <th scope="col">แก้ไข</th>
-            <th scope="col">ลบ</th>
-            <th scope="col">อยู่ระหว่างดำเนินการ</th>
+            <th scope="col">#</th>
+            <th scope="col"><ColumnHead icon={MapPin} label="อำเภอ" /></th>
+            <th scope="col"><ColumnHead icon={ClipboardList} label="จำนวนรายการ" /></th>
+            <th scope="col"><ColumnHead icon={ShieldCheck} label="ยืนยันคงเดิม" /></th>
+            <th scope="col"><ColumnHead icon={Pencil} label="แก้ไข" /></th>
+            <th scope="col"><ColumnHead icon={X} label="ลบ" /></th>
+            <th scope="col"><ColumnHead icon={Clock} label="อยู่ระหว่างดำเนินการ" /></th>
           </tr>
         </thead>
         <tbody>
-          {rows.map((row) => (
+          {rows.map((row, index) => (
             <tr key={row.district}>
+              <td className={styles.rowIndex}>{index + 1}</td>
               <th scope="row">
                 <button
                   aria-haspopup="dialog"
@@ -81,13 +115,14 @@ export default function FinalSummaryTable({ rows }: { rows: FinalSummaryRow[] })
                 </button>
               </th>
               <td>{formatNumber(row.target)}</td>
-              <td>{formatNumber(row.confirmed)}</td>
-              <td>{formatNumber(row.edited)}</td>
-              <td>{formatNumber(row.deleted)}</td>
-              <td>{formatNumber(row.pending)}</td>
+              <td>{formatConfirmed(row.confirmed)}</td>
+              <td>{formatEdited(row.edited)}</td>
+              <td>{formatDeleted(row.deleted)}</td>
+              <td>{formatPending(row.pending)}</td>
             </tr>
           ))}
           <tr className={styles.totalRow}>
+            <td className={styles.rowIndex} />
             <th scope="row">รวม</th>
             <td>{formatNumber(grand.target)}</td>
             <td>{formatNumber(grand.confirmed)}</td>
@@ -125,14 +160,14 @@ export default function FinalSummaryTable({ rows }: { rows: FinalSummaryRow[] })
                     </th>
                   </tr>
                   <tr>
-                    <th scope="col">รหัส</th>
-                    <th scope="col">ชื่อหน่วยบริการ</th>
-                    <th scope="col">สังกัด</th>
-                    <th scope="col">จำนวนรายการ</th>
-                    <th scope="col">ยืนยันคงเดิม</th>
-                    <th scope="col">แก้ไข</th>
-                    <th scope="col">ลบ</th>
-                    <th scope="col">อยู่ระหว่างดำเนินการ</th>
+                    <th scope="col"><ColumnHead icon={Hash} label="รหัส" /></th>
+                    <th scope="col"><ColumnHead icon={Building2} label="ชื่อหน่วยบริการ" /></th>
+                    <th scope="col"><ColumnHead icon={Landmark} label="สังกัด" /></th>
+                    <th scope="col"><ColumnHead icon={ClipboardList} label="จำนวนรายการ" /></th>
+                    <th scope="col"><ColumnHead icon={ShieldCheck} label="ยืนยันคงเดิม" /></th>
+                    <th scope="col"><ColumnHead icon={Pencil} label="แก้ไข" /></th>
+                    <th scope="col"><ColumnHead icon={X} label="ลบ" /></th>
+                    <th scope="col"><ColumnHead icon={Clock} label="อยู่ระหว่างดำเนินการ" /></th>
                     <th aria-label="การดำเนินการ" className={styles.modalActionColumn} scope="col" />
                   </tr>
                 </thead>
@@ -143,10 +178,10 @@ export default function FinalSummaryTable({ rows }: { rows: FinalSummaryRow[] })
                       <th scope="row">{hospital.name}</th>
                       <td>{hospital.affiliation}</td>
                       <td>{formatNumber(hospital.target)}</td>
-                      <td>{formatNumber(hospital.confirmed)}</td>
-                      <td>{formatNumber(hospital.edited)}</td>
-                      <td>{formatNumber(hospital.deleted)}</td>
-                      <td>{formatNumber(hospital.pending)}</td>
+                      <td>{formatConfirmed(hospital.confirmed)}</td>
+                      <td>{formatEdited(hospital.edited)}</td>
+                      <td>{formatDeleted(hospital.deleted)}</td>
+                      <td>{formatPending(hospital.pending)}</td>
                       <td className={styles.modalActionColumn}>
                         <Link
                           aria-label={`เปิดรายงาน ${hospital.name}`}
