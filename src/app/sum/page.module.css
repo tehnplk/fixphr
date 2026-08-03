@@ -216,8 +216,10 @@
   text-align: left;
 }
 
-/* ตารางจำนวนรายการมีแค่ 4 คอลัมน์ — จำกัดความกว้างไม่ให้ยืดเต็มการ์ด */
-.tableWrap .compTable {
+/* ตารางจำนวนรายการมีแค่ 4 คอลัมน์ — จำกัดความกว้างไม่ให้ยืดเต็มการ์ด
+   คุมที่กล่องครอบ ไม่ใช่ที่ตัวตาราง แถบเวลาที่อยู่ในกล่องเดียวกันจะได้
+   กว้างเท่าตารางและอยู่ใต้ตารางพอดี */
+.tableWrapNarrow {
   max-width: 760px;
 }
 
@@ -582,6 +584,9 @@
 }
 
 .dataTimestamp {
+  display: flex;
+  align-items: center;
+  gap: 12px;
   margin: 0;
   padding: 11px 18px 12px;
   border-right: 1px solid #e1e8e3;
@@ -591,6 +596,29 @@
   font-weight: 700;
   text-align: right;
   background: #f8faf7;
+}
+
+/* ดันข้อความเวลาไปชิดขวาเสมอ ไม่ว่าจะมีตัวนับถอยหลังอยู่ทางซ้ายหรือไม่ */
+.timestampText {
+  margin-left: auto;
+}
+
+.refreshCountdown {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.refreshCountdown svg {
+  width: 12px;
+  height: 12px;
+  opacity: .7;
+}
+
+.refreshCountdownValue {
+  color: var(--deep);
+  font-variant-numeric: tabular-nums;
+  font-weight: 800;
 }
 
 .dataTimestamp time {

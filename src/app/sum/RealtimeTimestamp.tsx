@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { type ReactNode, useEffect, useState } from "react";
+import styles from "./page.module.css";
 
 const THAI_SHORT_MONTHS = [
   "ม.ค.",
@@ -43,9 +44,12 @@ function formatTimestamp(value: Date) {
 export default function RealtimeTimestamp({
   className,
   initialNow,
+  leading,
 }: {
   className?: string;
   initialNow: string;
+  /* วางไว้ชิดซ้ายสุดของแถบเวลา เช่น ตัวนับถอยหลังรอบอัปเดตอัตโนมัติ */
+  leading?: ReactNode;
 }) {
   const [now, setNow] = useState(() => new Date(initialNow));
 
@@ -56,10 +60,13 @@ export default function RealtimeTimestamp({
 
   return (
     <p aria-live="off" className={className}>
-      ข้อมูล ณ วันที่{" "}
-      <time dateTime={now.toISOString()}>
-        {formatTimestamp(now)}
-      </time>
+      {leading}
+      <span className={styles.timestampText}>
+        ข้อมูล ณ วันที่{" "}
+        <time dateTime={now.toISOString()}>
+          {formatTimestamp(now)}
+        </time>
+      </span>
     </p>
   );
 }

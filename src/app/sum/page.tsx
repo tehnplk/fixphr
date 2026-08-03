@@ -4,6 +4,7 @@ import ignoredHospitals from "../../../hos-ignore.json";
 import inspectionResults from "../../../inspection-result.json";
 import { auth } from "@/auth";
 import { getPrisma } from "@/lib/prisma";
+import AutoRefresh from "./AutoRefresh";
 import CompSummaryTable, { type CompHospitalRow } from "./CompSummaryTable";
 import DistrictSummaryTable, { type DistrictHospitalRow } from "./DistrictSummaryTable";
 import FinalSummaryTable, { type FinalHospitalRow } from "./FinalSummaryTable";
@@ -434,7 +435,13 @@ export default async function SummaryPage({
                   : styles.contentGrid
             }
           >
-            <div className={styles.tableWrap}>
+            <div
+              className={
+                activeTab === "comp"
+                  ? `${styles.tableWrap} ${styles.tableWrapNarrow}`
+                  : styles.tableWrap
+              }
+            >
               {activeTab === "district" ? (
               <DistrictSummaryTable rows={districtRows} />
               ) : activeTab === "final" ? (
@@ -444,13 +451,18 @@ export default async function SummaryPage({
               ) : (
               <TypeSummaryTable columns={inspectionResults} rows={typeRows} />
               )}
+              {/* แถบเวลาอยู่ใต้ตารางข้อมูลและกว้างเท่าตารางเสมอ */}
               <RealtimeTimestamp
                 className={styles.dataTimestamp}
                 initialNow={new Date().toISOString()}
+                /* ทุกแท็บดึงข้อมูลใหม่เองทุก 5 นาที */
+                leading={<AutoRefresh />}
               />
             </div>
 
-            {activeTab === "type" ? null : (
+            {/* แท็บที่ไม่มีกราฟต้องไม่ render แผงกราฟเลย ไม่งั้นจะเหลือแผงเปล่า
+                สูง 496px ค้างอยู่ใต้ตาราง */}
+            {activeTab === "type" || activeTab === "comp" ? null : (
             <div className={styles.chartPanel}>
               {activeTab === "district" ? (
                 <SummaryChart
