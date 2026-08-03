@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import AppNav, { type NavUser } from "@/components/AppNav";
+import OnlinePresence from "@/components/OnlinePresence";
 import { auth } from "@/auth";
 import { getPrisma } from "@/lib/prisma";
 import "./globals.css";
@@ -47,6 +48,7 @@ export default async function RootLayout({
       <body>
         <AppNav user={user} />
         {children}
+        <OnlinePresence />
       </body>
     </html>
   );

@@ -1,0 +1,44 @@
+/* ป้ายบอกจำนวนคนออนไลน์เป็นข้อมูลรอง จงใจให้เล็กและจางกว่าเนื้อหาหลัก
+   ไม่ให้แย่งสายตาจากตารางและกราฟ */
+.badge {
+  position: fixed;
+  right: 12px;
+  bottom: 12px;
+  z-index: 40;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 9px;
+  border: 1px solid rgba(18, 96, 73, .1);
+  border-radius: 999px;
+  color: #8ba095;
+  background: rgba(249, 251, 247, .62);
+  font-size: 10.5px;
+  font-weight: 600;
+  white-space: nowrap;
+  backdrop-filter: blur(3px);
+  pointer-events: none;
+}
+
+.dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #16c060;
+  opacity: .6;
+}
+
+.count {
+  color: #6c837b;
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
+}
+
+@media (max-width: 680px) {
+  .badge {
+    right: 8px;
+    bottom: 8px;
+    padding: 3px 8px;
+    font-size: 10px;
+  }
+}
