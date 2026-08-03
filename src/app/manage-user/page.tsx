@@ -7,7 +7,7 @@ import {
   type ProviderOrganization,
   type ProviderProfile,
 } from "@/lib/provider-auth";
-import { toggleUserActive, updateUserRole } from "./actions";
+import ManageUserTable, { type ManageUserRow } from "./ManageUserTable";
 import styles from "./page.module.css";
 
 export const dynamic = "force-dynamic";
@@ -49,6 +49,31 @@ export default async function ManageUserPage() {
     orderBy: { id: "asc" },
   });
 
+  /* แปลงเป็นข้อมูลพร้อมใช้ตั้งแต่ฝั่ง server — แกะหน่วยบริการออกจาก profile
+     และจัดรูปแบบวันที่ให้เรียบร้อย ฝั่ง client จะได้ไม่ต้องรู้จัก schema
+     และไม่เกิด hydration mismatch จากการ format วันที่คนละ timezone */
+  const rows: ManageUserRow[] = users.map((user) => ({
+    id: user.id,
+    fullname: user.fullname || "",
+    providerId: user.provider_id,
+    organizations: organizationsOf(user).map((organization) => ({
+      hcode: organization.hcode || "",
+      hname: organization.hname || "",
+    })),
+    role: user.role,
+    loginCount: user.login_count,
+    lastActivity: formatDateTime(user.last_activity),
+    isActive: user.is_active,
+  }));
+
+  const roleFilterOptions = [...new Set(users.map((user) => user.role))]
+    .filter(Boolean)
+    .sort()
+    .map((value) => ({
+      value,
+      label: ROLE_OPTIONS.find((option) => option.value === value)?.label ?? value,
+    }));
+
   return (
     <main className={styles.page}>
       <div className={styles.grid} aria-hidden="true" />
@@ -66,76 +91,14 @@ export default async function ManageUserPage() {
         </header>
 
         <section className={styles.panel}>
-          {users.length === 0 ? (
+          {rows.length === 0 ? (
             <p className={styles.empty}>ยังไม่มีผู้ใช้เข้าระบบด้วย ProviderID</p>
           ) : (
-            <div className={styles.tableWrap}>
-              <table className={styles.table}>
-                <thead>
-                  <tr>
-                    <th>#</th>
-                    <th>ชื่อ-สกุล</th>
-                    <th>ProviderID</th>
-                    <th>หน่วยบริการ</th>
-                    <th>สิทธิ์</th>
-                    <th>เข้าระบบ</th>
-                    <th>ล่าสุด</th>
-                    <th>สถานะ</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {users.map((user, index) => (
-                    <tr key={user.id} className={user.is_active ? undefined : styles.inactive}>
-                      <td>{index + 1}</td>
-                      <td className={styles.name}>{user.fullname || "-"}</td>
-                      <td className={styles.mono}>{user.provider_id}</td>
-                      <td>
-                        {organizationsOf(user).length === 0 ? (
-                          "-"
-                        ) : (
-                          <ul className={styles.orgList}>
-                            {organizationsOf(user).map((organization, orgIndex) => (
-                              <li key={`${organization.hcode}-${orgIndex}`}>
-                                <span className={styles.mono}>{organization.hcode || "-"}</span>
-                                {organization.hname ? (
-                                  <span className={styles.hname}> {organization.hname}</span>
-                                ) : null}
-                              </li>
-                            ))}
-                          </ul>
-                        )}
-                      </td>
-                      <td>
-                        <form action={updateUserRole} className={styles.roleForm}>
-                          <input type="hidden" name="id" value={user.id} />
-                          <select name="role" defaultValue={user.role}>
-                            {ROLE_OPTIONS.map((option) => (
-                              <option key={option.value} value={option.value}>
-                                {option.label}
-                              </option>
-                            ))}
-                          </select>
-                          <button type="submit">บันทึก</button>
-                        </form>
-                      </td>
-                      <td className={styles.center}>{user.login_count}</td>
-                      <td>{formatDateTime(user.last_activity)}</td>
-                      <td>
-                        <form action={toggleUserActive}>
-                          <input type="hidden" name="id" value={user.id} />
-                          <button
-                            type="submit"
-                            className={user.is_active ? styles.activeBtn : styles.inactiveBtn}
-                          >
-                            {user.is_active ? "ใช้งานได้" : "ถูกระงับ"}
-                          </button>
-                        </form>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+            <ManageUserTable
+              roleFilterOptions={roleFilterOptions}
+              roleOptions={ROLE_OPTIONS}
+              rows={rows}
+            />
           )}
           <p className={styles.hint}>
             การเปลี่ยนสิทธิ์จะมีผลเมื่อผู้ใช้เข้าสู่ระบบครั้งถัดไป
