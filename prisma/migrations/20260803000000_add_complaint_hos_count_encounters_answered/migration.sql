@@ -1,0 +1,4 @@
+-- AlterTable
+ALTER TABLE "ComplaintHosCount"
+ADD COLUMN "encounters" INTEGER NOT NULL DEFAULT 0,
+ADD COLUMN "answered" INTEGER NOT NULL DEFAULT 0;

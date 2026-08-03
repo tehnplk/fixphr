@@ -58,6 +58,8 @@ model ComplaintHosCount {
   hospital_type  String   @db.VarChar(100)
   file_name      String   @db.VarChar(255)
   masks          Int
+  encounters     Int      @default(0)
+  answered       Int      @default(0)
   citizens       Int
   matched        Int
   unmatched      Int

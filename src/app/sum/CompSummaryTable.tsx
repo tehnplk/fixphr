@@ -11,12 +11,14 @@ export type CompHospitalRow = {
   affiliation: string;
   complainants: number;
   complaints: number;
+  answered: number;
 };
 
 export type CompSummaryRow = {
   district: string;
   complainants: number;
   complaints: number;
+  answered: number;
   hospitals: CompHospitalRow[];
 };
 
@@ -34,6 +36,16 @@ function formatAverage(complaints: number, complainants: number) {
   });
 }
 
+// ร้อยละตอบกลับคิดจากจำนวนคำร้อง (masks) เป็นฐานเสมอ
+// ยังไม่มีการตอบกลับให้ขึ้นขีดแบบเดียวกับคอลัมน์จำนวน ไม่ใช่ "0.00"
+function formatAnsweredPercent(answered: number, complaints: number) {
+  if (complaints === 0 || answered === 0) return <span className={styles.zeroCell}>-</span>;
+  return Math.min((answered / complaints) * 100, 100).toLocaleString("th-TH", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  });
+}
+
 export default function CompSummaryTable({ rows }: { rows: CompSummaryRow[] }) {
   const [selectedDistrict, setSelectedDistrict] = useState<string | null>(null);
   const dialogRef = useRef<HTMLDialogElement>(null);
@@ -42,8 +54,9 @@ export default function CompSummaryTable({ rows }: { rows: CompSummaryRow[] }) {
     (total, row) => ({
       complainants: total.complainants + row.complainants,
       complaints: total.complaints + row.complaints,
+      answered: total.answered + row.answered,
     }),
-    { complainants: 0, complaints: 0 },
+    { complainants: 0, complaints: 0, answered: 0 },
   );
 
   useEffect(() => {
@@ -57,17 +70,27 @@ export default function CompSummaryTable({ rows }: { rows: CompSummaryRow[] }) {
   return (
     <>
       <table className={styles.compTable}>
+        {/* หัวตารางสองชั้น — ชั้นบนเป็นกลุ่ม (คำร้อง / ตอบกลับ) ชั้นล่างเป็นคอลัมน์จริง
+            ลำดับกับอำเภอไม่อยู่ในกลุ่มไหน จึงคร่อมสองแถวด้วย rowSpan */}
         <thead>
-          <tr>
-            <th scope="col">อำเภอ</th>
-            <th scope="col">จำนวนผู้ร้อง (คน)</th>
-            <th scope="col">จำนวนคำร้อง (ครั้ง)</th>
+          <tr className={styles.groupRow}>
+            <th className={styles.indexHead} rowSpan={2} scope="col">#</th>
+            <th rowSpan={2} scope="col">อำเภอ</th>
+            <th colSpan={3} scope="colgroup">คำร้อง</th>
+            <th colSpan={2} scope="colgroup">ตอบกลับ</th>
+          </tr>
+          <tr className={styles.subRow}>
+            <th scope="col">ผู้ร้อง (คน)</th>
+            <th scope="col">จำนวน (ครั้ง)</th>
             <th scope="col">เฉลี่ยคนละ (ครั้ง)</th>
+            <th scope="col">จำนวน (ครั้ง)</th>
+            <th scope="col">ร้อยละ</th>
           </tr>
         </thead>
         <tbody>
-          {rows.map((row) => (
+          {rows.map((row, index) => (
             <tr key={row.district}>
+              <td className={styles.rowIndex}>{index + 1}</td>
               <th scope="row">
                 <button
                   aria-haspopup="dialog"
@@ -81,13 +104,18 @@ export default function CompSummaryTable({ rows }: { rows: CompSummaryRow[] }) {
               <td>{formatNumber(row.complainants)}</td>
               <td>{formatNumber(row.complaints)}</td>
               <td>{formatAverage(row.complaints, row.complainants)}</td>
+              <td>{formatNumber(row.answered)}</td>
+              <td>{formatAnsweredPercent(row.answered, row.complaints)}</td>
             </tr>
           ))}
           <tr className={styles.totalRow}>
+            <td className={styles.rowIndex} />
             <th scope="row">รวม</th>
             <td>{formatNumber(grand.complainants)}</td>
             <td>{formatNumber(grand.complaints)}</td>
             <td>{formatAverage(grand.complaints, grand.complainants)}</td>
+            <td>{formatNumber(grand.answered)}</td>
+            <td>{formatAnsweredPercent(grand.answered, grand.complaints)}</td>
           </tr>
         </tbody>
       </table>
@@ -104,10 +132,10 @@ export default function CompSummaryTable({ rows }: { rows: CompSummaryRow[] }) {
         {selectedRow ? (
           <div className={styles.modalShell}>
             <div className={styles.modalTableWrap}>
-              <table className={styles.modalTable}>
+              <table className={`${styles.modalTable} ${styles.compModalTable}`}>
                 <thead>
                   <tr className={styles.modalToolbarRow}>
-                    <th colSpan={7}>
+                    <th colSpan={9}>
                       <button
                         aria-label="ปิดหน้าต่าง"
                         className={styles.modalClose}
@@ -125,6 +153,8 @@ export default function CompSummaryTable({ rows }: { rows: CompSummaryRow[] }) {
                     <th scope="col">จำนวนผู้ร้อง (คน)</th>
                     <th scope="col">จำนวนคำร้อง (ครั้ง)</th>
                     <th scope="col">เฉลี่ยคนละ (ครั้ง)</th>
+                    <th scope="col">ตอบกลับแล้ว (ครั้ง)</th>
+                    <th scope="col">ร้อยละตอบกลับ</th>
                     <th aria-label="การดำเนินการ" className={styles.modalActionColumn} scope="col" />
                   </tr>
                 </thead>
@@ -138,6 +168,10 @@ export default function CompSummaryTable({ rows }: { rows: CompSummaryRow[] }) {
                       <td>{formatNumber(hospital.complaints)}</td>
                       <td>
                         {formatAverage(hospital.complaints, hospital.complainants)}
+                      </td>
+                      <td>{formatNumber(hospital.answered)}</td>
+                      <td>
+                        {formatAnsweredPercent(hospital.answered, hospital.complaints)}
                       </td>
                       <td className={styles.modalActionColumn}>
                         <Link
@@ -158,6 +192,10 @@ export default function CompSummaryTable({ rows }: { rows: CompSummaryRow[] }) {
                     <td>{formatNumber(selectedRow.complaints)}</td>
                     <td>
                       {formatAverage(selectedRow.complaints, selectedRow.complainants)}
+                    </td>
+                    <td>{formatNumber(selectedRow.answered)}</td>
+                    <td>
+                      {formatAnsweredPercent(selectedRow.answered, selectedRow.complaints)}
                     </td>
                     <td className={styles.modalActionColumn} />
                   </tr>

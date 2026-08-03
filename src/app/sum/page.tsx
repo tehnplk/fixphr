@@ -46,8 +46,10 @@ export default async function SummaryPage({
 }) {
   const params = await searchParams;
   const session = await auth();
-  // แท็บจำนวนคำร้องเปิดให้เฉพาะผู้ดูแล — ใช้เกณฑ์เดียวกับ canManage ใน layout
-  const canViewComp = session?.user?.role === "super" || session?.user?.role === "admin";
+  // แท็บจำนวนคำร้องเปิดให้ผู้ที่ได้รับสิทธิ์แล้วทุกระดับ — ตรงกับ proxy ที่กัน
+  // เฉพาะผู้ยังไม่ล็อกอินกับ role guest ออกจาก /sum/comp
+  const role = session?.user?.role;
+  const canViewComp = role === "super" || role === "admin" || role === "user";
   const requestedTab = params.tab === "type"
     ? "type"
     : params.tab === "final"
@@ -112,6 +114,7 @@ export default async function SummaryPage({
           district_name: true,
           masks: true,
           citizens: true,
+          answered: true,
         },
         orderBy: { hospital_name: "asc" },
       })
@@ -349,6 +352,7 @@ export default async function SummaryPage({
 
   // ตารางจำนวนคำร้อง: masks = คำร้อง, citizens = ผู้ร้อง ของ snapshot ล่าสุด
   // ผู้ร้องระดับอำเภอเป็นผลรวมรายหน่วยบริการ ไม่ใช่การนับคนแบบไม่ซ้ำ
+  // answered = คำร้องที่ตอบกลับแล้วจากระบบต้นทาง (มากับไฟล์อัปโหลด) ไม่ใช่ยอดที่กรอกในระบบนี้
   const compHospitalsByDistrict = new Map<District, Map<string, CompHospitalRow>>(
     DISTRICTS.map((district) => [district, new Map<string, CompHospitalRow>()]),
   );
@@ -364,6 +368,7 @@ export default async function SummaryPage({
       affiliation: formatAffiliation(hospital?.mName),
       complainants: row.citizens,
       complaints: row.masks,
+      answered: row.answered,
     });
   }
 
@@ -377,8 +382,9 @@ export default async function SummaryPage({
         ...summary,
         complainants: summary.complainants + hospital.complainants,
         complaints: summary.complaints + hospital.complaints,
+        answered: summary.answered + hospital.answered,
       }),
-      { district, complainants: 0, complaints: 0, hospitals: hospitalRows },
+      { district, complainants: 0, complaints: 0, answered: 0, hospitals: hospitalRows },
     );
   });
 

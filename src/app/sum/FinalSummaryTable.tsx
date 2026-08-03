@@ -91,7 +91,7 @@ export default function FinalSummaryTable({ rows }: { rows: FinalSummaryRow[] })
       <table className={styles.finalTable}>
         <thead>
           <tr>
-            <th scope="col">#</th>
+            <th className={styles.indexHead} scope="col">#</th>
             <th scope="col"><ColumnHead icon={MapPin} label="อำเภอ" /></th>
             <th scope="col"><ColumnHead icon={ClipboardList} label="จำนวนรายการ" /></th>
             <th scope="col"><ColumnHead icon={ShieldCheck} label="ยืนยันคงเดิม" /></th>

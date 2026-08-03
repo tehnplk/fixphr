@@ -1,6 +1,9 @@
 .page {
   --green: #126049;
   --deep: #17352b;
+  /* เส้นตารางทุกใบใช้ค่าเดียวกัน — เขียวอมเทาที่เข้มพอให้เห็นช่องชัดบนพื้นขาว
+     แต่ยังไม่แย่งสายตาไปจากตัวเลข */
+  --line: #b9ccc1;
   position: relative;
   min-height: 100svh;
   overflow-x: hidden;
@@ -118,11 +121,13 @@
   grid-template-columns: minmax(0, 1fr) 320px;
 }
 
+/* เซลล์วาดแค่เส้นขวากับล่าง ขอบซ้าย/บนของตารางจึงต้องมาจากตัวตารางเอง
+   ไม่งั้นกรอบนอกจะขาดไปสองด้าน เห็นชัดขึ้นเมื่อเส้นเข้ม */
 .tableWrap table {
   width: 100%;
   table-layout: fixed;
   border-collapse: collapse;
-  border-right: 1px solid #e1e8e3;
+  border: 1px solid var(--line);
 }
 
 .chartPanel {
@@ -151,8 +156,8 @@
 .tableWrap td {
   height: 45px;
   padding: 9px 18px;
-  border-right: 1px solid #e1e8e3;
-  border-bottom: 1px solid #e1e8e3;
+  border-right: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
 }
 
 .tableWrap thead th {
@@ -168,10 +173,28 @@
   text-align: left;
 }
 
-/* ตารางยอดการตรวจสอบมี 4 คอลัมน์ — ชื่ออำเภอกว้างพอสำหรับ "เมืองพิษณุโลก"
-   ที่เหลือแบ่งให้คอลัมน์ตัวเลขเท่า ๆ กัน ไม่ให้ตัวเลขไปกองชิดขวา */
-.tableWrap thead th:first-child {
-  width: 34%;
+/* ทุกแท็บมีคอลัมน์ลำดับ (#) นำหน้าอำเภอ — แคบคงที่เท่ากันทุกตาราง
+   ประกาศหลัง :first-child ด้านบนเพราะ specificity เท่ากัน ตัวหลังจึงชนะ */
+.tableWrap thead th.indexHead {
+  width: 36px;
+  padding-inline: 8px;
+  text-align: center;
+}
+
+/* เลขลำดับเป็นข้อมูลรอง — เล็กและจางกว่าตัวเลขผลงาน */
+.tableWrap tbody td.rowIndex {
+  padding-inline: 8px;
+  color: #8fa39a;
+  font-size: 11px;
+  font-weight: 700;
+  text-align: center;
+}
+
+/* ตารางยอดการตรวจสอบมี 4 คอลัมน์ถัดจากลำดับ — ชื่ออำเภอกว้างพอสำหรับ
+   "เมืองพิษณุโลก" ที่เหลือแบ่งให้คอลัมน์ตัวเลขเท่า ๆ กัน ไม่ให้ตัวเลขไปกองชิดขวา */
+.tableWrap thead th:nth-child(2) {
+  width: calc((100% - 36px) * .34);
+  text-align: left;
 }
 
 /* ตารางการดำเนินการมี 6 คอลัมน์กว้างเท่ากันทั้งหมด — ป้ายที่ยาวที่สุด
@@ -187,23 +210,12 @@
 }
 
 /* คอลัมน์ลำดับแคบคงที่ ที่เหลืออีก 6 คอลัมน์แบ่งเท่ากันจากพื้นที่ที่เหลือ */
-.tableWrap .finalTable thead th:first-child {
-  width: 36px;
-}
-
 .tableWrap .finalTable thead th:not(:first-child) {
   width: calc((100% - 36px) / 6);
 }
 
 .tableWrap .finalTable tbody th {
   font-size: 14px;
-}
-
-/* เลขลำดับเป็นข้อมูลรอง — เล็กและจางกว่าตัวเลขผลงาน */
-.tableWrap .finalTable tbody td.rowIndex {
-  color: #8fa39a;
-  font-size: 11px;
-  font-weight: 700;
 }
 
 /* ตัวเลข/badge วางกลางช่อง และหัวคอลัมน์จัดกลางตามให้ตรงแนวกัน (คอลัมน์อำเภอยังชิดซ้าย) */
@@ -216,11 +228,54 @@
   text-align: left;
 }
 
-/* ตารางจำนวนรายการมีแค่ 4 คอลัมน์ — จำกัดความกว้างไม่ให้ยืดเต็มการ์ด
+/* ตารางจำนวนคำร้องมี 6 คอลัมน์ — จำกัดความกว้างไม่ให้ยืดเต็มการ์ด
    คุมที่กล่องครอบ ไม่ใช่ที่ตัวตาราง แถบเวลาที่อยู่ในกล่องเดียวกันจะได้
    กว้างเท่าตารางและอยู่ใต้ตารางพอดี */
 .tableWrapNarrow {
-  max-width: 760px;
+  max-width: 1000px;
+}
+
+/* คอลัมน์อำเภอกว้างพอสำหรับ "เมืองพิษณุโลก" ที่เหลืออีก 5 คอลัมน์ตัวเลข
+   แบ่งเท่ากัน — หัวคอลัมน์ยาวสุดคือ "จำนวนผู้ร้อง (คน)" ต้องอยู่บรรทัดเดียวได้
+   จึงบีบ padding ด้านข้างลงจากค่ากลางของ .tableWrap */
+.tableWrap .compTable th,
+.tableWrap .compTable td {
+  padding-inline: 10px;
+}
+
+/* หัวตารางสองชั้น: table-layout:fixed อ่านความกว้างจากแถวแรกเท่านั้น
+   จึงกำหนดที่แถวกลุ่ม แล้วปล่อยให้ colspan กระจายให้คอลัมน์ย่อยเท่า ๆ กันเอง
+   (คำร้อง 3 คอลัมน์ = 48% / ตอบกลับ 2 คอลัมน์ = 32% เท่ากับคอลัมน์ละ 16%) */
+.tableWrap .compTable thead .groupRow th:nth-child(2) {
+  width: calc((100% - 36px) * .2);
+}
+
+.tableWrap .compTable thead .groupRow th:nth-child(3) {
+  width: calc((100% - 36px) * .48);
+}
+
+.tableWrap .compTable thead .groupRow th:nth-child(4) {
+  width: calc((100% - 36px) * .32);
+}
+
+/* ชื่อกลุ่มจัดกลางคร่อมคอลัมน์ย่อย ส่วนหัวคอลัมน์ย่อยชิดขวาให้ตรงแนวกับตัวเลข */
+.tableWrap .compTable thead .groupRow th[colspan] {
+  text-align: center;
+}
+
+.tableWrap .compTable thead .subRow th {
+  width: auto;
+  text-align: right;
+}
+
+/* หัวตารางสองแถวรวมกันต้องไม่สูงจนกดตัวตาราง — ครึ่งหนึ่งของแถวข้อมูลพอดี */
+.tableWrap .compTable thead th {
+  height: 34px;
+}
+
+/* ลำดับกับอำเภอคร่อมสองแถว จัดข้อความให้อยู่กลางแนวตั้งของทั้งบล็อก */
+.tableWrap .compTable thead th[rowspan] {
+  vertical-align: middle;
 }
 
 /* ตารางจำแนกผลการตรวจสอบ: อำเภอ + 8 ผลการตรวจสอบ + รวม */
@@ -240,8 +295,8 @@
   vertical-align: top;
 }
 
-.tableWrap .typeTable thead th:first-child {
-  width: 11%;
+.tableWrap .typeTable thead th:nth-child(2) {
+  width: calc((100% - 36px) * .11);
   text-align: left;
   vertical-align: middle;
 }
@@ -463,12 +518,24 @@
   border: 0;
 }
 
+/* โมดัลของแท็บจำนวนคำร้องมี 9 คอลัมน์ (มากกว่าแท็บอื่น 2 คอลัมน์)
+   จึงต้องการความกว้างขั้นต่ำมากกว่า ไม่งั้นชื่อหน่วยบริการจะโดนบีบจนตัดบรรทัด */
+.districtDialog .compModalTable {
+  min-width: 1080px;
+}
+
+/* ภาษาไทยไม่มีช่องว่าง เบราว์เซอร์จึงตัด "ร้อยละตอบกลับ" กลางคำได้ —
+   บังคับหัวคอลัมน์ตัวเลขให้อยู่บรรทัดเดียว แล้วปล่อยให้ตารางกว้างตามเนื้อหา */
+.districtDialog .compModalTable thead tr:not(.modalToolbarRow) th:nth-child(n + 4) {
+  white-space: nowrap;
+}
+
 .districtDialog .modalTable th,
 .districtDialog .modalTable td {
   height: auto;
   padding: 6px 10px;
-  border-right: 1px solid #e1e8e3;
-  border-bottom: 1px solid #e1e8e3;
+  border-right: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
 }
 
 .districtDialog .modalTable thead th {
@@ -589,8 +656,10 @@
   gap: 12px;
   margin: 0;
   padding: 11px 18px 12px;
-  border-right: 1px solid #e1e8e3;
-  border-bottom: 1px solid #e1e8e3;
+  /* แถบเวลาต่อท้ายตาราง — ขอบซ้าย/ขวาต้องตรงแนวกับกรอบตารางด้านบน */
+  border-right: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  border-left: 1px solid var(--line);
   color: #71877e;
   font-size: 11px;
   font-weight: 700;

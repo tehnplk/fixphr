@@ -1,38 +1,47 @@
+/* ความสูงแถบเป็นค่าอ้างอิงของหน้าอื่นด้วย (เช่น .page ของ /err ที่หัก
+   ความสูงนี้ออกจาก 100svh) — แก้ที่นี่แล้วต้องแก้ตามให้ตรงกัน
+   สีเขียวเลือกเป็นเซจอ่อนตระกูลเดียวกับหัวตาราง (#dbe6d8) ไม่ใช่เขียวเข้ม
+   --green เพื่อให้อ่านเป็นแถบสีเขียวจริงแต่ยังอยู่ในโทนพื้นหลังหน้าเว็บ */
 .bar {
   position: sticky;
   top: 0;
   z-index: 50;
   display: flex;
-  min-height: 34px;
+  min-height: 42px;
   align-items: center;
   justify-content: flex-start;
   padding-inline: clamp(16px, 3vw, 42px);
-  border-bottom: 1px solid rgba(18, 96, 73, .12);
-  background: rgba(244, 248, 242, .9);
+  border-bottom: 1px solid rgba(18, 96, 73, .18);
+  background: linear-gradient(
+    180deg,
+    rgba(224, 236, 221, .94),
+    rgba(212, 228, 210, .94)
+  );
   backdrop-filter: blur(12px);
 }
 
 .nav {
   display: flex;
   align-items: center;
-  gap: 9px;
-  color: #91a098;
-  font-size: 11px;
+  gap: 11px;
+  color: #7c9188;
+  font-size: 12px;
   font-weight: 700;
 }
 
+/* พื้นแถบเข้มขึ้นแล้ว ตัวอักษรจึงต้องเข้มตามให้ยังอ่านชัด */
 .nav a {
   display: flex;
   align-items: center;
-  gap: 5px;
-  padding: 4px 3px 3px;
-  color: #71877e;
+  gap: 6px;
+  padding: 5px 3px;
+  color: #3f5f52;
   text-decoration: none;
 }
 
 .nav a svg {
-  width: 13px;
-  height: 13px;
+  width: 14px;
+  height: 14px;
 }
 
 .nav a:hover {
@@ -47,21 +56,21 @@
   display: flex;
   align-items: center;
   margin-left: auto;
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 700;
 }
 
 .right svg {
-  width: 14px;
-  height: 14px;
+  width: 15px;
+  height: 15px;
 }
 
 .login {
   display: flex;
   align-items: center;
-  gap: 5px;
-  padding: 4px 3px 3px;
-  color: #126049;
+  gap: 6px;
+  padding: 5px 3px;
+  color: #0f5540;
   text-decoration: none;
 }
 
@@ -76,12 +85,12 @@
 .profileButton {
   display: flex;
   align-items: center;
-  gap: 7px;
-  padding: 3px 4px 3px 3px;
+  gap: 8px;
+  padding: 4px 4px 4px 3px;
   border: 0;
   background: none;
-  color: #4c6a5f;
-  font-size: 11px;
+  color: #3f5f52;
+  font-size: 12px;
   font-weight: 700;
   cursor: pointer;
 }
@@ -91,8 +100,8 @@
 }
 
 .profileButton svg {
-  width: 13px;
-  height: 13px;
+  width: 14px;
+  height: 14px;
   transition: transform .15s ease;
 }
 
@@ -103,12 +112,12 @@
 .avatar {
   display: grid;
   place-items: center;
-  width: 22px;
-  height: 22px;
+  width: 26px;
+  height: 26px;
   border-radius: 50%;
   color: #f4f9e9;
   background: linear-gradient(150deg, #126049, #17352b);
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 700;
 }
 
@@ -119,13 +128,14 @@
   white-space: nowrap;
 }
 
+/* ป้ายรหัสอยู่บนพื้นเขียวแล้ว จึงใช้พื้นขาวโปร่งให้ยังแยกตัวออกมาได้ */
 .userHcode {
-  padding: 2px 7px;
-  border: 1px solid rgba(18, 96, 73, .2);
+  padding: 3px 8px;
+  border: 1px solid rgba(18, 96, 73, .22);
   border-radius: 999px;
-  color: #126049;
-  background: rgba(18, 96, 73, .07);
-  font: 700 10.5px ui-monospace, SFMono-Regular, Consolas, monospace;
+  color: #0f5540;
+  background: rgba(255, 255, 255, .6);
+  font: 700 11px ui-monospace, SFMono-Regular, Consolas, monospace;
 }
 
 .dropdown {

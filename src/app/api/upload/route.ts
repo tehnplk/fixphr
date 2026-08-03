@@ -10,6 +10,8 @@ const EXPECTED_HEADERS = [
   "hospital_name",
   "hospital_type",
   "masks",
+  "encounters",
+  "answered",
   "citizens",
   "matched",
   "unmatched",
@@ -23,6 +25,8 @@ type ImportRow = {
   hospital_name: string;
   hospital_type: string;
   masks: number;
+  encounters: number;
+  answered: number;
   citizens: number;
   matched: number;
   unmatched: number;
@@ -104,7 +108,9 @@ function validateRows(rows: string[][]): ImportRow[] {
   return dataRows.map((values, index) => {
     const line = index + 2;
     if (values.length !== EXPECTED_HEADERS.length) {
-      throw new UploadValidationError(`บรรทัด ${line}: ต้องมีข้อมูลครบ 10 คอลัมน์`);
+      throw new UploadValidationError(
+        `บรรทัด ${line}: ต้องมีข้อมูลครบ ${EXPECTED_HEADERS.length} คอลัมน์`,
+      );
     }
 
     const [provinceName, districtName, hospitalCode, hospitalName, hospitalType] = values;
@@ -122,7 +128,7 @@ function validateRows(rows: string[][]): ImportRow[] {
     }
     seenHospitalCodes.add(hospitalCode);
 
-    const matchRate = values[9];
+    const matchRate = values[11];
     if (!/^\d+(?:\.\d)?$/.test(matchRate)) {
       throw new UploadValidationError(`บรรทัด ${line}: match_rate_pct ต้องเป็นตัวเลขทศนิยมไม่เกิน 1 ตำแหน่ง`);
     }
@@ -138,9 +144,11 @@ function validateRows(rows: string[][]): ImportRow[] {
       hospital_name: hospitalName,
       hospital_type: hospitalType,
       masks: parseInteger(values[5], "masks", line),
-      citizens: parseInteger(values[6], "citizens", line),
-      matched: parseInteger(values[7], "matched", line),
-      unmatched: parseInteger(values[8], "unmatched", line),
+      encounters: parseInteger(values[6], "encounters", line),
+      answered: parseInteger(values[7], "answered", line),
+      citizens: parseInteger(values[8], "citizens", line),
+      matched: parseInteger(values[9], "matched", line),
+      unmatched: parseInteger(values[10], "unmatched", line),
       match_rate_pct: matchRate,
     };
   });

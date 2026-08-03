@@ -4,7 +4,8 @@
   position: relative;
   display: grid;
   place-items: center;
-  min-height: calc(100svh - 34px);
+  /* หักความสูงแถบเมนู (.bar ใน AppNav.module.css) ออกจากความสูงจอ */
+  min-height: calc(100svh - 42px);
   overflow-x: hidden;
   padding: clamp(14px, 2vw, 28px) clamp(16px, 3vw, 42px) 42px;
   background:

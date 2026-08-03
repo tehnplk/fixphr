@@ -4,7 +4,7 @@ import { auth } from "@/auth";
 const PROTECTED_PAGE_PREFIXES = ["/report", "/sum/type", "/sum/comp", "/manage-user"];
 const PROTECTED_API_PREFIXES = ["/api/report"];
 // เฉพาะ role super/admin เท่านั้น
-const MANAGER_PAGE_PREFIXES = ["/manage-user", "/sum/comp"];
+const MANAGER_PAGE_PREFIXES = ["/manage-user"];
 
 function matchesPrefix(pathname: string, prefixes: string[]) {
   return prefixes.some((prefix) => pathname === prefix || pathname.startsWith(`${prefix}/`));

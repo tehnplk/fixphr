@@ -65,6 +65,7 @@ export default function TypeSummaryTable({
         <table className={styles.typeTable}>
           <thead>
             <tr>
+              <th className={styles.indexHead} scope="col">#</th>
               <th scope="col">อำเภอ</th>
               {columns.map((column) => (
                 <th key={column.code} scope="col" title={column.label}>
@@ -78,8 +79,9 @@ export default function TypeSummaryTable({
             </tr>
           </thead>
           <tbody>
-            {rows.map((row) => (
+            {rows.map((row, index) => (
               <tr key={row.district}>
+                <td className={styles.rowIndex}>{index + 1}</td>
                 <th scope="row">
                   <button
                     aria-haspopup="dialog"
@@ -97,6 +99,7 @@ export default function TypeSummaryTable({
               </tr>
             ))}
             <tr className={styles.totalRow}>
+              <td className={styles.rowIndex} />
               <th scope="row">รวม</th>
               {columnTotals.map((count, index) => (
                 <td key={columns[index].code}>{formatNumber(count)}</td>

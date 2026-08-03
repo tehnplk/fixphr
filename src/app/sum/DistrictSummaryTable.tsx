@@ -53,6 +53,7 @@ export default function DistrictSummaryTable({ rows }: { rows: DistrictSummaryRo
       <table>
         <thead>
           <tr>
+            <th className={styles.indexHead} scope="col">#</th>
             <th scope="col">อำเภอ</th>
             <th scope="col">จำนวนรายการ</th>
             <th scope="col">ตรวจสอบแล้ว</th>
@@ -60,8 +61,9 @@ export default function DistrictSummaryTable({ rows }: { rows: DistrictSummaryRo
           </tr>
         </thead>
         <tbody>
-          {rows.map((row) => (
+          {rows.map((row, index) => (
             <tr key={row.district}>
+              <td className={styles.rowIndex}>{index + 1}</td>
               <th scope="row">
                 <button
                   aria-haspopup="dialog"
@@ -78,6 +80,7 @@ export default function DistrictSummaryTable({ rows }: { rows: DistrictSummaryRo
             </tr>
           ))}
           <tr className={styles.totalRow}>
+            <td className={styles.rowIndex} />
             <th scope="row">รวม</th>
             <td>{formatNumber(grandTarget)}</td>
             <td>{formatNumber(grandResult)}</td>
