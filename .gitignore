@@ -52,3 +52,6 @@ DEPLOY_PROD.md
 
 # local decryption helper (not for the public repo)
 scripts/decrypt_cid.py
+
+# claude stop hook log
+.claude/stop-log.txt

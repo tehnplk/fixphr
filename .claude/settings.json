@@ -1,0 +1,17 @@
+{
+  "hooks": {
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "f=\"${CLAUDE_PROJECT_DIR:-$PWD}/.claude/stop-log.txt\"; sid=$(sed -n 's/.*\"session_id\"[[:space:]]*:[[:space:]]*\"\\([^\"]*\\)\".*/\\1/p'); printf '%s  stop  session=%s\\n' \"$(date '+%Y-%m-%d %H:%M:%S')\" \"$sid\" >> \"$f\"; (notepad.exe \"$(cygpath -w \"$f\")\" >/dev/null 2>&1 &)",
+            "async": true,
+            "timeout": 10,
+            "statusMessage": "Opening stop log in Notepad..."
+          }
+        ]
+      }
+    ]
+  }
+}
