@@ -480,8 +480,15 @@ export default async function SummaryPage({
                       data: districtRows.map((row) => (
                         row.target === 0 ? 0 : (row.result / row.target) * 100
                       )),
-                      backgroundColor: "rgba(18, 96, 73, .78)",
-                      borderColor: "#126049",
+                      // สีแท่งตรงกับ badge ร้อยละในตาราง — เขียวเมื่อครบ 100 แดงเมื่อยังไม่ครบ
+                      backgroundColor: districtRows.map((row) => (
+                        row.target > 0 && row.result >= row.target
+                          ? "rgba(22, 192, 96, .78)"
+                          : "rgba(217, 45, 32, .78)"
+                      )),
+                      borderColor: districtRows.map((row) => (
+                        row.target > 0 && row.result >= row.target ? "#16c060" : "#d92d20"
+                      )),
                     },
                   ]}
                   valueFormat="percent"
