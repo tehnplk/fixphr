@@ -30,6 +30,15 @@ function formatNumber(value: number) {
   return value.toLocaleString("th-TH");
 }
 
+// คอลัมน์ 4) ปรับปรุงข้อมูลที่เกี่ยวข้องกับ KPI และ 5) ปรับปรุงข้อมูลเพื่อการเบิกจ่าย
+// ใส่ badge เฉพาะแถวอำเภอในตารางหน้าแรก ค่า 0 ยังเป็นขีดจางเหมือนคอลัมน์อื่น
+const BADGED_COLUMN_CODES = new Set(["4", "5"]);
+
+function formatBadgedNumber(value: number) {
+  if (value === 0) return <span className={styles.zeroCell}>-</span>;
+  return <span className={styles.countBadge}>{value.toLocaleString("th-TH")}</span>;
+}
+
 // label ใน inspection-result.json ขึ้นต้นด้วยเลขข้อ เช่น "3.1) Human Error โดยเจ้าหน้าที่"
 // หัวตารางแยกเลขข้อไว้บรรทัดแรก แล้วให้ข้อความตัดบรรทัดเองด้านล่าง
 function stripResultPrefix(label: string) {
@@ -93,7 +102,11 @@ export default function TypeSummaryTable({
                   </button>
                 </th>
                 {row.cells.map((count, index) => (
-                  <td key={columns[index].code}>{formatNumber(count)}</td>
+                  <td key={columns[index].code}>
+                    {BADGED_COLUMN_CODES.has(columns[index].code)
+                      ? formatBadgedNumber(count)
+                      : formatNumber(count)}
+                  </td>
                 ))}
                 <td>{formatNumber(row.total)}</td>
               </tr>

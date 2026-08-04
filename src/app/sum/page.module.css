@@ -407,6 +407,41 @@
   box-shadow: 0 1px 3px rgba(120, 66, 10, .28);
 }
 
+/* ร้อยละในตารางหน้าแรก — เขียวเมื่อครบ 100 แดงเมื่อยังตรวจสอบไม่ครบ */
+.percentBadge,
+.percentBadgeDone {
+  display: inline-block;
+  min-width: 56px;
+  padding: 3px 9px;
+  color: #fff;
+  font: inherit;
+  text-align: center;
+  border-radius: 999px;
+}
+
+.percentBadge {
+  background: #d92d20;
+  box-shadow: 0 1px 3px rgba(122, 26, 18, .28);
+}
+
+.percentBadgeDone {
+  background: #16c060;
+  box-shadow: 0 1px 3px rgba(11, 92, 52, .28);
+}
+
+/* คอลัมน์ 4) KPI และ 5) เบิกจ่าย — badge แดงให้เห็นเด่นเมื่อมีรายการ */
+.countBadge {
+  display: inline-block;
+  min-width: 40px;
+  padding: 3px 9px;
+  color: #fff;
+  font: inherit;
+  text-align: center;
+  background: #d92d20;
+  border-radius: 999px;
+  box-shadow: 0 1px 3px rgba(122, 26, 18, .28);
+}
+
 /* zebra striping — ตั้งที่ระดับ cell เพราะ th/td มีพื้นหลังของตัวเองอยู่แล้ว
    วางไว้ก่อน :hover และ .totalRow เพื่อให้สองกฎนั้นยังชนะ */
 .tableWrap tbody tr:nth-child(even) th {

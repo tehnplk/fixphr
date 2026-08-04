@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { FileText, X } from "lucide-react";
+import { Check, FileText, X } from "lucide-react";
 import styles from "./page.module.css";
 
 export type DistrictHospitalRow = {
@@ -33,6 +33,27 @@ function formatPercent(value: number, total: number) {
   });
 }
 
+/* หัวคอลัมน์ = ไอคอน + ข้อความ ไอคอนเป็นภาพประกอบ ข้อความยังเป็นตัวบอกความหมายจริง */
+function ColumnHead({ icon: Icon, label }: { icon: typeof Check; label: string }) {
+  return (
+    <span className={styles.thLabel}>
+      <Icon aria-hidden="true" />
+      {label}
+    </span>
+  );
+}
+
+// ใช้กับแถวอำเภอในตารางหน้าแรกเท่านั้น — badge เขียวเมื่อครบ 100 แดงเมื่อยังไม่ครบ
+// (แถวรวมและโมดัลรายหน่วยบริการยังเป็นตัวเลขเปล่า)
+function renderPercentBadge(value: number, total: number) {
+  const complete = total > 0 && value >= total;
+  return (
+    <span className={complete ? styles.percentBadgeDone : styles.percentBadge}>
+      {formatPercent(value, total)}
+    </span>
+  );
+}
+
 export default function DistrictSummaryTable({ rows }: { rows: DistrictSummaryRow[] }) {
   const [selectedDistrict, setSelectedDistrict] = useState<string | null>(null);
   const dialogRef = useRef<HTMLDialogElement>(null);
@@ -55,8 +76,8 @@ export default function DistrictSummaryTable({ rows }: { rows: DistrictSummaryRo
           <tr>
             <th className={styles.indexHead} scope="col">#</th>
             <th scope="col">อำเภอ</th>
-            <th scope="col">จำนวนรายการ</th>
-            <th scope="col">ตรวจสอบแล้ว</th>
+            <th scope="col"><ColumnHead icon={FileText} label="จำนวนรายการ" /></th>
+            <th scope="col"><ColumnHead icon={Check} label="ตรวจสอบแล้ว" /></th>
             <th scope="col">ร้อยละ</th>
           </tr>
         </thead>
@@ -76,7 +97,7 @@ export default function DistrictSummaryTable({ rows }: { rows: DistrictSummaryRo
               </th>
               <td>{formatNumber(row.target)}</td>
               <td>{formatNumber(row.result)}</td>
-              <td>{formatPercent(row.result, row.target)}</td>
+              <td>{renderPercentBadge(row.result, row.target)}</td>
             </tr>
           ))}
           <tr className={styles.totalRow}>
@@ -84,6 +105,7 @@ export default function DistrictSummaryTable({ rows }: { rows: DistrictSummaryRo
             <th scope="row">รวม</th>
             <td>{formatNumber(grandTarget)}</td>
             <td>{formatNumber(grandResult)}</td>
+            {/* แถวรวมเป็นตัวเลขเปล่า — badge ใช้เฉพาะแถวอำเภอ */}
             <td>{formatPercent(grandResult, grandTarget)}</td>
           </tr>
         </tbody>
