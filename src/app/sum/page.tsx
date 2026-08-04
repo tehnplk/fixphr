@@ -477,8 +477,9 @@ export default async function SummaryPage({
                   series={[
                     {
                       label: "ผลงานเทียบเป้าหมาย",
+                      // cap ที่ 100 ให้ตรงกับคอลัมน์ร้อยละในตาราง (อำเภอที่ตรวจสอบเกินจำนวนรายการ)
                       data: districtRows.map((row) => (
-                        row.target === 0 ? 0 : (row.result / row.target) * 100
+                        row.target === 0 ? 0 : Math.min((row.result / row.target) * 100, 100)
                       )),
                       // สีแท่งตรงกับ badge ร้อยละในตาราง — เขียวเมื่อครบ 100 แดงเมื่อยังไม่ครบ
                       backgroundColor: districtRows.map((row) => (

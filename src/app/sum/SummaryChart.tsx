@@ -1,7 +1,9 @@
 "use client";
 
-import Chart from "chart.js/auto";
+import Chart, { type Plugin } from "chart.js/auto";
 import { useEffect, useRef } from "react";
+
+const CHART_FONT = '"Noto Sans Thai", "Leelawadee UI", Tahoma, sans-serif';
 
 type ChartSeries = {
   label: string;
@@ -27,6 +29,43 @@ export default function SummaryChart({
 
   useEffect(() => {
     if (!canvasRef.current) return;
+
+    // chart.js ไม่มีป้ายค่าในตัว — วาดเองที่ปลายแท่งหลังวาดแท่งเสร็จ
+    // แท่งที่ยาวจนชิดขอบขวาไม่มีที่วางป้ายด้านนอก จึงพลิกไปวางในแท่งด้วยตัวอักษรขาว
+    const barValueLabels: Plugin<"bar"> = {
+      id: "barValueLabels",
+      afterDatasetsDraw(chart) {
+        const { ctx, chartArea } = chart;
+        ctx.save();
+        ctx.font = `700 10px ${CHART_FONT}`;
+        ctx.textBaseline = "middle";
+
+        chart.data.datasets.forEach((dataset, datasetIndex) => {
+          const meta = chart.getDatasetMeta(datasetIndex);
+          if (meta.hidden) return;
+
+          meta.data.forEach((element, index) => {
+            const value = Number(dataset.data[index] ?? 0);
+            // ครบ 100 แสดงเป็นจำนวนเต็ม ค่าอื่นยังเป็นทศนิยม 2 ตำแหน่ง
+            const text = valueFormat === "percent"
+              ? `${value.toLocaleString("th-TH", {
+                  minimumFractionDigits: value >= 100 ? 0 : 2,
+                  maximumFractionDigits: value >= 100 ? 0 : 2,
+                })}%`
+              : value.toLocaleString("th-TH");
+            // แท่งที่ค่าล้น max ของแกนจะถูก clip — ยึดป้ายไว้ที่ขอบพื้นที่กราฟ ไม่ให้หลุดออกนอกผ้าใบ
+            const barEnd = Math.min(element.x, chartArea.right);
+            const fitsOutside = barEnd + 6 + ctx.measureText(text).width <= chartArea.right;
+
+            ctx.fillStyle = fitsOutside ? "#17352b" : "#fff";
+            ctx.textAlign = fitsOutside ? "left" : "right";
+            ctx.fillText(text, fitsOutside ? barEnd + 6 : barEnd - 6, element.y);
+          });
+        });
+
+        ctx.restore();
+      },
+    };
 
     const chart = chartType === "pie"
       ? new Chart(canvasRef.current, {
@@ -74,6 +113,7 @@ export default function SummaryChart({
         })
       : new Chart(canvasRef.current, {
           type: "bar",
+          plugins: [barValueLabels],
           data: {
             labels,
             datasets: series.map((dataset) => ({
