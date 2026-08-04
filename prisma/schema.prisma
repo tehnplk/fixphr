@@ -76,6 +76,7 @@ model Report {
   hn                String?  @db.Text
   comp_date         String?  @db.VarChar(20)
   vstdate           String?  @db.VarChar(20)
+  visit_type        String?  @db.Text
   issue             String?  @db.Text
   inspection_result String?  @db.Text
   note              String?  @db.Text

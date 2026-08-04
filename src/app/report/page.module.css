@@ -265,10 +265,15 @@
   width: 132px;
 }
 
+.visitTypeColumn {
+  width: 150px;
+}
+
+/* ตัวเลขที่หักออกคือผลรวมความกว้างคงที่ของคอลัมน์อื่นทั้งหมด */
 .issueColumn,
 .resultColumn,
 .noteColumn {
-  width: calc((100% - 674px) / 3);
+  width: calc((100% - 824px) / 3);
 }
 
 .finalColumn {

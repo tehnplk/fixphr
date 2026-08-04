@@ -3,6 +3,7 @@ import { getPrisma } from "@/lib/prisma";
 import { decryptHn } from "@/lib/hn-crypto";
 import inspectionResults from "../../../inspection-result.json";
 import finalResults from "../../../final-result.json";
+import visitTypes from "../../../visit_type.json";
 import ReportTable from "./ReportTable";
 import styles from "./page.module.css";
 
@@ -44,6 +45,7 @@ export default async function ReportPage({
       hn: decryptHn(report.hn),
       comp_date: report.comp_date ?? "",
       vstdate: report.vstdate ?? "",
+      visit_type: report.visit_type ?? "",
       issue: report.issue ?? "",
       inspection_result: report.inspection_result ?? "",
       note: report.note ?? "",
@@ -61,6 +63,7 @@ export default async function ReportPage({
           initialRows={rows}
           inspectionResults={inspectionResults}
           finalResults={finalResults}
+          visitTypes={visitTypes}
           total={total}
         />
       </section>

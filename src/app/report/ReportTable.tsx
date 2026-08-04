@@ -10,6 +10,7 @@ type ReportRow = {
   hn: string;
   comp_date: string;
   vstdate: string;
+  visit_type: string;
   issue: string;
   inspection_result: string;
   note: string;
@@ -43,6 +44,7 @@ export default function ReportTable({
   initialRows,
   inspectionResults,
   finalResults,
+  visitTypes,
   total,
 }: {
   hospitalCode: string;
@@ -50,6 +52,7 @@ export default function ReportTable({
   initialRows: ReportRow[];
   inspectionResults: InspectionResult[];
   finalResults: InspectionResult[];
+  visitTypes: InspectionResult[];
   total: number;
 }) {
   const [rows, setRows] = useState(initialRows);
@@ -71,6 +74,7 @@ export default function ReportTable({
         hn: "",
         comp_date: "",
         vstdate: "",
+        visit_type: "",
         issue: "",
         inspection_result: "",
         note: "",
@@ -129,6 +133,7 @@ export default function ReportTable({
       hn: "",
       comp_date: "",
       vstdate: "",
+      visit_type: "",
       issue: "",
       inspection_result: "",
       note: "",
@@ -224,6 +229,7 @@ export default function ReportTable({
           <col className={styles.vstdateColumn} />
           <col className={styles.hnColumn} />
           <col className={styles.vstdateColumn} />
+          <col className={styles.visitTypeColumn} />
           <col className={styles.issueColumn} />
           <col className={styles.resultColumn} />
           <col className={styles.noteColumn} />
@@ -236,6 +242,7 @@ export default function ReportTable({
             <th scope="col">วันส่งคำร้อง</th>
             <th scope="col">HN</th>
             <th scope="col">VISIT-DATE</th>
+            <th scope="col">ประเภท visit</th>
             <th scope="col">ประเด็น</th>
             <th scope="col">ผลการตรวจสอบ</th>
             <th scope="col">หมายเหตุ</th>
@@ -285,6 +292,21 @@ export default function ReportTable({
                     type="date"
                     value={row.vstdate}
                   />
+                </td>
+                <td className={styles.editableCell}>
+                  <select
+                    aria-label={`ประเภท visit รายการที่ ${row.item_no}`}
+                    onChange={(event) =>
+                      updateRow({ ...row, visit_type: event.target.value })}
+                    value={row.visit_type}
+                  >
+                    <option value="" />
+                    {visitTypes.map((visitType) => (
+                      <option key={visitType.code} value={visitType.code}>
+                        {visitType.label}
+                      </option>
+                    ))}
+                  </select>
                 </td>
                 <td className={styles.editableCell}>
                   <input
@@ -357,7 +379,7 @@ export default function ReportTable({
             );
           })}
           <tr className={styles.addRow}>
-            <td colSpan={9}>
+            <td colSpan={10}>
               <button onClick={addRow} type="button">
                 <Plus aria-hidden="true" />
                 เพิ่มรายการ
