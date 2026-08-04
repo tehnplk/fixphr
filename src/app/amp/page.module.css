@@ -126,24 +126,50 @@
   background: #edf2ec;
 }
 
-.tableWrap thead th:not(:first-child) {
+/* หัวคอลัมน์วันที่/รวม เอียง 45 องศา จึงต้องสูงเป็นพิเศษ — ยกเว้นสองคอลัมน์
+   แรก (# กับ อำเภอ) ที่เป็นหัวแนวนอนปกติ */
+.tableWrap thead th:not(.indexColumn):not(.nameColumn) {
   position: relative;
   height: 88px;
   padding: 8px 2px 12px;
   vertical-align: bottom;
 }
 
-.tableWrap th:first-child {
+.tableWrap .indexColumn {
   position: sticky;
   left: 0;
   z-index: 2;
-  width: 120px;
+  width: 34px;
+  padding-inline: 6px;
+  text-align: center;
+}
+
+/* เลขลำดับเป็นข้อมูลรอง — เล็กและจางกว่าตัวเลขในตาราง */
+.tableWrap tbody td.indexColumn {
+  color: #8fa39a;
+  font-size: 10px;
+  font-weight: 700;
+}
+
+/* คอลัมน์ชื่อ (อำเภอ ที่ /amp, โรงพยาบาล ที่ /hos) — ความกว้างปล่อยให้แต่ละ
+   หน้ากำหนดเอง เพราะ /hos ต้องการพื้นที่มากกว่าสำหรับชื่อหน่วยบริการ */
+.tableWrap th.nameColumn {
+  position: sticky;
+  left: 0;
+  z-index: 2;
   padding-left: 10px;
   text-align: left;
   box-shadow: 9px 0 16px rgba(23, 53, 43, .05);
 }
 
-.tableWrap thead th:first-child {
+/* เฉพาะตารางที่มีคอลัมน์ # นำหน้า ต้องเลื่อน sticky ให้พ้นคอลัมน์นั้น */
+.tableWrap .indexColumn + th.nameColumn {
+  left: 34px;
+  width: 138px;
+}
+
+.tableWrap thead th.indexColumn,
+.tableWrap thead th.nameColumn {
   z-index: 3;
 }
 
@@ -151,11 +177,30 @@
   background: #f7f9f5;
 }
 
+/* ขนาดเดียวกับชื่ออำเภอในตารางสรุป (/sum/*) เพื่อให้อ่านเป็นชุดเดียวกัน */
 .districtName {
   color: var(--deep);
-  font-size: 11px;
+  font-size: 14px;
   font-weight: 800;
   white-space: nowrap;
+}
+
+/* ชื่ออำเภอคลิกไปหน้ารายชื่อโรงพยาบาลของอำเภอนั้น — เส้นประบอกว่ากดได้
+   โดยไม่ต้องใช้สีลิงก์เต็มรูปแบบที่จะตีกับโทนตาราง */
+.districtLink {
+  color: var(--green);
+  border-bottom: 1px dashed rgba(18, 96, 73, .4);
+  text-decoration: none;
+}
+
+.districtLink:hover {
+  color: #0d4f3d;
+  border-bottom-style: solid;
+}
+
+.districtLink:focus-visible {
+  outline: 3px solid rgba(18, 96, 73, .2);
+  outline-offset: 2px;
 }
 
 .tableWrap tbody td {
@@ -234,29 +279,6 @@
   background: #dbe5d6;
 }
 
-.tableWrap .actionColumn {
-  width: 38px;
-  padding-inline: 4px;
-  text-align: center;
-}
-
-.actionLink {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--green);
-}
-
-.actionLink:hover {
-  color: var(--deep);
-}
-
-.actionLink svg {
-  width: 17px;
-  height: 17px;
-  vertical-align: middle;
-}
-
 .cellValue {
   display: inline-flex;
   align-items: baseline;
@@ -295,13 +317,20 @@
     border-top: 1px solid rgba(18, 96, 73, .12);
   }
 
-  .tableWrap th:first-child {
-    width: 90px;
+  .tableWrap .indexColumn {
+    width: 26px;
+    padding-inline: 3px;
   }
 
+  .tableWrap .indexColumn + th.nameColumn {
+    left: 26px;
+    width: 96px;
+  }
+
+  /* จอแคบ /sum/* ย่อชื่ออำเภอเหลือ 11px เหมือนกัน */
   .districtName {
     overflow: hidden;
-    font-size: 10px;
+    font-size: 11px;
     text-overflow: ellipsis;
   }
 

@@ -1,4 +1,4 @@
-import { CalendarRange, FileText } from "lucide-react";
+import { CalendarRange } from "lucide-react";
 import Link from "next/link";
 import { getPrisma } from "@/lib/prisma";
 import ignoredHospitals from "../../../hos-ignore.json";
@@ -263,7 +263,8 @@ export default async function TrendPage() {
             <table>
               <thead>
                 <tr>
-                  <th scope="col">อำเภอ</th>
+                  <th className={styles.indexColumn} scope="col">#</th>
+                  <th className={styles.nameColumn} scope="col">อำเภอ</th>
                   {dates.map((date) => {
                     const label = formatColumnDate(date);
                     const key = dateKey(date);
@@ -287,18 +288,25 @@ export default async function TrendPage() {
                     );
                   })}
                   <th className={styles.totalColumn} scope="col">รวม</th>
-                  <th aria-label="การดำเนินการ" className={styles.actionColumn} scope="col" />
                 </tr>
               </thead>
               <tbody>
-                {DISTRICTS.map((district) => {
+                {DISTRICTS.map((district, index) => {
                   const districtTotal = sumCellValues(
                     dates.map((date) => getDisplayValue(district, date)),
                   );
 
                   return (
                     <tr key={district}>
-                    <th className={styles.districtName} scope="row">{district}</th>
+                    <td className={styles.indexColumn}>{index + 1}</td>
+                    <th className={`${styles.nameColumn} ${styles.districtName}`} scope="row">
+                      <Link
+                        className={styles.districtLink}
+                        href={{ pathname: "/hos", query: { amp: district } }}
+                      >
+                        {district}
+                      </Link>
+                    </th>
                     {dates.map((date) => {
                       const key = dateKey(date);
                       const isToday = key === todayKey;
@@ -314,20 +322,12 @@ export default async function TrendPage() {
                       );
                     })}
                     <td className={styles.totalColumn}>{renderCellValue(districtTotal)}</td>
-                    <td className={styles.actionColumn}>
-                      <Link
-                        aria-label={`เปิดรายชื่อโรงพยาบาล อำเภอ${district}`}
-                        className={styles.actionLink}
-                        href={{ pathname: "/hos", query: { amp: district } }}
-                      >
-                        <FileText aria-hidden="true" />
-                      </Link>
-                    </td>
                   </tr>
                   );
                 })}
                 <tr className={styles.totalRow}>
-                  <th scope="row">รวม</th>
+                  <td className={styles.indexColumn} />
+                  <th className={styles.nameColumn} scope="row">รวม</th>
                   {dates.map((date) => {
                     const key = dateKey(date);
                     const isToday = key === todayKey;
@@ -340,7 +340,6 @@ export default async function TrendPage() {
                     );
                   })}
                   <td className={styles.totalColumn}>{renderCellValue(grandTotal)}</td>
-                  <td className={styles.actionColumn} />
                 </tr>
               </tbody>
             </table>

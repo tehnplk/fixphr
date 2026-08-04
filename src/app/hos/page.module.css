@@ -1,5 +1,12 @@
 .hospitalTable th:first-child {
-  width: 250px;
+  width: 210px;
+}
+
+/* คอลัมน์รวมกับคอลัมน์ปุ่มกว้างเท่ากัน เพื่อให้ท้ายตารางดูสมดุลสองข้าง —
+   ความกว้างที่คืนมาได้มาจากคอลัมน์ชื่อ รพ. ที่แคบลง */
+.hospitalTable .totalColumn,
+.hospitalTable .actionColumn {
+  width: 64px;
 }
 
 .hospitalName {
@@ -24,7 +31,6 @@
 }
 
 .hospitalTable .actionColumn {
-  width: 38px;
   padding-inline: 4px;
   text-align: center;
 }

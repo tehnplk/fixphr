@@ -25,7 +25,7 @@
   align-items: center;
   gap: 11px;
   color: #7c9188;
-  font-size: 12px;
+  font-size: 15px;
   font-weight: 700;
 }
 
@@ -40,8 +40,8 @@
 }
 
 .nav a svg {
-  width: 14px;
-  height: 14px;
+  width: 16px;
+  height: 16px;
 }
 
 .nav a:hover {
@@ -56,13 +56,13 @@
   display: flex;
   align-items: center;
   margin-left: auto;
-  font-size: 12px;
+  font-size: 15px;
   font-weight: 700;
 }
 
 .right svg {
-  width: 15px;
-  height: 15px;
+  width: 17px;
+  height: 17px;
 }
 
 .login {
@@ -90,7 +90,7 @@
   border: 0;
   background: none;
   color: #3f5f52;
-  font-size: 12px;
+  font-size: 15px;
   font-weight: 700;
   cursor: pointer;
 }
@@ -100,8 +100,8 @@
 }
 
 .profileButton svg {
-  width: 14px;
-  height: 14px;
+  width: 16px;
+  height: 16px;
   transition: transform .15s ease;
 }
 
@@ -135,7 +135,7 @@
   border-radius: 999px;
   color: #0f5540;
   background: rgba(255, 255, 255, .6);
-  font: 700 11px ui-monospace, SFMono-Regular, Consolas, monospace;
+  font: 700 14px ui-monospace, SFMono-Regular, Consolas, monospace;
 }
 
 .dropdown {

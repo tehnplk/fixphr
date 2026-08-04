@@ -306,7 +306,7 @@ export default async function HospitalPage({
             <table className={styles.hospitalTable}>
               <thead>
                 <tr>
-                  <th aria-label="โรงพยาบาล" scope="col" />
+                  <th aria-label="โรงพยาบาล" className={ampStyles.nameColumn} scope="col" />
                   <th className={styles.affiliationColumn} scope="col">สังกัด</th>
                   {dates.map((date) => {
                     const label = formatColumnDate(date);
@@ -330,7 +330,7 @@ export default async function HospitalPage({
                       </th>
                     );
                   })}
-                  <th className={ampStyles.totalColumn} scope="col">รวม</th>
+                  <th className={`${ampStyles.totalColumn} ${styles.totalColumn}`} scope="col">รวม</th>
                   <th aria-label="การดำเนินการ" className={styles.actionColumn} scope="col" />
                 </tr>
               </thead>
@@ -342,7 +342,7 @@ export default async function HospitalPage({
 
                   return (
                     <tr key={hospital.code}>
-                      <th className={styles.hospitalName} scope="row">
+                      <th className={`${ampStyles.nameColumn} ${styles.hospitalName}`} scope="row">
                         <span>{hospital.code}</span> - {hospital.name}
                       </th>
                       <td className={styles.affiliationColumn}>{hospital.affiliation}</td>
@@ -360,7 +360,7 @@ export default async function HospitalPage({
                           </td>
                         );
                       })}
-                      <td className={ampStyles.totalColumn}>{renderCellValue(hospitalTotal)}</td>
+                      <td className={`${ampStyles.totalColumn} ${styles.totalColumn}`}>{renderCellValue(hospitalTotal)}</td>
                       <td className={styles.actionColumn}>
                         <Link
                           aria-label={`เปิดรายงาน ${hospital.name}`}
@@ -374,7 +374,7 @@ export default async function HospitalPage({
                   );
                 })}
                 <tr className={ampStyles.totalRow}>
-                  <th scope="row">รวม</th>
+                  <th className={ampStyles.nameColumn} scope="row">รวม</th>
                   <td className={styles.affiliationColumn} />
                   {dates.map((date) => {
                     const key = dateKey(date);
@@ -386,7 +386,7 @@ export default async function HospitalPage({
                       </td>
                     );
                   })}
-                  <td className={ampStyles.totalColumn}>{renderCellValue(grandTotal)}</td>
+                  <td className={`${ampStyles.totalColumn} ${styles.totalColumn}`}>{renderCellValue(grandTotal)}</td>
                   <td className={styles.actionColumn} />
                 </tr>
               </tbody>

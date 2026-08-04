@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { FileText, X } from "lucide-react";
+import { FileText, MessageCircle, X } from "lucide-react";
 import styles from "./page.module.css";
 
 export type CompHospitalRow = {
@@ -46,6 +46,16 @@ function formatAnsweredPercent(answered: number, complaints: number) {
   });
 }
 
+/* หัวกลุ่ม = ไอคอน + ข้อความ ไอคอนเป็นภาพประกอบ ข้อความยังเป็นตัวบอกความหมายจริง */
+function GroupHead({ icon: Icon, label }: { icon: typeof FileText; label: string }) {
+  return (
+    <span className={styles.thLabel}>
+      <Icon aria-hidden="true" />
+      {label}
+    </span>
+  );
+}
+
 export default function CompSummaryTable({ rows }: { rows: CompSummaryRow[] }) {
   const [selectedDistrict, setSelectedDistrict] = useState<string | null>(null);
   const dialogRef = useRef<HTMLDialogElement>(null);
@@ -76,8 +86,12 @@ export default function CompSummaryTable({ rows }: { rows: CompSummaryRow[] }) {
           <tr className={styles.groupRow}>
             <th className={styles.indexHead} rowSpan={2} scope="col">#</th>
             <th rowSpan={2} scope="col">อำเภอ</th>
-            <th colSpan={3} scope="colgroup">คำร้อง</th>
-            <th colSpan={2} scope="colgroup">ตอบกลับ</th>
+            <th colSpan={3} scope="colgroup">
+              <GroupHead icon={FileText} label="คำร้อง" />
+            </th>
+            <th colSpan={2} scope="colgroup">
+              <GroupHead icon={MessageCircle} label="ตอบกลับ" />
+            </th>
           </tr>
           <tr className={styles.subRow}>
             <th scope="col">ผู้ร้อง (คน)</th>

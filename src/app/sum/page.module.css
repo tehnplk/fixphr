@@ -214,10 +214,6 @@
   width: calc((100% - 36px) / 6);
 }
 
-.tableWrap .finalTable tbody th {
-  font-size: 14px;
-}
-
 /* ตัวเลข/badge วางกลางช่อง และหัวคอลัมน์จัดกลางตามให้ตรงแนวกัน (คอลัมน์อำเภอยังชิดซ้าย) */
 .tableWrap .finalTable thead th,
 .tableWrap .finalTable tbody td {
@@ -258,9 +254,18 @@
   width: calc((100% - 36px) * .32);
 }
 
-/* ชื่อกลุ่มจัดกลางคร่อมคอลัมน์ย่อย ส่วนหัวคอลัมน์ย่อยชิดขวาให้ตรงแนวกับตัวเลข */
+/* ชื่อกลุ่มจัดกลางคร่อมคอลัมน์ย่อย ส่วนหัวคอลัมน์ย่อยชิดขวาให้ตรงแนวกับตัวเลข
+   และตัวใหญ่/หนากว่าหัวคอลัมน์ย่อย เพื่อให้อ่านลำดับชั้นของหัวตารางสองชั้นออกทันที */
 .tableWrap .compTable thead .groupRow th[colspan] {
+  font-size: 15px;
+  font-weight: 900;
   text-align: center;
+}
+
+/* ไอคอนโตตามข้อความกลุ่ม ไม่งั้นจะดูเล็กลอย ๆ ข้างตัวอักษร 15px */
+.tableWrap .compTable thead .groupRow th[colspan] .thLabel svg {
+  width: 17px;
+  height: 17px;
 }
 
 .tableWrap .compTable thead .subRow th {
@@ -326,9 +331,11 @@
   overflow-wrap: break-word;
 }
 
+/* ชื่ออำเภอใช้ขนาดเดียวกันทุกแท็บ (14px) เพื่อให้สลับแท็บแล้วคอลัมน์แรก
+   ไม่กระโดด — ตารางการดำเนินการเคยตั้งค่านี้ไว้เองก่อนจะยกมาเป็นค่ากลาง */
 .tableWrap tbody th {
   color: var(--deep);
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 700;
   background: #f8faf7;
 }
