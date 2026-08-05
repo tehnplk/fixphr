@@ -4,6 +4,9 @@ const MAX_FILE_SIZE = 5 * 1024 * 1024;
 const MAX_ROWS = 10_000;
 
 const EXPECTED_HEADERS = [
+  "rank",
+  "region_id",
+  "region_name",
   "province_name",
   "district_name",
   "hospital_code",
@@ -11,14 +14,35 @@ const EXPECTED_HEADERS = [
   "hospital_type",
   "masks",
   "encounters",
-  "answered",
   "citizens",
+  "masks_per_citizen",
+  "answered",
+  "unanswered",
+  "answered_pct",
+  "median_reply_hours",
+  "p90_reply_hours",
+  "oldest_unanswered_days",
   "matched",
   "unmatched",
   "match_rate_pct",
+  "masks_prior_90d",
+  "masks_recent_90d",
+  "change_90d_pct",
+  "share_pct",
+  "first_date_be",
+  "last_date_be",
 ] as const;
 
+// ดัชนีคอลัมน์อ่านจาก EXPECTED_HEADERS แทนการนับตำแหน่งด้วยมือ — เพิ่ม/ย้ายคอลัมน์
+// ในอนาคตแล้วไม่ต้องไล่แก้เลขทุกจุด
+const COLUMN = Object.fromEntries(
+  EXPECTED_HEADERS.map((header, index) => [header, index]),
+) as Record<(typeof EXPECTED_HEADERS)[number], number>;
+
 type ImportRow = {
+  rank: number;
+  region_id: number;
+  region_name: string;
   province_name: string;
   district_name: string;
   hospital_code: string;
@@ -26,11 +50,23 @@ type ImportRow = {
   hospital_type: string;
   masks: number;
   encounters: number;
-  answered: number;
   citizens: number;
+  masks_per_citizen: string;
+  answered: number;
+  unanswered: number;
+  answered_pct: string;
+  median_reply_hours: string | null;
+  p90_reply_hours: string | null;
+  oldest_unanswered_days: string | null;
   matched: number;
   unmatched: number;
   match_rate_pct: string;
+  masks_prior_90d: number;
+  masks_recent_90d: number;
+  change_90d_pct: string | null;
+  share_pct: string;
+  first_date_be: string;
+  last_date_be: string;
 };
 
 class UploadValidationError extends Error {}
@@ -89,6 +125,49 @@ function parseInteger(value: string, field: string, line: number) {
   return parsed;
 }
 
+// Decimal ทุกตัวเก็บเป็นสตริงแล้วส่งให้ Prisma แปลงเอง เพื่อไม่ให้ปัดเศษหายระหว่างทาง
+function parseDecimal(
+  value: string,
+  field: string,
+  line: number,
+  { scale, min, max, allowEmpty = false }: {
+    scale: number;
+    min: number;
+    max: number;
+    allowEmpty?: boolean;
+  },
+) {
+  if (value === "") {
+    if (allowEmpty) return null;
+    throw new UploadValidationError(`บรรทัด ${line}: ${field} ห้ามเว้นว่าง`);
+  }
+
+  const pattern = new RegExp(`^-?\\d+(?:\\.\\d{1,${scale}})?$`);
+  if (!pattern.test(value)) {
+    throw new UploadValidationError(
+      `บรรทัด ${line}: ${field} ต้องเป็นตัวเลขทศนิยมไม่เกิน ${scale} ตำแหน่ง`,
+    );
+  }
+
+  const parsed = Number(value);
+  if (parsed < min || parsed > max) {
+    throw new UploadValidationError(`บรรทัด ${line}: ${field} ต้องอยู่ระหว่าง ${min} ถึง ${max}`);
+  }
+  return value;
+}
+
+function parseBuddhistDate(value: string, field: string, line: number) {
+  if (!/^\d{8}$/.test(value)) {
+    throw new UploadValidationError(`บรรทัด ${line}: ${field} ต้องอยู่ในรูปแบบ พ.ศ. 8 หลัก (YYYYMMDD)`);
+  }
+  const month = Number(value.slice(4, 6));
+  const day = Number(value.slice(6, 8));
+  if (month < 1 || month > 12 || day < 1 || day > 31) {
+    throw new UploadValidationError(`บรรทัด ${line}: ${field} มีเดือนหรือวันที่ไม่ถูกต้อง`);
+  }
+  return value;
+}
+
 function validateRows(rows: string[][]): ImportRow[] {
   if (rows.length < 2) throw new UploadValidationError("ไฟล์ต้องมี header และข้อมูลอย่างน้อย 1 แถว");
 
@@ -113,12 +192,21 @@ function validateRows(rows: string[][]): ImportRow[] {
       );
     }
 
-    const [provinceName, districtName, hospitalCode, hospitalName, hospitalType] = values;
-    if (!provinceName || !districtName || !hospitalCode || !hospitalName || !hospitalType) {
+    const regionName = values[COLUMN.region_name];
+    const provinceName = values[COLUMN.province_name];
+    const districtName = values[COLUMN.district_name];
+    const hospitalCode = values[COLUMN.hospital_code];
+    const hospitalName = values[COLUMN.hospital_name];
+    const hospitalType = values[COLUMN.hospital_type];
+
+    if (!regionName || !provinceName || !districtName || !hospitalCode || !hospitalName || !hospitalType) {
       throw new UploadValidationError(`บรรทัด ${line}: ช่องข้อมูลชื่อและรหัสห้ามเว้นว่าง`);
     }
-    if (provinceName.length > 100 || districtName.length > 100 || hospitalType.length > 100) {
-      throw new UploadValidationError(`บรรทัด ${line}: ชื่อจังหวัด อำเภอ หรือประเภทโรงพยาบาลยาวเกิน 100 ตัวอักษร`);
+    if (
+      regionName.length > 100 || provinceName.length > 100
+      || districtName.length > 100 || hospitalType.length > 100
+    ) {
+      throw new UploadValidationError(`บรรทัด ${line}: ชื่อเขต จังหวัด อำเภอ หรือประเภทโรงพยาบาลยาวเกิน 100 ตัวอักษร`);
     }
     if (hospitalCode.length > 10 || hospitalName.length > 255) {
       throw new UploadValidationError(`บรรทัด ${line}: รหัสหรือชื่อโรงพยาบาลยาวเกินกำหนด`);
@@ -128,28 +216,59 @@ function validateRows(rows: string[][]): ImportRow[] {
     }
     seenHospitalCodes.add(hospitalCode);
 
-    const matchRate = values[11];
-    if (!/^\d+(?:\.\d)?$/.test(matchRate)) {
-      throw new UploadValidationError(`บรรทัด ${line}: match_rate_pct ต้องเป็นตัวเลขทศนิยมไม่เกิน 1 ตำแหน่ง`);
-    }
-    const matchRateNumber = Number(matchRate);
-    if (matchRateNumber < 0 || matchRateNumber > 100) {
-      throw new UploadValidationError(`บรรทัด ${line}: match_rate_pct ต้องอยู่ระหว่าง 0 ถึง 100`);
-    }
-
     return {
+      rank: parseInteger(values[COLUMN.rank], "rank", line),
+      region_id: parseInteger(values[COLUMN.region_id], "region_id", line),
+      region_name: regionName,
       province_name: provinceName,
       district_name: districtName,
       hospital_code: hospitalCode,
       hospital_name: hospitalName,
       hospital_type: hospitalType,
-      masks: parseInteger(values[5], "masks", line),
-      encounters: parseInteger(values[6], "encounters", line),
-      answered: parseInteger(values[7], "answered", line),
-      citizens: parseInteger(values[8], "citizens", line),
-      matched: parseInteger(values[9], "matched", line),
-      unmatched: parseInteger(values[10], "unmatched", line),
-      match_rate_pct: matchRate,
+      masks: parseInteger(values[COLUMN.masks], "masks", line),
+      encounters: parseInteger(values[COLUMN.encounters], "encounters", line),
+      citizens: parseInteger(values[COLUMN.citizens], "citizens", line),
+      masks_per_citizen: parseDecimal(
+        values[COLUMN.masks_per_citizen], "masks_per_citizen", line,
+        { scale: 2, min: 0, max: 999_999 },
+      )!,
+      answered: parseInteger(values[COLUMN.answered], "answered", line),
+      unanswered: parseInteger(values[COLUMN.unanswered], "unanswered", line),
+      answered_pct: parseDecimal(
+        values[COLUMN.answered_pct], "answered_pct", line,
+        { scale: 1, min: 0, max: 100 },
+      )!,
+      median_reply_hours: parseDecimal(
+        values[COLUMN.median_reply_hours], "median_reply_hours", line,
+        { scale: 1, min: 0, max: 999_999_999, allowEmpty: true },
+      ),
+      p90_reply_hours: parseDecimal(
+        values[COLUMN.p90_reply_hours], "p90_reply_hours", line,
+        { scale: 1, min: 0, max: 999_999_999, allowEmpty: true },
+      ),
+      oldest_unanswered_days: parseDecimal(
+        values[COLUMN.oldest_unanswered_days], "oldest_unanswered_days", line,
+        { scale: 1, min: 0, max: 999_999_999, allowEmpty: true },
+      ),
+      matched: parseInteger(values[COLUMN.matched], "matched", line),
+      unmatched: parseInteger(values[COLUMN.unmatched], "unmatched", line),
+      match_rate_pct: parseDecimal(
+        values[COLUMN.match_rate_pct], "match_rate_pct", line,
+        { scale: 1, min: 0, max: 100 },
+      )!,
+      masks_prior_90d: parseInteger(values[COLUMN.masks_prior_90d], "masks_prior_90d", line),
+      masks_recent_90d: parseInteger(values[COLUMN.masks_recent_90d], "masks_recent_90d", line),
+      // อัตราเปลี่ยนแปลงติดลบได้ และเว้นว่างเมื่อฐาน 90 วันก่อนหน้าเป็น 0
+      change_90d_pct: parseDecimal(
+        values[COLUMN.change_90d_pct], "change_90d_pct", line,
+        { scale: 1, min: -100, max: 99_999_999_999, allowEmpty: true },
+      ),
+      share_pct: parseDecimal(
+        values[COLUMN.share_pct], "share_pct", line,
+        { scale: 2, min: 0, max: 100 },
+      )!,
+      first_date_be: parseBuddhistDate(values[COLUMN.first_date_be], "first_date_be", line),
+      last_date_be: parseBuddhistDate(values[COLUMN.last_date_be], "last_date_be", line),
     };
   });
 }

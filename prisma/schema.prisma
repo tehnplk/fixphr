@@ -50,22 +50,39 @@ model Hospital {
   @@map("hospitals")
 }
 
+// ฟิลด์เรียงตามลำดับคอลัมน์ของไฟล์ CSV ที่อัปโหลด (ดู EXPECTED_HEADERS ใน /api/upload)
+// คอลัมน์ที่ CSV เว้นว่างได้ (ค่าเฉลี่ยเวลาตอบกลับ/อายุคำร้องค้าง/อัตราเปลี่ยนแปลง) เป็น nullable
 model ComplaintHosCount {
-  province_name  String   @db.VarChar(100)
-  district_name  String   @db.VarChar(100)
-  hospital_code  String   @db.VarChar(10)
-  hospital_name  String   @db.VarChar(255)
-  hospital_type  String   @db.VarChar(100)
-  file_name      String   @db.VarChar(255)
-  masks          Int
-  encounters     Int      @default(0)
-  answered       Int      @default(0)
-  citizens       Int
-  matched        Int
-  unmatched      Int
-  match_rate_pct Decimal  @db.Decimal(5, 1)
-  date_up        DateTime @default(dbgenerated("CURRENT_DATE")) @db.Date
-  time_up        DateTime @default(dbgenerated("LOCALTIME(0)")) @db.Time(0)
+  rank                   Int      @default(0)
+  region_id              Int      @default(0)
+  region_name            String   @default("") @db.VarChar(100)
+  province_name          String   @db.VarChar(100)
+  district_name          String   @db.VarChar(100)
+  hospital_code          String   @db.VarChar(10)
+  hospital_name          String   @db.VarChar(255)
+  hospital_type          String   @db.VarChar(100)
+  file_name              String   @db.VarChar(255)
+  masks                  Int
+  encounters             Int      @default(0)
+  citizens               Int
+  masks_per_citizen      Decimal  @default(0) @db.Decimal(8, 2)
+  answered               Int      @default(0)
+  unanswered             Int      @default(0)
+  answered_pct           Decimal  @default(0) @db.Decimal(5, 1)
+  median_reply_hours     Decimal? @db.Decimal(10, 1)
+  p90_reply_hours        Decimal? @db.Decimal(10, 1)
+  oldest_unanswered_days Decimal? @db.Decimal(10, 1)
+  matched                Int
+  unmatched              Int
+  match_rate_pct         Decimal  @db.Decimal(5, 1)
+  masks_prior_90d        Int      @default(0)
+  masks_recent_90d       Int      @default(0)
+  change_90d_pct         Decimal? @db.Decimal(12, 1)
+  share_pct              Decimal  @default(0) @db.Decimal(5, 2)
+  first_date_be          String   @default("") @db.VarChar(8)
+  last_date_be           String   @default("") @db.VarChar(8)
+  date_up                DateTime @default(dbgenerated("CURRENT_DATE")) @db.Date
+  time_up                DateTime @default(dbgenerated("LOCALTIME(0)")) @db.Time(0)
 
   @@id([date_up, time_up, hospital_code])
 }
