@@ -618,15 +618,6 @@ export default async function SummaryPage({
 
         <section className={styles.card}>
           <nav aria-label="รูปแบบการสรุปผล" className={styles.tabs}>
-            {canViewRestricted ? (
-            <Link
-              aria-current={activeTab === "comp" ? "page" : undefined}
-              className={activeTab === "comp" ? styles.activeTab : undefined}
-              href="/sum/comp"
-            >
-              จำนวนคำร้อง
-            </Link>
-            ) : null}
             <Link
               aria-current={activeTab === "district" ? "page" : undefined}
               className={activeTab === "district" ? styles.activeTab : undefined}
@@ -659,6 +650,15 @@ export default async function SummaryPage({
               href="/sum/visit-year"
             >
               ปีที่รับบริการ
+            </Link>
+            ) : null}
+            {canViewRestricted ? (
+            <Link
+              aria-current={activeTab === "comp" ? "page" : undefined}
+              className={activeTab === "comp" ? styles.activeTab : undefined}
+              href="/sum/comp"
+            >
+              ตอบกลับคำร้อง
             </Link>
             ) : null}
             {canViewRestricted ? (

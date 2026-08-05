@@ -3,6 +3,7 @@
 import { Check, ClipboardList, Plus, X } from "lucide-react";
 import { useState } from "react";
 import Swal from "sweetalert2";
+import BuddhistDatePicker from "./BuddhistDatePicker";
 import styles from "./page.module.css";
 
 type ReportRow = {
@@ -28,6 +29,13 @@ const STATUS_LABELS: Record<SaveStatus, string> = {
   saving: "กำลังบันทึก",
   saved: "บันทึกแล้ว",
   error: "บันทึกไม่สำเร็จ",
+};
+
+// สี badge ของการดำเนินการตาม final-result.json — 1) ยืนยันคงเดิม 2) ลบ 3) แก้ไข
+const FINAL_RESULT_BADGE_CLASS: Record<string, string> = {
+  "1": "finalConfirm",
+  "2": "finalDelete",
+  "3": "finalEdit",
 };
 
 const Toast = Swal.mixin({
@@ -270,10 +278,9 @@ export default function ReportTable({
                   ) : null}
                 </th>
                 <td className={styles.editableCell}>
-                  <input
-                    aria-label={`วันส่งคำร้อง รายการที่ ${row.item_no}`}
-                    onChange={(event) => updateText(row, "comp_date", event.target.value)}
-                    type="date"
+                  <BuddhistDatePicker
+                    ariaLabel={`วันส่งคำร้อง รายการที่ ${row.item_no}`}
+                    onChange={(next) => updateText(row, "comp_date", next)}
                     value={row.comp_date}
                   />
                 </td>
@@ -286,10 +293,9 @@ export default function ReportTable({
                   />
                 </td>
                 <td className={styles.editableCell}>
-                  <input
-                    aria-label={`วันที่รับบริการ รายการที่ ${row.item_no}`}
-                    onChange={(event) => updateText(row, "vstdate", event.target.value)}
-                    type="date"
+                  <BuddhistDatePicker
+                    ariaLabel={`วันรับบริการ รายการที่ ${row.item_no}`}
+                    onChange={(next) => updateText(row, "vstdate", next)}
                     value={row.vstdate}
                   />
                 </td>
@@ -343,6 +349,11 @@ export default function ReportTable({
                 <td className={styles.editableCell}>
                   <select
                     aria-label={`การดำเนินการ รายการที่ ${row.item_no}`}
+                    className={
+                      FINAL_RESULT_BADGE_CLASS[row.final_result]
+                        ? `${styles.finalBadge} ${styles[FINAL_RESULT_BADGE_CLASS[row.final_result]]}`
+                        : undefined
+                    }
                     onChange={(event) =>
                       updateRow({ ...row, final_result: event.target.value })}
                     value={row.final_result}

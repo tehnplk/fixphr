@@ -227,6 +227,192 @@
   cursor: pointer;
 }
 
+/* ช่องการดำเนินการ: ตัว select เองทำตัวเป็น badge หุ้มข้อความ ไม่ย้อมทั้งช่อง
+   ใช้โทนเดียวกับ badge ในหน้า /sum เพื่อให้สถานะเดียวกันสีเดียวกันทั้งระบบ
+   ยังเป็น select ปกติ ลูกศรของเบราว์เซอร์จึงยังอยู่ กดเปลี่ยนค่าได้เหมือนเดิม */
+.editableCell select.finalBadge {
+  width: auto;
+  max-width: calc(100% - 12px);
+  min-height: 0;
+  margin: 6px;
+  padding: 5px 8px;
+  font-weight: 800;
+  border-radius: 999px;
+}
+
+.editableCell select.finalConfirm {
+  color: #fff;
+  background: #16c060;
+}
+
+/* แดงอ่อนกับเหลืองพื้นสว่างเกินกว่าจะใช้ตัวอักษรขาว — ใช้ตัวอักษรเข้มให้อ่านออก */
+.editableCell select.finalDelete {
+  color: #8a1c1c;
+  background: #f6a6a6;
+}
+
+.editableCell select.finalEdit {
+  color: #5a4106;
+  background: #f0c04a;
+}
+
+/* สีตัวอักษรของ badge ตกทอดไปที่ option ด้วย พอกางรายการจะกลายเป็นขาวบนขาวจนอ่านไม่ออก
+   จึงตรึงสีของรายการในกล่อง dropdown ไว้เอง ไม่ให้ขึ้นกับสีของ badge */
+.editableCell select.finalBadge option {
+  color: var(--deep);
+  font-weight: 600;
+  background: #fff;
+}
+
+/* focus ของ input อื่นเป็นกรอบเต็มช่อง แต่ badge เป็นทรงแคปซูล จึงใช้วงแหวนตามทรงแทน
+   ห้ามแตะ background ตรงนี้ ไม่งั้นสีประจำสถานะจะหายตอนโฟกัสจนตัวอักษรขาวมองไม่เห็น
+   (กฎสีของแต่ละสถานะประกาศทีหลังกฎ :focus กลาง จึงชนะเรื่องพื้นหลังอยู่แล้ว) */
+.editableCell select.finalBadge:focus {
+  box-shadow: 0 0 0 2px rgba(18, 96, 73, .5);
+}
+
+/* ปุ่มในเซลล์ทำตัวเหมือน input ตัวอื่น — เต็มช่อง ไม่มีขอบ กดแล้วเปิด dialog เลือกวันที่ */
+.dateTrigger {
+  display: flex;
+  width: 100%;
+  min-height: 43px;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 10px;
+  color: var(--deep);
+  font: 500 12px "Noto Sans Thai", "Leelawadee UI", Tahoma, sans-serif;
+  text-align: left;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+}
+
+.dateTrigger svg {
+  width: 14px;
+  height: 14px;
+  flex: none;
+  color: var(--green);
+}
+
+.dateTrigger:hover,
+.dateTrigger:focus-visible {
+  background: #fffef5;
+  box-shadow: inset 0 0 0 2px rgba(18, 96, 73, .42);
+  outline: 0;
+}
+
+.dateDialog {
+  width: min(320px, calc(100vw - 32px));
+  padding: 0;
+  color: var(--deep);
+  border: 1px solid rgba(18, 96, 73, .22);
+  border-radius: 12px;
+  background: #fbfcf8;
+  box-shadow: 0 30px 90px rgba(8, 32, 24, .32);
+}
+
+.dateDialog::backdrop {
+  background: rgba(12, 34, 26, .42);
+}
+
+.dateDialogBody {
+  display: grid;
+  gap: 14px;
+  padding: 14px 16px 16px;
+}
+
+.dateDialogHead {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #4a6157;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.dateDialogHead span {
+  flex: 1;
+}
+
+.dateDialogClose {
+  display: inline-grid;
+  width: 26px;
+  height: 26px;
+  flex: none;
+  place-items: center;
+  color: var(--deep);
+  border: 1px solid rgba(18, 96, 73, .2);
+  border-radius: 8px;
+  background: #fff;
+  cursor: pointer;
+}
+
+.dateDialogClose svg {
+  width: 15px;
+  height: 15px;
+}
+
+.dateDialogFields {
+  display: grid;
+  gap: 10px;
+  grid-template-columns: 0.8fr 1.4fr 1fr;
+}
+
+.dateDialogFields label {
+  display: grid;
+  gap: 4px;
+}
+
+.dateDialogFields span {
+  color: #6b8177;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.dateDialogFields select {
+  width: 100%;
+  min-height: 38px;
+  padding: 6px 8px;
+  color: var(--deep);
+  font: 600 13px "Noto Sans Thai", "Leelawadee UI", Tahoma, sans-serif;
+  border: 1px solid rgba(18, 96, 73, .24);
+  border-radius: 8px;
+  background: #fff;
+  cursor: pointer;
+}
+
+.dateDialogActions {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.dateClearButton,
+.dateConfirmButton {
+  min-width: 92px;
+  padding: 9px 14px;
+  font: 800 12px "Noto Sans Thai", "Leelawadee UI", Tahoma, sans-serif;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.dateClearButton {
+  color: #8a1c1c;
+  border: 1px solid rgba(138, 28, 28, .28);
+  background: #fff;
+}
+
+.dateConfirmButton {
+  color: #fff;
+  border: 0;
+  background: var(--green);
+}
+
+.dateConfirmButton:disabled {
+  background: #a9bdb2;
+  cursor: not-allowed;
+}
+
 .editableCell textarea {
   display: block;
   resize: vertical;
@@ -261,8 +447,9 @@
   width: 90px;
 }
 
+/* พอดีกับหัวคอลัมน์ "วันรับบริการ" (86px) ซึ่งกว้างกว่าค่าที่แสดง เช่น "24เมย69" (83px) */
 .vstdateColumn {
-  width: 132px;
+  width: 92px;
 }
 
 .visitTypeColumn {
