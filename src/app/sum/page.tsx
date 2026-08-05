@@ -408,7 +408,7 @@ export default async function SummaryPage({
             <span className={styles.headerStatTotal}>
               {HDC_VISIT_TOTAL.toLocaleString("th-TH")}
             </span> รายการ
-            {" "}ได้รับคำร้อง{" "}
+            {" "}Masks{" "}
             <span className={styles.headerStatCount}>
               {totalComplaints.toLocaleString("th-TH")}
             </span> รายการ
