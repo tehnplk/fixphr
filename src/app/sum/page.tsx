@@ -29,6 +29,9 @@ const DISTRICTS = [
 
 type District = (typeof DISTRICTS)[number];
 
+// ฐานเทียบร้อยละบนหัวหน้าสรุปผล — จำนวนข้อมูลบริการทั้งหมดในระบบ HDC
+const HDC_VISIT_TOTAL = 256_984_237;
+
 const IGNORED_HOSPITAL_CODES = ignoredHospitals.map(
   (hospital) => hospital.hospital_code,
 );
@@ -388,6 +391,9 @@ export default async function SummaryPage({
     );
   });
 
+  const totalComplaints = compRows.reduce((sum, row) => sum + row.complaints, 0);
+  const complaintPercent = (totalComplaints / HDC_VISIT_TOTAL) * 100;
+
   return (
     <main className={styles.page}>
       <div className={styles.grid} aria-hidden="true" />
@@ -396,6 +402,21 @@ export default async function SummaryPage({
         <header className={styles.header}>
           <BarChart3 aria-hidden="true" />
           <h1>สรุปผล</h1>
+          {/* สัดส่วนคำร้องเทียบข้อมูลบริการทั้งระบบ — ชิดขวาสุดของแถบหัวเรื่อง */}
+          <p className={styles.headerStat}>
+            จำนวนข้อมูลบริการ{" "}
+            <span className={styles.headerStatTotal}>
+              {HDC_VISIT_TOTAL.toLocaleString("th-TH")}
+            </span> รายการ
+            {" "}ได้รับคำร้อง{" "}
+            <span className={styles.headerStatCount}>
+              {totalComplaints.toLocaleString("th-TH")}
+            </span> รายการ
+            {" "}คิดเป็นร้อยละ{" "}
+            <span className={styles.headerStatBadge}>
+              {complaintPercent.toFixed(4)}
+            </span>
+          </p>
         </header>
 
         <section className={styles.card}>
