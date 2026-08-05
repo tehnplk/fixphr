@@ -2,6 +2,7 @@ import { BarChart3 } from "lucide-react";
 import Link from "next/link";
 import ignoredHospitals from "../../../json_lookup/hos-ignore.json";
 import inspectionResults from "../../../json_lookup/inspection-result.json";
+import visitTypes from "../../../json_lookup/visit_type.json";
 import { auth } from "@/auth";
 import { getPrisma } from "@/lib/prisma";
 import AutoRefresh from "./AutoRefresh";
@@ -11,6 +12,9 @@ import FinalSummaryTable, { type FinalHospitalRow } from "./FinalSummaryTable";
 import RealtimeTimestamp from "./RealtimeTimestamp";
 import SummaryChart from "./SummaryChart";
 import TypeSummaryTable, { type TypeHospitalRow } from "./TypeSummaryTable";
+import BreakdownSummaryTable, {
+  type BreakdownHospitalRow,
+} from "./BreakdownSummaryTable";
 import styles from "./page.module.css";
 
 export const dynamic = "force-dynamic";
@@ -36,6 +40,30 @@ const IGNORED_HOSPITAL_CODES = ignoredHospitals.map(
   (hospital) => hospital.hospital_code,
 );
 
+// เปิดสาธารณะแท็บเดียวคือยอดการตรวจสอบ (/sum/amp) รวมโมดัลรายหน่วยของแท็บนั้น
+// แท็บอื่นทั้งหมดต้องมีสิทธิ์ระดับ user ขึ้นไป — ต้องตรงกับ PROTECTED_PAGE_PREFIXES ใน proxy.ts
+// เขียนเป็น "อะไรที่เปิด" ไม่ใช่ "อะไรที่ปิด" แท็บที่เพิ่มทีหลังจึงถูกปิดไว้ก่อนเสมอ
+const PUBLIC_TAB = "district";
+
+// report.vstdate เก็บเป็นข้อความ YYYY-MM-DD จาก <input type="date"> ส่วนใหญ่เป็น ค.ศ.
+// แต่มีบางแถวที่ผู้ใช้กรอกเป็น พ.ศ. มาแล้ว จึงต้องเดาจากช่วงตัวเลขก่อนแปลง
+// (ไม่มี ค.ศ. ที่ถึง 2400 และไม่มี พ.ศ. ที่ต่ำกว่า 2400 ในบริบทนี้)
+function toBuddhistYear(vstdate: string | null) {
+  const year = Number(vstdate?.slice(0, 4));
+  if (!Number.isInteger(year) || year < 1000) return null;
+  return year >= 2400 ? year : year + 543;
+}
+
+function currentBuddhistYear(now = new Date()) {
+  const year = Number(
+    new Intl.DateTimeFormat("en-CA", {
+      timeZone: "Asia/Bangkok",
+      year: "numeric",
+    }).format(now),
+  );
+  return year + 543;
+}
+
 function formatAffiliation(value: string | null | undefined) {
   if (value === "กระทรวงสาธารณสุข") return "สธ";
   if (value === "องค์กรปกครองส่วนท้องถิ่น") return "อปท";
@@ -49,21 +77,34 @@ export default async function SummaryPage({
 }) {
   const params = await searchParams;
   const session = await auth();
-  // แท็บจำนวนคำร้องเปิดให้ผู้ที่ได้รับสิทธิ์แล้วทุกระดับ — ตรงกับ proxy ที่กัน
-  // เฉพาะผู้ยังไม่ล็อกอินกับ role guest ออกจาก /sum/comp
+  // ต้องเช็คสิทธิ์ซ้ำที่นี่ด้วย เพราะ proxy กันเฉพาะ path ตรง ๆ
+  // ส่วน /sum?tab=... ชี้มาที่ /sum ซึ่งไม่อยู่ในรายการที่ proxy กัน
   const role = session?.user?.role;
-  const canViewComp = role === "super" || role === "admin" || role === "user";
+  const canViewRestricted = role === "super" || role === "admin" || role === "user";
   const requestedTab = params.tab === "type"
     ? "type"
     : params.tab === "final"
       ? "final"
       : params.tab === "comp"
         ? "comp"
-        : "district";
-  const activeTab = requestedTab === "comp" && !canViewComp ? "district" : requestedTab;
+        : params.tab === "visit-type"
+          ? "visit-type"
+          : params.tab === "visit-year"
+            ? "visit-year"
+            : "district";
+  const activeTab = requestedTab !== PUBLIC_TAB && !canViewRestricted
+    ? PUBLIC_TAB
+    : requestedTab;
   const prisma = getPrisma();
 
-  const [latestTargetSnapshot, resultByHospital, typeGroups, finalGroups] = await Promise.all([
+  const [
+    latestTargetSnapshot,
+    resultByHospital,
+    typeGroups,
+    finalGroups,
+    visitTypeGroups,
+    visitDateGroups,
+  ] = await Promise.all([
     prisma.complaintHosCount.findFirst({
       where: {
         hospital_code: { notIn: IGNORED_HOSPITAL_CODES },
@@ -99,6 +140,22 @@ export default async function SummaryPage({
     prisma.report.groupBy({
       by: ["hospital_code", "final_result"],
       where: { hospital_code: { notIn: IGNORED_HOSPITAL_CODES } },
+      _count: { _all: true },
+    }),
+    prisma.report.groupBy({
+      by: ["hospital_code", "visit_type"],
+      where: {
+        hospital_code: { notIn: IGNORED_HOSPITAL_CODES },
+        visit_type: { in: visitTypes.map((visitType) => visitType.code) },
+      },
+      _count: { _all: true },
+    }),
+    prisma.report.groupBy({
+      by: ["hospital_code", "vstdate"],
+      where: {
+        hospital_code: { notIn: IGNORED_HOSPITAL_CODES },
+        vstdate: { not: null },
+      },
       _count: { _all: true },
     }),
   ]);
@@ -149,9 +206,6 @@ export default async function SummaryPage({
   const districtByHospital = new Map(
     hospitals.map((hospital) => [hospital.hospcode, hospital.ampName]),
   );
-  const districtSummary = new Map<District, { target: number; result: number }>(
-    DISTRICTS.map((district) => [district, { target: 0, result: 0 }]),
-  );
   const hospitalRowsByDistrict = new Map<District, Map<string, DistrictHospitalRow>>(
     DISTRICTS.map((district) => [district, new Map<string, DistrictHospitalRow>()]),
   );
@@ -159,10 +213,6 @@ export default async function SummaryPage({
   for (const row of targetRows) {
     const district = row.district_name;
     if (!district || !DISTRICTS.includes(district as District)) continue;
-
-    const summary = districtSummary.get(district as District);
-    if (!summary) continue;
-    summary.target += row.masks;
 
     const hospital = hospitalByCode.get(row.hospital_code);
     const districtHospitals = hospitalRowsByDistrict.get(district as District);
@@ -180,10 +230,6 @@ export default async function SummaryPage({
     const district = districtByHospital.get(row.hospital_code);
     if (!district || !DISTRICTS.includes(district as District)) continue;
 
-    const summary = districtSummary.get(district as District);
-    if (!summary) continue;
-    summary.result += row._count._all;
-
     const hospital = hospitalByCode.get(row.hospital_code);
     const districtHospitals = hospitalRowsByDistrict.get(district as District);
     const currentHospital = districtHospitals?.get(row.hospital_code);
@@ -196,13 +242,23 @@ export default async function SummaryPage({
     });
   }
 
-  const districtRows = DISTRICTS.map((district) => ({
-    district,
-    ...(districtSummary.get(district) ?? { target: 0, result: 0 }),
-    hospitals: Array.from(hospitalRowsByDistrict.get(district)?.values() ?? []).sort(
+  // ยอดอำเภอนับ "ตรวจสอบแล้ว" ของแต่ละหน่วยบริการได้ไม่เกินจำนวนคำร้อง (masks) ของหน่วยนั้น
+  // ยอดรวมอำเภอจึงไม่โผล่เกินจำนวนรายการ ส่วนโมดัลรายหน่วยยังแสดงยอดจริงที่บันทึกไว้
+  const districtRows = DISTRICTS.map((district) => {
+    const hospitals = Array.from(hospitalRowsByDistrict.get(district)?.values() ?? []).sort(
       (left, right) => left.name.localeCompare(right.name, "th"),
-    ),
-  }));
+    );
+
+    return {
+      district,
+      target: hospitals.reduce((sum, hospital) => sum + hospital.target, 0),
+      result: hospitals.reduce(
+        (sum, hospital) => sum + Math.min(hospital.result, hospital.target),
+        0,
+      ),
+      hospitals,
+    };
+  });
   // การดำเนินการ (final_result): 1=ยืนยันคงเดิม, 2=ลบ, 3=แก้ไข — null คืออยู่ระหว่างดำเนินการ
   const FINAL_FIELD_BY_CODE: Record<string, "confirmed" | "deleted" | "edited"> = {
     "1": "confirmed",
@@ -391,6 +447,147 @@ export default async function SummaryPage({
     );
   });
 
+  // ตารางประเภทบริการ: ฐานร้อยละคือจำนวนคำร้อง (masks) ของ snapshot ล่าสุด เหมือนแท็บอื่น
+  // ส่วนตัวตั้งคือจำนวนรายงานที่ระบุ visit_type ไว้แล้ว
+  const visitTypeColumnIndexByCode = new Map(
+    visitTypes.map((visitType, index) => [visitType.code, index]),
+  );
+  const emptyVisitTypeCells = () => visitTypes.map(() => 0);
+  const visitTypeHospitalsByDistrict = new Map<
+    District,
+    Map<string, BreakdownHospitalRow>
+  >(DISTRICTS.map((district) => [district, new Map<string, BreakdownHospitalRow>()]));
+
+  for (const row of targetRows) {
+    const district = row.district_name;
+    if (!district || !DISTRICTS.includes(district as District)) continue;
+
+    const hospital = hospitalByCode.get(row.hospital_code);
+    visitTypeHospitalsByDistrict.get(district as District)?.set(row.hospital_code, {
+      code: row.hospital_code,
+      name: hospital?.hospnameShort ?? hospital?.hospname ?? row.hospital_name,
+      affiliation: formatAffiliation(hospital?.mName),
+      complaints: row.masks,
+      cells: emptyVisitTypeCells(),
+    });
+  }
+
+  for (const row of visitTypeGroups) {
+    const columnIndex = visitTypeColumnIndexByCode.get(row.visit_type ?? "");
+    if (columnIndex === undefined) continue;
+
+    const district = districtByHospital.get(row.hospital_code);
+    if (!district || !DISTRICTS.includes(district as District)) continue;
+
+    const districtHospitals = visitTypeHospitalsByDistrict.get(district as District);
+    const hospital = hospitalByCode.get(row.hospital_code);
+    const currentHospital = districtHospitals?.get(row.hospital_code) ?? {
+      code: row.hospital_code,
+      name: hospital?.hospnameShort ?? hospital?.hospname ?? row.hospital_code,
+      affiliation: formatAffiliation(hospital?.mName),
+      complaints: 0,
+      cells: emptyVisitTypeCells(),
+    };
+    const cells = [...currentHospital.cells];
+    cells[columnIndex] += row._count._all;
+    districtHospitals?.set(row.hospital_code, { ...currentHospital, cells });
+  }
+
+  const visitTypeRows = DISTRICTS.map((district) => {
+    const hospitals = Array.from(
+      visitTypeHospitalsByDistrict.get(district)?.values() ?? [],
+    ).sort((left, right) => left.name.localeCompare(right.name, "th"));
+
+    return {
+      district,
+      complaints: hospitals.reduce((sum, hospital) => sum + hospital.complaints, 0),
+      cells: visitTypes.map((_, index) => (
+        hospitals.reduce((sum, hospital) => sum + hospital.cells[index], 0)
+      )),
+      hospitals,
+    };
+  });
+
+  // ตารางปีที่รับบริการ: คอลัมน์ไล่จากปีปัจจุบันย้อนลงไปจนครบทุกปีที่มีข้อมูล
+  // ปีปัจจุบันแสดงเสมอแม้ยังไม่มีรายการ และปีที่เกินปีปัจจุบัน (ข้อมูลกรอกผิด)
+  // ยังคงมีคอลัมน์ของตัวเอง เพื่อไม่ให้ตัวเลขหายไปเงียบ ๆ
+  const visitYearCountsByHospital = new Map<string, Map<number, number>>();
+  const visitYearSet = new Set<number>([currentBuddhistYear()]);
+
+  for (const row of visitDateGroups) {
+    const year = toBuddhistYear(row.vstdate);
+    if (year === null) continue;
+
+    visitYearSet.add(year);
+    const yearCounts = visitYearCountsByHospital.get(row.hospital_code)
+      ?? new Map<number, number>();
+    yearCounts.set(year, (yearCounts.get(year) ?? 0) + row._count._all);
+    visitYearCountsByHospital.set(row.hospital_code, yearCounts);
+  }
+
+  const visitYearColumns = Array.from(visitYearSet)
+    .sort((left, right) => right - left)
+    .map((year) => ({ code: String(year), label: String(year) }));
+
+  const visitYearHospitalsByDistrict = new Map<
+    District,
+    Map<string, BreakdownHospitalRow>
+  >(DISTRICTS.map((district) => [district, new Map<string, BreakdownHospitalRow>()]));
+
+  const emptyVisitYearCells = () => visitYearColumns.map(() => 0);
+  const visitYearCells = (hospitalCode: string) => {
+    const yearCounts = visitYearCountsByHospital.get(hospitalCode);
+    if (!yearCounts) return emptyVisitYearCells();
+    return visitYearColumns.map((column) => yearCounts.get(Number(column.code)) ?? 0);
+  };
+
+  for (const row of targetRows) {
+    const district = row.district_name;
+    if (!district || !DISTRICTS.includes(district as District)) continue;
+
+    const hospital = hospitalByCode.get(row.hospital_code);
+    visitYearHospitalsByDistrict.get(district as District)?.set(row.hospital_code, {
+      code: row.hospital_code,
+      name: hospital?.hospnameShort ?? hospital?.hospname ?? row.hospital_name,
+      affiliation: formatAffiliation(hospital?.mName),
+      complaints: row.masks,
+      cells: visitYearCells(row.hospital_code),
+    });
+  }
+
+  // หน่วยที่มีรายการแต่ไม่อยู่ใน snapshot ล่าสุด ยังต้องมีแถวของตัวเอง (คำร้อง = 0)
+  for (const hospitalCode of visitYearCountsByHospital.keys()) {
+    const district = districtByHospital.get(hospitalCode);
+    if (!district || !DISTRICTS.includes(district as District)) continue;
+
+    const districtHospitals = visitYearHospitalsByDistrict.get(district as District);
+    if (districtHospitals?.has(hospitalCode)) continue;
+
+    const hospital = hospitalByCode.get(hospitalCode);
+    districtHospitals?.set(hospitalCode, {
+      code: hospitalCode,
+      name: hospital?.hospnameShort ?? hospital?.hospname ?? hospitalCode,
+      affiliation: formatAffiliation(hospital?.mName),
+      complaints: 0,
+      cells: visitYearCells(hospitalCode),
+    });
+  }
+
+  const visitYearRows = DISTRICTS.map((district) => {
+    const hospitals = Array.from(
+      visitYearHospitalsByDistrict.get(district)?.values() ?? [],
+    ).sort((left, right) => left.name.localeCompare(right.name, "th"));
+
+    return {
+      district,
+      complaints: hospitals.reduce((sum, hospital) => sum + hospital.complaints, 0),
+      cells: visitYearColumns.map((_, index) => (
+        hospitals.reduce((sum, hospital) => sum + hospital.cells[index], 0)
+      )),
+      hospitals,
+    };
+  });
+
   const totalComplaints = compRows.reduce((sum, row) => sum + row.complaints, 0);
   const complaintPercent = (totalComplaints / HDC_VISIT_TOTAL) * 100;
 
@@ -421,7 +618,7 @@ export default async function SummaryPage({
 
         <section className={styles.card}>
           <nav aria-label="รูปแบบการสรุปผล" className={styles.tabs}>
-            {canViewComp ? (
+            {canViewRestricted ? (
             <Link
               aria-current={activeTab === "comp" ? "page" : undefined}
               className={activeTab === "comp" ? styles.activeTab : undefined}
@@ -437,6 +634,7 @@ export default async function SummaryPage({
             >
               ยอดการตรวจสอบ
             </Link>
+            {canViewRestricted ? (
             <Link
               aria-current={activeTab === "type" ? "page" : undefined}
               className={activeTab === "type" ? styles.activeTab : undefined}
@@ -444,6 +642,26 @@ export default async function SummaryPage({
             >
               จำแนกผลการตรวจสอบ
             </Link>
+            ) : null}
+            {canViewRestricted ? (
+            <Link
+              aria-current={activeTab === "visit-type" ? "page" : undefined}
+              className={activeTab === "visit-type" ? styles.activeTab : undefined}
+              href="/sum/visit-type"
+            >
+              ประเภทบริการ
+            </Link>
+            ) : null}
+            {canViewRestricted ? (
+            <Link
+              aria-current={activeTab === "visit-year" ? "page" : undefined}
+              className={activeTab === "visit-year" ? styles.activeTab : undefined}
+              href="/sum/visit-year"
+            >
+              ปีที่รับบริการ
+            </Link>
+            ) : null}
+            {canViewRestricted ? (
             <Link
               aria-current={activeTab === "final" ? "page" : undefined}
               className={activeTab === "final" ? styles.activeTab : undefined}
@@ -451,11 +669,13 @@ export default async function SummaryPage({
             >
               การดำเนินการ
             </Link>
+            ) : null}
           </nav>
 
           <div
             className={
               activeTab === "type" || activeTab === "comp"
+              || activeTab === "visit-type" || activeTab === "visit-year"
                 ? `${styles.contentGrid} ${styles.contentGridSingle}`
                 : activeTab === "final"
                   ? `${styles.contentGrid} ${styles.contentGridPie}`
@@ -475,6 +695,16 @@ export default async function SummaryPage({
               <FinalSummaryTable rows={finalRows} />
               ) : activeTab === "comp" ? (
               <CompSummaryTable rows={compRows} />
+              ) : activeTab === "visit-type" ? (
+              <BreakdownSummaryTable columns={visitTypes} rows={visitTypeRows} />
+              ) : activeTab === "visit-year" ? (
+              <BreakdownSummaryTable
+                alternateTints
+                columns={visitYearColumns}
+                countSuffix=""
+                dense
+                rows={visitYearRows}
+              />
               ) : (
               <TypeSummaryTable columns={inspectionResults} rows={typeRows} />
               )}
@@ -489,7 +719,8 @@ export default async function SummaryPage({
 
             {/* แท็บที่ไม่มีกราฟต้องไม่ render แผงกราฟเลย ไม่งั้นจะเหลือแผงเปล่า
                 สูง 496px ค้างอยู่ใต้ตาราง */}
-            {activeTab === "type" || activeTab === "comp" ? null : (
+            {activeTab === "type" || activeTab === "comp"
+              || activeTab === "visit-type" || activeTab === "visit-year" ? null : (
             <div className={styles.chartPanel}>
               {activeTab === "district" ? (
                 <SummaryChart

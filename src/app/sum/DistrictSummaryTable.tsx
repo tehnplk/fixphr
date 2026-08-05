@@ -43,8 +43,8 @@ function ColumnHead({ icon: Icon, label }: { icon: typeof Check; label: string }
   );
 }
 
-// ใช้กับแถวอำเภอในตารางหน้าแรกเท่านั้น — badge เขียวเมื่อครบ 100 แดงเมื่อยังไม่ครบ
-// (แถวรวมและโมดัลรายหน่วยบริการยังเป็นตัวเลขเปล่า)
+// ใช้กับแถวอำเภอในตารางหน้าแรกและแถวหน่วยบริการในโมดัล — badge เขียวเมื่อครบ 100
+// แดงเมื่อยังไม่ครบ (แถวรวมทั้งสองที่ยังเป็นตัวเลขเปล่า ให้ต่างระดับกับแถวข้อมูล)
 function renderPercentBadge(value: number, total: number) {
   const complete = total > 0 && value >= total;
   return (
@@ -60,6 +60,8 @@ export default function DistrictSummaryTable({ rows }: { rows: DistrictSummaryRo
   const selectedRow = rows.find((row) => row.district === selectedDistrict);
   const grandTarget = rows.reduce((sum, row) => sum + row.target, 0);
   const grandResult = rows.reduce((sum, row) => sum + row.result, 0);
+  const modalTarget = selectedRow?.hospitals.reduce((sum, h) => sum + h.target, 0) ?? 0;
+  const modalResult = selectedRow?.hospitals.reduce((sum, h) => sum + h.result, 0) ?? 0;
 
   useEffect(() => {
     const dialog = dialogRef.current;
@@ -155,7 +157,7 @@ export default function DistrictSummaryTable({ rows }: { rows: DistrictSummaryRo
                       <td>{hospital.affiliation}</td>
                       <td>{formatNumber(hospital.target)}</td>
                       <td>{formatNumber(hospital.result)}</td>
-                      <td>{formatPercent(hospital.result, hospital.target)}</td>
+                      <td>{renderPercentBadge(hospital.result, hospital.target)}</td>
                       <td className={styles.modalActionColumn}>
                         <Link
                           aria-label={`เปิดรายงาน ${hospital.name}`}
@@ -169,11 +171,13 @@ export default function DistrictSummaryTable({ rows }: { rows: DistrictSummaryRo
                   ))}
                 </tbody>
                 <tfoot>
+                  {/* รวมจากคอลัมน์ในโมดัลเอง — แถวอำเภอด้านนอกนับ "ตรวจสอบแล้ว" ได้ไม่เกิน
+                      จำนวนรายการของแต่ละหน่วย ยอดสองที่จึงต่างกันได้ */}
                   <tr>
                     <th colSpan={3} scope="row">รวม</th>
-                    <td>{formatNumber(selectedRow.target)}</td>
-                    <td>{formatNumber(selectedRow.result)}</td>
-                    <td>{formatPercent(selectedRow.result, selectedRow.target)}</td>
+                    <td>{formatNumber(modalTarget)}</td>
+                    <td>{formatNumber(modalResult)}</td>
+                    <td>{formatPercent(modalResult, modalTarget)}</td>
                     <td className={styles.modalActionColumn} />
                   </tr>
                 </tfoot>

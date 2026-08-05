@@ -1,7 +1,17 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/auth";
 
-const PROTECTED_PAGE_PREFIXES = ["/report", "/sum/type", "/sum/comp", "/manage-user"];
+// เปิดสาธารณะเฉพาะ /sum/amp (ยอดการตรวจสอบ) กับโมดัลรายหน่วยของแท็บนั้น
+// แท็บสรุปผลอื่นทั้งหมดต้องมีสิทธิ์ระดับ user ขึ้นไป
+const PROTECTED_PAGE_PREFIXES = [
+  "/report",
+  "/sum/type",
+  "/sum/comp",
+  "/sum/final",
+  "/sum/visit-type",
+  "/sum/visit-year",
+  "/manage-user",
+];
 const PROTECTED_API_PREFIXES = ["/api/report"];
 // เฉพาะ role super/admin เท่านั้น
 const MANAGER_PAGE_PREFIXES = ["/manage-user"];

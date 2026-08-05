@@ -320,6 +320,167 @@
   vertical-align: middle;
 }
 
+/* ตารางประเภทบริการ: อำเภอ + คำร้อง + (จำนวน/ร้อยละ) ของแต่ละประเภทบริการ
+   ใช้หัวสองชั้นแบบเดียวกับตารางจำนวนคำร้อง */
+.tableWrap .visitTypeTable th,
+.tableWrap .visitTypeTable td {
+  padding-inline: 10px;
+}
+
+.tableWrap .visitTypeTable thead th {
+  height: 34px;
+}
+
+.tableWrap .visitTypeTable thead th[rowspan] {
+  vertical-align: middle;
+}
+
+.tableWrap .visitTypeTable thead .groupRow th[colspan] {
+  font-size: 15px;
+  font-weight: 900;
+  text-align: center;
+}
+
+.tableWrap .visitTypeTable thead .groupRow th[colspan] .thLabel svg {
+  width: 17px;
+  height: 17px;
+}
+
+.tableWrap .visitTypeTable thead .subRow th {
+  width: auto;
+  text-align: right;
+}
+
+/* อำเภอกว้างพอสำหรับ "เมืองพิษณุโลก" ที่เหลืออีก 7 คอลัมน์ตัวเลขแบ่งเท่ากัน */
+.tableWrap .visitTypeTable thead .groupRow th:nth-child(2) {
+  width: calc((100% - 36px) * .2);
+}
+
+.tableWrap .visitTypeTable thead .groupRow th:nth-child(3) {
+  width: calc((100% - 36px) * .12);
+}
+
+/* คู่คอลัมน์ (จำนวน/ร้อยละ) ของประเภทบริการเดียวกันใช้สีพื้นเดียวกัน อ่านออกทันที
+   ว่าร้อยละคู่กับประเภทไหน — สามคลาสนี้กินทั้งหัวตาราง แถวข้อมูล และในโมดัล
+   ใช้ 3 คลาส (ไม่ใช่ 2 ตัวคูณ) เพื่อให้ค่า specificity ชนะกฎ zebra ที่ระดับ cell */
+.tableWrap .visitTypeTable .vtGroupA,
+.districtDialog .modalTable .vtGroupA {
+  background: #e4f2e7;
+}
+
+.tableWrap .visitTypeTable .vtGroupB,
+.districtDialog .modalTable .vtGroupB {
+  background: #e3ecf9;
+}
+
+.tableWrap .visitTypeTable .vtGroupC,
+.districtDialog .modalTable .vtGroupC {
+  background: #fbeeda;
+}
+
+/* หัวคอลัมน์ย่อยเข้มกว่าแถวข้อมูลหนึ่งระดับ ให้เห็นการจับคู่ตั้งแต่หัวตาราง */
+.tableWrap .visitTypeTable thead .subRow th.vtGroupA,
+.districtDialog .modalTable thead th.vtGroupA {
+  background: #c8e3ce;
+}
+
+.tableWrap .visitTypeTable thead .subRow th.vtGroupB,
+.districtDialog .modalTable thead th.vtGroupB {
+  background: #c9dbf3;
+}
+
+.tableWrap .visitTypeTable thead .subRow th.vtGroupC,
+.districtDialog .modalTable thead th.vtGroupC {
+  background: #f3ddb4;
+}
+
+/* hover กับแถวรวมต้องยังเห็นสีประจำประเภทอยู่ แค่เข้มขึ้น/ต่างระดับ
+   ต้องมี specificity สูงกว่ากฎพื้นด้านบน ไม่งั้นสีประเภทจะทับ hover จนแถวไม่ตอบสนอง */
+.tableWrap .visitTypeTable tbody tr:hover td.vtGroupA {
+  background: #d5ebda;
+}
+
+.tableWrap .visitTypeTable tbody tr:hover td.vtGroupB {
+  background: #d4e2f6;
+}
+
+.tableWrap .visitTypeTable tbody tr:hover td.vtGroupC {
+  background: #f7e6c8;
+}
+
+.tableWrap .visitTypeTable tbody tr.totalRow td.vtGroupA {
+  background: #bfdcc6;
+}
+
+.tableWrap .visitTypeTable tbody tr.totalRow td.vtGroupB {
+  background: #c0d5ef;
+}
+
+.tableWrap .visitTypeTable tbody tr.totalRow td.vtGroupC {
+  background: #eed6aa;
+}
+
+/* แถวรวมในโมดัลใช้ระดับความเข้มเดียวกับแถวรวมของตารางหลัก */
+.districtDialog .modalTable tfoot td.vtGroupA {
+  background: #bfdcc6;
+}
+
+.districtDialog .modalTable tfoot td.vtGroupB {
+  background: #c0d5ef;
+}
+
+.districtDialog .modalTable tfoot td.vtGroupC {
+  background: #eed6aa;
+}
+
+/* โหมดคอลัมน์เยอะ (แท็บปีที่รับบริการ) — ย่อฟอนต์กับ padding ให้ทุกคอลัมน์พอดีจอ
+   ไม่ต้องเลื่อนแนวนอน และบังคับไม่ตัดบรรทัดทุกช่องรวมถึงชื่ออำเภอ */
+.tableWrap .denseTable th,
+.tableWrap .denseTable td {
+  padding-inline: 5px;
+  font-size: 11px;
+  white-space: nowrap;
+}
+
+.tableWrap .denseTable thead .subRow th {
+  font-size: 11px;
+}
+
+.tableWrap .denseTable tbody th {
+  font-size: 11px;
+}
+
+/* ปุ่มชื่ออำเภอสืบทอดขนาดจากเซลล์ ไม่งั้นจะยังโตกว่าตัวเลขและดันความกว้างคอลัมน์ */
+.tableWrap .denseTable tbody th .districtButton {
+  font-size: inherit;
+}
+
+/* คอลัมน์ตัวเลขแบ่งความกว้างเท่ากันจากพื้นที่ที่เหลือ ไม่ให้คอลัมน์แรก ๆ กินไปหมด */
+.tableWrap .denseTable thead .groupRow th:nth-child(2) {
+  width: 118px;
+}
+
+.tableWrap .denseTable thead .groupRow th:nth-child(3) {
+  width: 74px;
+}
+
+/* โมดัลของแท็บคอลัมน์เยอะย่อเหมือนตารางหลัก และ min-width 900px เดิมต้องถอยออก
+   ไม่งั้นตารางจะถูกดันให้กว้างเกินกรอบทั้งที่ย่อฟอนต์แล้ว */
+.districtDialog .modalTable.denseModalTable {
+  min-width: 0;
+}
+
+.districtDialog .modalTable.denseModalTable th,
+.districtDialog .modalTable.denseModalTable td {
+  padding-inline: 4px;
+  font-size: 10px;
+  white-space: nowrap;
+}
+
+.districtDialog .modalTable.denseModalTable thead tr:not(.modalToolbarRow) th:first-child {
+  width: 62px;
+}
+
 /* ตารางจำแนกผลการตรวจสอบ: อำเภอ + 8 ผลการตรวจสอบ + รวม */
 .typeTableScroll {
   overflow-x: auto;
@@ -554,6 +715,14 @@
   display: flex;
   max-height: calc(100svh - 32px);
   flex-direction: column;
+}
+
+/* ปุ่มปิดที่ลอยกับกรอบโมดัล — ใช้กับตารางที่กว้างกว่ากรอบจนปุ่มในหัวตารางเลื่อนหาย */
+.modalCloseFloat {
+  position: absolute;
+  top: 6px;
+  right: 10px;
+  z-index: 3;
 }
 
 .modalClose {
