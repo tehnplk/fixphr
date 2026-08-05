@@ -30,7 +30,7 @@ const DISTRICTS = [
 type District = (typeof DISTRICTS)[number];
 
 // ฐานเทียบร้อยละบนหัวหน้าสรุปผล — จำนวนข้อมูลบริการทั้งหมดในระบบ HDC
-const HDC_VISIT_TOTAL = 256_984_237;
+const HDC_VISIT_TOTAL = 25_984_237;
 
 const IGNORED_HOSPITAL_CODES = ignoredHospitals.map(
   (hospital) => hospital.hospital_code,
@@ -414,7 +414,7 @@ export default async function SummaryPage({
             </span> รายการ
             {" "}คิดเป็นร้อยละ{" "}
             <span className={styles.headerStatBadge}>
-              {complaintPercent.toFixed(4)}
+              {complaintPercent.toFixed(3)}
             </span>
           </p>
         </header>
