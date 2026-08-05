@@ -31,6 +31,17 @@ const EXPECTED_HEADERS = [
   "share_pct",
   "first_date_be",
   "last_date_be",
+  "status_pending",
+  "status_in_progress",
+  "status_completed",
+  "status_no_error_found",
+  "status_not_recorded",
+  "status_unexpected_code",
+  "action_none_yet",
+  "action_data_corrected",
+  "action_other",
+  "action_not_recorded",
+  "action_unexpected_code",
 ] as const;
 
 // ดัชนีคอลัมน์อ่านจาก EXPECTED_HEADERS แทนการนับตำแหน่งด้วยมือ — เพิ่ม/ย้ายคอลัมน์
@@ -67,6 +78,17 @@ type ImportRow = {
   share_pct: string;
   first_date_be: string;
   last_date_be: string;
+  status_pending: number;
+  status_in_progress: number;
+  status_completed: number;
+  status_no_error_found: number;
+  status_not_recorded: number;
+  status_unexpected_code: number;
+  action_none_yet: number;
+  action_data_corrected: number;
+  action_other: number;
+  action_not_recorded: number;
+  action_unexpected_code: number;
 };
 
 class UploadValidationError extends Error {}
@@ -269,6 +291,17 @@ function validateRows(rows: string[][]): ImportRow[] {
       )!,
       first_date_be: parseBuddhistDate(values[COLUMN.first_date_be], "first_date_be", line),
       last_date_be: parseBuddhistDate(values[COLUMN.last_date_be], "last_date_be", line),
+      status_pending: parseInteger(values[COLUMN.status_pending], "status_pending", line),
+      status_in_progress: parseInteger(values[COLUMN.status_in_progress], "status_in_progress", line),
+      status_completed: parseInteger(values[COLUMN.status_completed], "status_completed", line),
+      status_no_error_found: parseInteger(values[COLUMN.status_no_error_found], "status_no_error_found", line),
+      status_not_recorded: parseInteger(values[COLUMN.status_not_recorded], "status_not_recorded", line),
+      status_unexpected_code: parseInteger(values[COLUMN.status_unexpected_code], "status_unexpected_code", line),
+      action_none_yet: parseInteger(values[COLUMN.action_none_yet], "action_none_yet", line),
+      action_data_corrected: parseInteger(values[COLUMN.action_data_corrected], "action_data_corrected", line),
+      action_other: parseInteger(values[COLUMN.action_other], "action_other", line),
+      action_not_recorded: parseInteger(values[COLUMN.action_not_recorded], "action_not_recorded", line),
+      action_unexpected_code: parseInteger(values[COLUMN.action_unexpected_code], "action_unexpected_code", line),
     };
   });
 }

@@ -81,6 +81,19 @@ model ComplaintHosCount {
   share_pct              Decimal  @default(0) @db.Decimal(5, 2)
   first_date_be          String   @default("") @db.VarChar(8)
   last_date_be           String   @default("") @db.VarChar(8)
+  // แตกยอด masks ตามสถานะการตรวจสอบและการดำเนินการที่ระบบต้นทาง (PHR1) นับมาให้
+  // แต่ละกลุ่มรวมกันได้เท่ากับ masks ของหน่วยนั้น — คนละชุดกับที่เรานับเองจากตาราง report
+  status_pending         Int      @default(0)
+  status_in_progress     Int      @default(0)
+  status_completed       Int      @default(0)
+  status_no_error_found  Int      @default(0)
+  status_not_recorded    Int      @default(0)
+  status_unexpected_code Int      @default(0)
+  action_none_yet        Int      @default(0)
+  action_data_corrected  Int      @default(0)
+  action_other           Int      @default(0)
+  action_not_recorded    Int      @default(0)
+  action_unexpected_code Int      @default(0)
   date_up                DateTime @default(dbgenerated("CURRENT_DATE")) @db.Date
   time_up                DateTime @default(dbgenerated("LOCALTIME(0)")) @db.Time(0)
 
