@@ -49,18 +49,18 @@ export default function AppNav({ user }: { user?: NavUser | null }) {
   return (
     <div className={styles.bar}>
       <nav aria-label="เมนูหลัก" className={styles.nav}>
-        <Link href="/amp">
-          <CalendarDays aria-hidden="true" />
-          รายวัน
-        </Link>
-        <span aria-hidden="true">|</span>
         <Link
           aria-current={isSummary ? "page" : undefined}
           className={isSummary ? styles.active : undefined}
           href="/sum/amp"
         >
           <FileText aria-hidden="true" />
-          สรุป
+          สรุปภาพรวม
+        </Link>
+        <span aria-hidden="true">|</span>
+        <Link href="/daily">
+          <CalendarDays aria-hidden="true" />
+          รายวัน
         </Link>
       </nav>
       <div className={styles.right}>

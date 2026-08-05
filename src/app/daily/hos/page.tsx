@@ -2,9 +2,9 @@ import { CalendarRange, FileText } from "lucide-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getPrisma } from "@/lib/prisma";
-import ignoredHospitals from "../../../json_lookup/hos-ignore.json";
-import LiveClock from "../amp/LiveClock";
-import ampStyles from "../amp/page.module.css";
+import ignoredHospitals from "../../../../json_lookup/hos-ignore.json";
+import LiveClock from "../LiveClock";
+import ampStyles from "../page.module.css";
 import styles from "./page.module.css";
 
 export const dynamic = "force-dynamic";
