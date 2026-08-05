@@ -1,7 +1,7 @@
 import { BarChart3 } from "lucide-react";
 import Link from "next/link";
-import ignoredHospitals from "../../../hos-ignore.json";
-import inspectionResults from "../../../inspection-result.json";
+import ignoredHospitals from "../../../json_lookup/hos-ignore.json";
+import inspectionResults from "../../../json_lookup/inspection-result.json";
 import { auth } from "@/auth";
 import { getPrisma } from "@/lib/prisma";
 import AutoRefresh from "./AutoRefresh";

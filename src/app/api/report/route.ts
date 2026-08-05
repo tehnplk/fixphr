@@ -1,9 +1,9 @@
 import { auth } from "@/auth";
 import { getPrisma } from "@/lib/prisma";
 import { encryptHn } from "@/lib/hn-crypto";
-import inspectionResults from "../../../../inspection-result.json";
-import finalResults from "../../../../final-result.json";
-import visitTypes from "../../../../visit_type.json";
+import inspectionResults from "../../../../json_lookup/inspection-result.json";
+import finalResults from "../../../../json_lookup/final-result.json";
+import visitTypes from "../../../../json_lookup/visit_type.json";
 
 const RESULT_CODES = new Set(inspectionResults.map((result) => result.code));
 const FINAL_RESULT_CODES = new Set(finalResults.map((result) => result.code));

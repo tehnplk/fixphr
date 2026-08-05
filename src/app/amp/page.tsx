@@ -1,7 +1,7 @@
 import { CalendarRange } from "lucide-react";
 import Link from "next/link";
 import { getPrisma } from "@/lib/prisma";
-import ignoredHospitals from "../../../hos-ignore.json";
+import ignoredHospitals from "../../../json_lookup/hos-ignore.json";
 import LiveClock from "./LiveClock";
 import styles from "./page.module.css";
 

@@ -1,9 +1,9 @@
 import { notFound } from "next/navigation";
 import { getPrisma } from "@/lib/prisma";
 import { decryptHn } from "@/lib/hn-crypto";
-import inspectionResults from "../../../inspection-result.json";
-import finalResults from "../../../final-result.json";
-import visitTypes from "../../../visit_type.json";
+import inspectionResults from "../../../json_lookup/inspection-result.json";
+import finalResults from "../../../json_lookup/final-result.json";
+import visitTypes from "../../../json_lookup/visit_type.json";
 import ReportTable from "./ReportTable";
 import styles from "./page.module.css";
 

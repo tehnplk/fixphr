@@ -241,8 +241,8 @@ export default function ReportTable({
             <th scope="col">รายการที่</th>
             <th scope="col">วันส่งคำร้อง</th>
             <th scope="col">HN</th>
-            <th scope="col">VISIT-DATE</th>
-            <th scope="col">ประเภท visit</th>
+            <th scope="col">วันรับบริการ</th>
+            <th scope="col">ประเภทบริการ</th>
             <th scope="col">ประเด็น</th>
             <th scope="col">ผลการตรวจสอบ</th>
             <th scope="col">หมายเหตุ</th>
@@ -295,7 +295,7 @@ export default function ReportTable({
                 </td>
                 <td className={styles.editableCell}>
                   <select
-                    aria-label={`ประเภท visit รายการที่ ${row.item_no}`}
+                    aria-label={`ประเภทบริการ รายการที่ ${row.item_no}`}
                     onChange={(event) =>
                       updateRow({ ...row, visit_type: event.target.value })}
                     value={row.visit_type}
