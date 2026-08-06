@@ -302,7 +302,7 @@
 }
 
 .dateDialog {
-  width: min(320px, calc(100vw - 32px));
+  width: min(380px, calc(100vw - 32px));
   padding: 0;
   color: var(--deep);
   border: 1px solid rgba(18, 96, 73, .22);
@@ -352,33 +352,122 @@
   height: 15px;
 }
 
-.dateDialogFields {
+/* ชั้นเลือกค่าแคบกว่าชั้นสรุปเล็กน้อย ให้ขอบชั้นแรกโผล่ออกมาเห็นว่าเป็นการซ้อนชั้น
+   และฉากหลังจางกว่าใบนอก เพราะซ้อนกันสองชั้นแล้วมืดเกิน */
+.dateOptionDialog {
+  width: min(344px, calc(100vw - 44px));
+}
+
+.dateOptionDialog::backdrop {
+  background: rgba(12, 34, 26, .2);
+}
+
+/* สามขั้น วัน → เดือน → ปี เรียงแนวนอนบรรทัดเดียว กดแก้ขั้นไหนก็ได้
+   และโชว์ค่าที่เลือกไว้แล้วในตัว จึงใช้เป็นสรุปวันที่ที่กำลังประกอบอยู่ด้วย */
+.dateSteps {
   display: grid;
-  gap: 10px;
-  grid-template-columns: 0.8fr 1.4fr 1fr;
+  gap: 6px;
+  grid-template-columns: repeat(3, 1fr);
 }
 
-.dateDialogFields label {
+.dateStep {
   display: grid;
-  gap: 4px;
-}
-
-.dateDialogFields span {
-  color: #6b8177;
-  font-size: 11px;
-  font-weight: 700;
-}
-
-.dateDialogFields select {
-  width: 100%;
-  min-height: 38px;
+  gap: 2px;
   padding: 6px 8px;
-  color: var(--deep);
-  font: 600 13px "Noto Sans Thai", "Leelawadee UI", Tahoma, sans-serif;
-  border: 1px solid rgba(18, 96, 73, .24);
+  text-align: left;
+  border: 1px solid rgba(18, 96, 73, .18);
   border-radius: 8px;
   background: #fff;
   cursor: pointer;
+}
+
+.dateStepHead {
+  color: #6b8177;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .02em;
+}
+
+.dateStepValue {
+  overflow: hidden;
+  color: var(--deep);
+  font-size: 13px;
+  font-weight: 800;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.dateStepEmpty {
+  color: #b6c6bc;
+}
+
+.dateStep:hover {
+  border-color: var(--green);
+  background: #f7fbf8;
+}
+
+/* ต้องเจาะจงกว่า :hover ด้านบน ไม่งั้นแถวที่กำลังเปิดชั้นเลือกค่าจะถูกสี hover ทับ */
+.dateStep.dateStepActive {
+  border-color: var(--green);
+  background: #f1f8f3;
+  box-shadow: inset 0 0 0 1px var(--green);
+}
+
+.dateStepActive .dateStepHead {
+  color: var(--green);
+}
+
+/* ตารางตัวเลือกในชั้นซ้อน จำนวนคอลัมน์ต่างกันตามความยาวของป้าย */
+.dateGrid {
+  display: grid;
+  gap: 6px;
+}
+
+.dateGridDays {
+  grid-template-columns: repeat(7, 1fr);
+}
+
+.dateGridMonths {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.dateGridYears {
+  grid-template-columns: repeat(5, 1fr);
+}
+
+.dateOption {
+  min-height: 34px;
+  padding: 6px 2px;
+  color: var(--deep);
+  font: 600 12px "Noto Sans Thai", "Leelawadee UI", Tahoma, sans-serif;
+  border: 1px solid rgba(18, 96, 73, .18);
+  border-radius: 7px;
+  background: #fff;
+  cursor: pointer;
+}
+
+.dateOption:hover {
+  border-color: var(--green);
+  background: #f1f8f3;
+}
+
+/* ต้องมาหลัง :hover และก่อน :disabled เพื่อให้ลำดับการชนะสีเป็น disabled > selected > hover */
+.dateOption.dateOptionSelected {
+  color: #fff;
+  border-color: var(--green);
+  background: var(--green);
+}
+
+.dateOption:disabled {
+  color: #c2cfc7;
+  border-color: rgba(18, 96, 73, .1);
+  background: #f4f6f4;
+  cursor: not-allowed;
+}
+
+.dateOption:focus-visible {
+  outline: 2px solid var(--green);
+  outline-offset: 1px;
 }
 
 .dateDialogActions {

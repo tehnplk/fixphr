@@ -18,6 +18,24 @@ const MONTH_LABELS_COMPACT = [
 // ย้อนหลังพอครอบคลุมคำร้องเก่าสุดที่พบในระบบ และไม่เสนอปีอนาคตเพื่อกันกรอกผิด
 const YEARS_BACK = 15;
 
+const DAY_OPTIONS = Array.from({ length: 31 }, (_, index) => index + 1);
+
+// เลือกวันก่อนเดือน/ปีตามลำดับที่คนไทยอ่านวันที่ จึงมีช่วงที่ยังไม่รู้ปี —
+// ใช้ปีอธิกสุรทินเป็นฐานไว้ก่อน เพื่อไม่ปิด 29 กุมภาพันธ์ ทิ้งก่อนผู้ใช้จะเลือกปี
+const LEAP_REFERENCE_YEAR = 2567;
+
+type Step = 1 | 2 | 3;
+
+const STEPS: Step[] = [1, 2, 3];
+
+const STEP_LABELS: Record<Step, string> = { 1: "วัน", 2: "เดือน", 3: "ปี" };
+
+const STEP_TITLES: Record<Step, string> = {
+  1: "เลือกวัน",
+  2: "เลือกเดือน",
+  3: "เลือกปี พ.ศ.",
+};
+
 type DateParts = { day: number; month: number; year: number };
 
 const EMPTY_PARTS: DateParts = { day: 0, month: 0, year: 0 };
@@ -56,6 +74,12 @@ function daysInMonth(buddhistYear: number, month: number) {
   return new Date(buddhistYear - 543, month, 0).getDate();
 }
 
+// จำนวนวันสูงสุดเท่าที่รู้ตอนนี้ — ยังไม่เลือกเดือนก็เปิดครบ 31 วัน
+function maxDay({ month, year }: DateParts) {
+  if (!month) return 31;
+  return daysInMonth(year || LEAP_REFERENCE_YEAR, month);
+}
+
 // บันทึกกลับเป็น ค.ศ. เสมอ แถวเก่าที่เคยเก็บเป็น พ.ศ. จึงถูกแก้ให้ถูกเมื่อบันทึกซ้ำ
 function toStoredValue({ day, month, year }: DateParts) {
   return `${year - 543}-${pad(month)}-${pad(day)}`;
@@ -68,6 +92,18 @@ function formatDisplay(parts: DateParts | null) {
   return `${parts.day}${month}${String(parts.year).slice(-2)}`;
 }
 
+// ค่าที่เลือกไว้ของแต่ละขั้น ใช้โชว์บนแถวขั้นตอนให้เห็นวันที่ที่กำลังประกอบอยู่
+// ช่องแคบเพราะวางเรียงสามช่องในบรรทัดเดียว เดือนจึงใช้ชื่อย่อ
+function partLabel(step: Step, parts: DateParts) {
+  if (step === 1) return parts.day ? String(parts.day) : null;
+  if (step === 2) return parts.month ? MONTH_LABELS_COMPACT[parts.month - 1] : null;
+  return parts.year ? String(parts.year) : null;
+}
+
+function joinClasses(...values: (string | false)[]) {
+  return values.filter(Boolean).join(" ");
+}
+
 export default function BuddhistDatePicker({
   ariaLabel,
   onChange,
@@ -78,11 +114,15 @@ export default function BuddhistDatePicker({
   value: string;
 }) {
   const [open, setOpen] = useState(false);
+  // ชั้นเลือกค่าเป็น dialog ซ้อนอีกใบ null = ปิดอยู่ ค้างที่หน้าสรุปสามขั้น
+  const [picker, setPicker] = useState<Step | null>(null);
   // แก้บนสำเนาก่อน แล้วค่อยยืนยัน — กดยกเลิกหรือปิดหน้าต่างต้องไม่กระทบค่าเดิม
   const [draft, setDraft] = useState<DateParts>(EMPTY_PARTS);
   const dialogRef = useRef<HTMLDialogElement>(null);
+  const pickerRef = useRef<HTMLDialogElement>(null);
   const saved = parseValue(value);
 
+  // ใบนอกต้อง showModal ก่อนใบใน ลำดับนี้เป็นตัวกำหนดว่าใบไหนทับใบไหนใน top layer
   useEffect(() => {
     const dialog = dialogRef.current;
     if (!dialog) return;
@@ -90,6 +130,14 @@ export default function BuddhistDatePicker({
     if (open && !dialog.open) dialog.showModal();
     if (!open && dialog.open) dialog.close();
   }, [open]);
+
+  useEffect(() => {
+    const dialog = pickerRef.current;
+    if (!dialog) return;
+
+    if (picker && !dialog.open) dialog.showModal();
+    if (!picker && dialog.open) dialog.close();
+  }, [picker]);
 
   const thisYear = currentBuddhistYear();
   const years = Array.from({ length: YEARS_BACK + 1 }, (_, index) => thisYear - index);
@@ -99,31 +147,79 @@ export default function BuddhistDatePicker({
     years.sort((left, right) => right - left);
   }
 
-  const days = Array.from(
-    { length: daysInMonth(draft.year, draft.month) },
-    (_, index) => index + 1,
-  );
+  const dayLimit = maxDay(draft);
   const complete = Boolean(draft.day && draft.month && draft.year);
+
+  function optionsFor(step: Step) {
+    if (step === 1) {
+      return DAY_OPTIONS.map((day) => ({
+        disabled: day > dayLimit,
+        label: String(day),
+        selected: draft.day === day,
+        value: day,
+      }));
+    }
+    if (step === 2) {
+      return MONTH_LABELS.map((label, index) => ({
+        disabled: false,
+        label,
+        selected: draft.month === index + 1,
+        value: index + 1,
+      }));
+    }
+    return years.map((year) => ({
+      disabled: false,
+      label: String(year),
+      selected: draft.year === year,
+      value: year,
+    }));
+  }
+
+  function gridClassFor(step: Step) {
+    if (step === 1) return styles.dateGridDays;
+    if (step === 2) return styles.dateGridMonths;
+    return styles.dateGridYears;
+  }
 
   function openPicker() {
     setDraft(saved ?? EMPTY_PARTS);
+    // เปิดครั้งแรกเห็นชั้นสรุปสามขั้นก่อนเสมอ ผู้ใช้เลือกเองว่าจะเริ่มแก้ขั้นไหน
+    setPicker(null);
     setOpen(true);
   }
 
-  function updateDraft(next: DateParts) {
+  function closeAll() {
+    setPicker(null);
+    setOpen(false);
+  }
+
+  function pick(step: Step, value: number) {
+    const merged: DateParts =
+      step === 1
+        ? { ...draft, day: value }
+        : step === 2
+          ? { ...draft, month: value }
+          : { ...draft, year: value };
     // เปลี่ยนเดือน/ปีแล้ววันเกินสิ้นเดือน ให้หดลงมาเป็นวันสุดท้ายของเดือนนั้น
-    setDraft({ ...next, day: Math.min(next.day, daysInMonth(next.year, next.month)) });
+    const next = { ...merged, day: Math.min(merged.day, maxDay(merged)) };
+    setDraft(next);
+
+    // ต่อด้วยชั้นเลือกค่าของขั้นแรกที่ยังว่าง ครบสามขั้นแล้วปิดกลับไปหน้าสรุปเพื่อกดตกลง
+    if (!next.day) setPicker(1);
+    else if (!next.month) setPicker(2);
+    else if (!next.year) setPicker(3);
+    else setPicker(null);
   }
 
   function confirm() {
     if (!complete) return;
     onChange(toStoredValue(draft));
-    setOpen(false);
+    closeAll();
   }
 
   function clear() {
     onChange("");
-    setOpen(false);
+    closeAll();
   }
 
   return (
@@ -143,9 +239,9 @@ export default function BuddhistDatePicker({
         aria-label={ariaLabel}
         className={styles.dateDialog}
         onClick={(event) => {
-          if (event.target === event.currentTarget) setOpen(false);
+          if (event.target === event.currentTarget) closeAll();
         }}
-        onClose={() => setOpen(false)}
+        onClose={closeAll}
         ref={dialogRef}
       >
         {open ? (
@@ -155,53 +251,38 @@ export default function BuddhistDatePicker({
               <button
                 aria-label="ปิดหน้าต่าง"
                 className={styles.dateDialogClose}
-                onClick={() => setOpen(false)}
+                onClick={closeAll}
                 type="button"
               >
                 <X aria-hidden="true" />
               </button>
             </div>
 
-            <div className={styles.dateDialogFields}>
-              <label>
-                <span>วัน</span>
-                <select
-                  onChange={(event) =>
-                    updateDraft({ ...draft, day: Number(event.target.value) })}
-                  value={draft.day || ""}
-                >
-                  <option value="">—</option>
-                  {days.map((day) => (
-                    <option key={day} value={day}>{day}</option>
-                  ))}
-                </select>
-              </label>
-              <label>
-                <span>เดือน</span>
-                <select
-                  onChange={(event) =>
-                    updateDraft({ ...draft, month: Number(event.target.value) })}
-                  value={draft.month || ""}
-                >
-                  <option value="">—</option>
-                  {MONTH_LABELS.map((label, index) => (
-                    <option key={label} value={index + 1}>{label}</option>
-                  ))}
-                </select>
-              </label>
-              <label>
-                <span>ปี พ.ศ.</span>
-                <select
-                  onChange={(event) =>
-                    updateDraft({ ...draft, year: Number(event.target.value) })}
-                  value={draft.year || ""}
-                >
-                  <option value="">—</option>
-                  {years.map((year) => (
-                    <option key={year} value={year}>{year}</option>
-                  ))}
-                </select>
-              </label>
+            {/* สามขั้นเรียงตามลำดับที่คนไทยอ่านวันที่ แต่กดแก้ขั้นไหนก่อนก็ได้ */}
+            <div className={styles.dateSteps}>
+              {STEPS.map((item) => {
+                const picked = partLabel(item, draft);
+                return (
+                  <button
+                    aria-haspopup="dialog"
+                    aria-label={STEP_TITLES[item]}
+                    className={joinClasses(
+                      styles.dateStep,
+                      picker === item && styles.dateStepActive,
+                    )}
+                    key={item}
+                    onClick={() => setPicker(item)}
+                    type="button"
+                  >
+                    <span className={styles.dateStepHead}>{STEP_LABELS[item]}</span>
+                    <span
+                      className={joinClasses(styles.dateStepValue, !picked && styles.dateStepEmpty)}
+                    >
+                      {picked ?? "—"}
+                    </span>
+                  </button>
+                );
+              })}
             </div>
 
             <div className={styles.dateDialogActions}>
@@ -220,6 +301,51 @@ export default function BuddhistDatePicker({
               >
                 ตกลง
               </button>
+            </div>
+          </div>
+        ) : null}
+      </dialog>
+
+      {/* ชั้นเลือกค่าซ้อนบนหน้าสรุป กด Escape หรือคลิกฉากหลังปิดแค่ชั้นนี้ ค่าที่เลือกไว้ยังอยู่ */}
+      <dialog
+        aria-label={picker ? STEP_TITLES[picker] : undefined}
+        className={joinClasses(styles.dateDialog, styles.dateOptionDialog)}
+        onClick={(event) => {
+          if (event.target === event.currentTarget) setPicker(null);
+        }}
+        onClose={() => setPicker(null)}
+        ref={pickerRef}
+      >
+        {picker ? (
+          <div className={styles.dateDialogBody}>
+            <div className={styles.dateDialogHead}>
+              <span>{STEP_TITLES[picker]}</span>
+              <button
+                aria-label="ปิดหน้าต่าง"
+                className={styles.dateDialogClose}
+                onClick={() => setPicker(null)}
+                type="button"
+              >
+                <X aria-hidden="true" />
+              </button>
+            </div>
+
+            <div className={joinClasses(styles.dateGrid, gridClassFor(picker))}>
+              {optionsFor(picker).map((option) => (
+                <button
+                  aria-pressed={option.selected}
+                  className={joinClasses(
+                    styles.dateOption,
+                    option.selected && styles.dateOptionSelected,
+                  )}
+                  disabled={option.disabled}
+                  key={option.value}
+                  onClick={() => pick(picker, option.value)}
+                  type="button"
+                >
+                  {option.label}
+                </button>
+              ))}
             </div>
           </div>
         ) : null}
