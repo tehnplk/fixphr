@@ -42,6 +42,18 @@ function formatNumber(value: number) {
   return value.toLocaleString("th-TH");
 }
 
+function closedCount(row: { confirmed: number; edited: number; deleted: number }) {
+  return row.confirmed + row.edited + row.deleted;
+}
+
+function formatPercent(value: number, total: number) {
+  if (total === 0 || value === 0) return <span className={styles.zeroCell}>-</span>;
+  return Math.min((value / total) * 100, 100).toLocaleString("th-TH", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  });
+}
+
 /* คอลัมน์สถานะใช้ badge แยกสี — ค่า 0 ยังคงเป็นขีดจาง ไม่ต้องมี badge */
 function formatBadge(value: number, className: string) {
   if (value === 0) return <span className={styles.zeroCell}>-</span>;
@@ -90,14 +102,19 @@ export default function FinalSummaryTable({ rows }: { rows: FinalSummaryRow[] })
     <>
       <table className={styles.finalTable}>
         <thead>
-          <tr>
-            <th className={styles.indexHead} scope="col">#</th>
-            <th scope="col"><ColumnHead icon={MapPin} label="อำเภอ" /></th>
-            <th scope="col"><ColumnHead icon={ClipboardList} label="จำนวนรายการ" /></th>
-            <th scope="col"><ColumnHead icon={ShieldCheck} label="ยืนยันคงเดิม" /></th>
-            <th scope="col"><ColumnHead icon={Pencil} label="แก้ไข" /></th>
-            <th scope="col"><ColumnHead icon={X} label="ลบ" /></th>
-            <th scope="col"><ColumnHead icon={Clock} label="อยู่ระหว่างดำเนินการ" /></th>
+          <tr className={styles.groupRow}>
+            <th className={styles.indexHead} rowSpan={2} scope="col">#</th>
+            <th rowSpan={2} scope="col"><ColumnHead icon={MapPin} label="อำเภอ" /></th>
+            <th rowSpan={2} scope="col"><ColumnHead icon={ClipboardList} label="จำนวนคำร้อง" /></th>
+            <th className={styles.pendingHead} rowSpan={2} scope="col"><ColumnHead icon={Clock} label="อยู่ระหว่างดำเนินการ" /></th>
+            <th colSpan={5} scope="colgroup"><ColumnHead icon={ShieldCheck} label="ดำเนินการแล้ว" /></th>
+          </tr>
+          <tr className={styles.subRow}>
+            <th className={styles.finalActionGroup} scope="col"><ColumnHead icon={ShieldCheck} label="ยืนยันคงเดิม" /></th>
+            <th className={styles.finalActionGroup} scope="col"><ColumnHead icon={Pencil} label="แก้ไข" /></th>
+            <th className={styles.finalActionGroup} scope="col"><ColumnHead icon={X} label="ลบ" /></th>
+            <th className={styles.finalSummaryGroup} scope="col">รวม</th>
+            <th className={styles.finalSummaryGroup} scope="col">ร้อยละ</th>
           </tr>
         </thead>
         <tbody>
@@ -115,20 +132,24 @@ export default function FinalSummaryTable({ rows }: { rows: FinalSummaryRow[] })
                 </button>
               </th>
               <td>{formatNumber(row.target)}</td>
-              <td>{formatConfirmed(row.confirmed)}</td>
-              <td>{formatEdited(row.edited)}</td>
-              <td>{formatDeleted(row.deleted)}</td>
               <td>{formatPending(row.pending)}</td>
+              <td className={styles.finalActionGroup}>{formatConfirmed(row.confirmed)}</td>
+              <td className={styles.finalActionGroup}>{formatEdited(row.edited)}</td>
+              <td className={styles.finalActionGroup}>{formatDeleted(row.deleted)}</td>
+              <td className={styles.finalSummaryGroup}>{formatNumber(closedCount(row))}</td>
+              <td className={styles.finalSummaryGroup}>{formatPercent(closedCount(row), row.target)}</td>
             </tr>
           ))}
           <tr className={styles.totalRow}>
             <td className={styles.rowIndex} />
             <th scope="row">รวม</th>
             <td>{formatNumber(grand.target)}</td>
-            <td>{formatNumber(grand.confirmed)}</td>
-            <td>{formatNumber(grand.edited)}</td>
-            <td>{formatNumber(grand.deleted)}</td>
             <td>{formatNumber(grand.pending)}</td>
+            <td className={styles.finalActionGroup}>{formatNumber(grand.confirmed)}</td>
+            <td className={styles.finalActionGroup}>{formatNumber(grand.edited)}</td>
+            <td className={styles.finalActionGroup}>{formatNumber(grand.deleted)}</td>
+            <td className={styles.finalSummaryGroup}>{formatNumber(closedCount(grand))}</td>
+            <td className={styles.finalSummaryGroup}>{formatPercent(closedCount(grand), grand.target)}</td>
           </tr>
         </tbody>
       </table>
@@ -145,10 +166,10 @@ export default function FinalSummaryTable({ rows }: { rows: FinalSummaryRow[] })
         {selectedRow ? (
           <div className={styles.modalShell}>
             <div className={styles.modalTableWrap}>
-              <table className={styles.modalTable}>
+              <table className={`${styles.modalTable} ${styles.finalModalTable}`}>
                 <thead>
                   <tr className={styles.modalToolbarRow}>
-                    <th colSpan={9}>
+                    <th colSpan={11}>
                       <button
                         aria-label="ปิดหน้าต่าง"
                         className={styles.modalClose}
@@ -159,16 +180,21 @@ export default function FinalSummaryTable({ rows }: { rows: FinalSummaryRow[] })
                       </button>
                     </th>
                   </tr>
-                  <tr>
-                    <th scope="col"><ColumnHead icon={Hash} label="รหัส" /></th>
-                    <th scope="col"><ColumnHead icon={Building2} label="ชื่อหน่วยบริการ" /></th>
-                    <th scope="col"><ColumnHead icon={Landmark} label="สังกัด" /></th>
-                    <th scope="col"><ColumnHead icon={ClipboardList} label="จำนวนรายการ" /></th>
-                    <th scope="col"><ColumnHead icon={ShieldCheck} label="ยืนยันคงเดิม" /></th>
-                    <th scope="col"><ColumnHead icon={Pencil} label="แก้ไข" /></th>
-                    <th scope="col"><ColumnHead icon={X} label="ลบ" /></th>
-                    <th scope="col"><ColumnHead icon={Clock} label="อยู่ระหว่างดำเนินการ" /></th>
-                    <th aria-label="การดำเนินการ" className={styles.modalActionColumn} scope="col" />
+                  <tr className={styles.modalGroupRow}>
+                    <th rowSpan={2} scope="col"><ColumnHead icon={Hash} label="รหัส" /></th>
+                    <th rowSpan={2} scope="col"><ColumnHead icon={Building2} label="ชื่อหน่วยบริการ" /></th>
+                    <th rowSpan={2} scope="col"><ColumnHead icon={Landmark} label="สังกัด" /></th>
+                    <th rowSpan={2} scope="col"><ColumnHead icon={ClipboardList} label="จำนวนคำร้อง" /></th>
+                    <th className={styles.pendingHead} rowSpan={2} scope="col"><ColumnHead icon={Clock} label="อยู่ระหว่างดำเนินการ" /></th>
+                    <th colSpan={5} scope="colgroup"><ColumnHead icon={ShieldCheck} label="ดำเนินการแล้ว" /></th>
+                    <th aria-label="การดำเนินการ" className={styles.modalActionColumn} rowSpan={2} scope="col" />
+                  </tr>
+                  <tr className={styles.modalSubRow}>
+                    <th className={styles.finalActionGroup} scope="col"><ColumnHead icon={ShieldCheck} label="ยืนยันคงเดิม" /></th>
+                    <th className={styles.finalActionGroup} scope="col"><ColumnHead icon={Pencil} label="แก้ไข" /></th>
+                    <th className={styles.finalActionGroup} scope="col"><ColumnHead icon={X} label="ลบ" /></th>
+                    <th className={styles.finalSummaryGroup} scope="col">รวม</th>
+                    <th className={styles.finalSummaryGroup} scope="col">ร้อยละ</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -178,10 +204,12 @@ export default function FinalSummaryTable({ rows }: { rows: FinalSummaryRow[] })
                       <th scope="row">{hospital.name}</th>
                       <td>{hospital.affiliation}</td>
                       <td>{formatNumber(hospital.target)}</td>
-                      <td>{formatConfirmed(hospital.confirmed)}</td>
-                      <td>{formatEdited(hospital.edited)}</td>
-                      <td>{formatDeleted(hospital.deleted)}</td>
                       <td>{formatPending(hospital.pending)}</td>
+                      <td className={styles.finalActionGroup}>{formatConfirmed(hospital.confirmed)}</td>
+                      <td className={styles.finalActionGroup}>{formatEdited(hospital.edited)}</td>
+                      <td className={styles.finalActionGroup}>{formatDeleted(hospital.deleted)}</td>
+                      <td className={styles.finalSummaryGroup}>{formatNumber(closedCount(hospital))}</td>
+                      <td className={styles.finalSummaryGroup}>{formatPercent(closedCount(hospital), hospital.target)}</td>
                       <td className={styles.modalActionColumn}>
                         <Link
                           aria-label={`เปิดรายงาน ${hospital.name}`}
@@ -198,10 +226,12 @@ export default function FinalSummaryTable({ rows }: { rows: FinalSummaryRow[] })
                   <tr>
                     <th colSpan={3} scope="row">รวม</th>
                     <td>{formatNumber(selectedRow.target)}</td>
-                    <td>{formatNumber(selectedRow.confirmed)}</td>
-                    <td>{formatNumber(selectedRow.edited)}</td>
-                    <td>{formatNumber(selectedRow.deleted)}</td>
                     <td>{formatNumber(selectedRow.pending)}</td>
+                    <td className={styles.finalActionGroup}>{formatNumber(selectedRow.confirmed)}</td>
+                    <td className={styles.finalActionGroup}>{formatNumber(selectedRow.edited)}</td>
+                    <td className={styles.finalActionGroup}>{formatNumber(selectedRow.deleted)}</td>
+                    <td className={styles.finalSummaryGroup}>{formatNumber(closedCount(selectedRow))}</td>
+                    <td className={styles.finalSummaryGroup}>{formatPercent(closedCount(selectedRow), selectedRow.target)}</td>
                     <td className={styles.modalActionColumn} />
                   </tr>
                 </tfoot>
