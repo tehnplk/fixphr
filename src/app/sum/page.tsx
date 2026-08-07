@@ -1,5 +1,6 @@
 import { BarChart3 } from "lucide-react";
 import Link from "next/link";
+import { redirect } from "next/navigation";
 import ignoredHospitals from "../../../json_lookup/hos-ignore.json";
 import inspectionResults from "../../../json_lookup/inspection-result.json";
 import visitTypes from "../../../json_lookup/visit_type.json";
@@ -44,6 +45,17 @@ const IGNORED_HOSPITAL_CODES = ignoredHospitals.map(
 // แท็บอื่นทั้งหมดต้องมีสิทธิ์ระดับ user ขึ้นไป — ต้องตรงกับ PROTECTED_PAGE_PREFIXES ใน proxy.ts
 // เขียนเป็น "อะไรที่เปิด" ไม่ใช่ "อะไรที่ปิด" แท็บที่เพิ่มทีหลังจึงถูกปิดไว้ก่อนเสมอ
 const PUBLIC_TAB = "district";
+
+// แท็บทุกอันแสดงชื่อให้เห็นเสมอแม้ยังไม่ล็อกอิน — คนที่ไม่มีสิทธิ์กดแล้วจะถูกส่งไปหน้า login
+// จึงต้องรู้ path ของแต่ละแท็บไว้ทำ callbackUrl เพื่อพากลับมาที่แท็บเดิมหลังล็อกอินสำเร็จ
+const TAB_PATHS = {
+  district: "/sum/amp",
+  type: "/sum/type",
+  "visit-type": "/sum/visit-type",
+  "visit-year": "/sum/visit-year",
+  comp: "/sum/comp",
+  final: "/sum/final",
+} as const;
 
 // report.vstdate เก็บเป็นข้อความ YYYY-MM-DD จาก <input type="date"> ส่วนใหญ่เป็น ค.ศ.
 // แต่มีบางแถวที่ผู้ใช้กรอกเป็น พ.ศ. มาแล้ว จึงต้องเดาจากช่วงตัวเลขก่อนแปลง
@@ -92,9 +104,16 @@ export default async function SummaryPage({
           : params.tab === "visit-year"
             ? "visit-year"
             : "district";
-  const activeTab = requestedTab !== PUBLIC_TAB && !canViewRestricted
-    ? PUBLIC_TAB
-    : requestedTab;
+  // เข้ามาที่แท็บที่ปิดโดยไม่มีสิทธิ์ ให้ไปหน้า login แทนการเงียบ ๆ ตกกลับไปแท็บสาธารณะ
+  // (proxy กันไว้แล้วสำหรับ /sum/<tab> ตรง ๆ ส่วนนี้กันเส้นทาง /sum?tab=... ที่ proxy ไม่แตะ)
+  if (requestedTab !== PUBLIC_TAB && !canViewRestricted) {
+    if (!session?.user) {
+      const callbackUrl = encodeURIComponent(TAB_PATHS[requestedTab]);
+      redirect(`/login?callbackUrl=${callbackUrl}`);
+    }
+    redirect("/login?error=guest");
+  }
+  const activeTab = requestedTab;
   const prisma = getPrisma();
 
   const [
@@ -625,7 +644,6 @@ export default async function SummaryPage({
             >
               ยอดการตรวจสอบ
             </Link>
-            {canViewRestricted ? (
             <Link
               aria-current={activeTab === "type" ? "page" : undefined}
               className={activeTab === "type" ? styles.activeTab : undefined}
@@ -633,8 +651,6 @@ export default async function SummaryPage({
             >
               จำแนกผลการตรวจสอบ
             </Link>
-            ) : null}
-            {canViewRestricted ? (
             <Link
               aria-current={activeTab === "visit-type" ? "page" : undefined}
               className={activeTab === "visit-type" ? styles.activeTab : undefined}
@@ -642,8 +658,6 @@ export default async function SummaryPage({
             >
               ประเภทบริการ
             </Link>
-            ) : null}
-            {canViewRestricted ? (
             <Link
               aria-current={activeTab === "visit-year" ? "page" : undefined}
               className={activeTab === "visit-year" ? styles.activeTab : undefined}
@@ -651,17 +665,13 @@ export default async function SummaryPage({
             >
               ปีที่รับบริการ
             </Link>
-            ) : null}
-            {canViewRestricted ? (
             <Link
               aria-current={activeTab === "comp" ? "page" : undefined}
               className={activeTab === "comp" ? styles.activeTab : undefined}
               href="/sum/comp"
             >
-              ตอบกลับคำร้อง
+              ตอบกลับ
             </Link>
-            ) : null}
-            {canViewRestricted ? (
             <Link
               aria-current={activeTab === "final" ? "page" : undefined}
               className={activeTab === "final" ? styles.activeTab : undefined}
@@ -669,7 +679,6 @@ export default async function SummaryPage({
             >
               การดำเนินการ
             </Link>
-            ) : null}
           </nav>
 
           <div
