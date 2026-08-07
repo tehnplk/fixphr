@@ -37,13 +37,26 @@ function formatAverage(complaints: number, complainants: number) {
 }
 
 // ร้อยละตอบกลับคิดจากจำนวนคำร้อง (masks) เป็นฐานเสมอ
-// ยังไม่มีการตอบกลับให้ขึ้นขีดแบบเดียวกับคอลัมน์จำนวน ไม่ใช่ "0.00"
-function formatAnsweredPercent(answered: number, complaints: number) {
-  if (complaints === 0 || answered === 0) return <span className={styles.zeroCell}>-</span>;
+// ยังไม่มีการตอบกลับให้คืน null ให้ผู้เรียกไปขึ้นขีดแบบเดียวกับคอลัมน์จำนวน ไม่ใช่ "0.00"
+function answeredPercentText(answered: number, complaints: number) {
+  if (complaints === 0 || answered === 0) return null;
   return Math.min((answered / complaints) * 100, 100).toLocaleString("th-TH", {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,
   });
+}
+
+function formatAnsweredPercent(answered: number, complaints: number) {
+  const text = answeredPercentText(answered, complaints);
+  if (text === null) return <span className={styles.zeroCell}>-</span>;
+  return text;
+}
+
+// คอลัมน์จำนวนของกลุ่ม "ตอบกลับ" ใส่ badge เขียวเฉพาะแถวข้อมูล — แถวรวมพื้นเข้มอยู่แล้ว
+// badge จะแย่งสายตากับตัวเลขรวม จึงปล่อยเป็นตัวเลขเปล่าเหมือนเดิม
+function AnsweredCount({ value }: { value: number }) {
+  if (value === 0) return <span className={styles.zeroCell}>-</span>;
+  return <span className={styles.answerBadge}>{value.toLocaleString("th-TH")}</span>;
 }
 
 /* หัวกลุ่ม = ไอคอน + ข้อความ ไอคอนเป็นภาพประกอบ ข้อความยังเป็นตัวบอกความหมายจริง */
@@ -94,8 +107,8 @@ export default function CompSummaryTable({ rows }: { rows: CompSummaryRow[] }) {
             </th>
           </tr>
           <tr className={styles.subRow}>
-            <th scope="col">ผู้ร้อง (คน)</th>
             <th scope="col">จำนวน (ครั้ง)</th>
+            <th scope="col">ผู้ร้อง (คน)</th>
             <th scope="col">เฉลี่ยคนละ (ครั้ง)</th>
             <th scope="col">จำนวน (ครั้ง)</th>
             <th scope="col">ร้อยละ</th>
@@ -115,18 +128,18 @@ export default function CompSummaryTable({ rows }: { rows: CompSummaryRow[] }) {
                   {row.district}
                 </button>
               </th>
-              <td>{formatNumber(row.complainants)}</td>
               <td>{formatNumber(row.complaints)}</td>
+              <td>{formatNumber(row.complainants)}</td>
               <td>{formatAverage(row.complaints, row.complainants)}</td>
-              <td>{formatNumber(row.answered)}</td>
+              <td><AnsweredCount value={row.answered} /></td>
               <td>{formatAnsweredPercent(row.answered, row.complaints)}</td>
             </tr>
           ))}
           <tr className={styles.totalRow}>
             <td className={styles.rowIndex} />
             <th scope="row">รวม</th>
-            <td>{formatNumber(grand.complainants)}</td>
             <td>{formatNumber(grand.complaints)}</td>
+            <td>{formatNumber(grand.complainants)}</td>
             <td>{formatAverage(grand.complaints, grand.complainants)}</td>
             <td>{formatNumber(grand.answered)}</td>
             <td>{formatAnsweredPercent(grand.answered, grand.complaints)}</td>
@@ -164,8 +177,8 @@ export default function CompSummaryTable({ rows }: { rows: CompSummaryRow[] }) {
                     <th scope="col">รหัส</th>
                     <th scope="col">ชื่อหน่วยบริการ</th>
                     <th scope="col">สังกัด</th>
-                    <th scope="col">จำนวนผู้ร้อง (คน)</th>
                     <th scope="col">จำนวนคำร้อง (ครั้ง)</th>
+                    <th scope="col">จำนวนผู้ร้อง (คน)</th>
                     <th scope="col">เฉลี่ยคนละ (ครั้ง)</th>
                     <th scope="col">ตอบกลับแล้ว (ครั้ง)</th>
                     <th scope="col">ร้อยละตอบกลับ</th>
@@ -185,12 +198,12 @@ export default function CompSummaryTable({ rows }: { rows: CompSummaryRow[] }) {
                         </Link>
                       </th>
                       <td>{hospital.affiliation}</td>
-                      <td>{formatNumber(hospital.complainants)}</td>
                       <td>{formatNumber(hospital.complaints)}</td>
+                      <td>{formatNumber(hospital.complainants)}</td>
                       <td>
                         {formatAverage(hospital.complaints, hospital.complainants)}
                       </td>
-                      <td>{formatNumber(hospital.answered)}</td>
+                      <td><AnsweredCount value={hospital.answered} /></td>
                       <td>
                         {formatAnsweredPercent(hospital.answered, hospital.complaints)}
                       </td>
@@ -209,8 +222,8 @@ export default function CompSummaryTable({ rows }: { rows: CompSummaryRow[] }) {
                 <tfoot>
                   <tr>
                     <th colSpan={3} scope="row">รวม</th>
-                    <td>{formatNumber(selectedRow.complainants)}</td>
                     <td>{formatNumber(selectedRow.complaints)}</td>
+                    <td>{formatNumber(selectedRow.complainants)}</td>
                     <td>
                       {formatAverage(selectedRow.complaints, selectedRow.complainants)}
                     </td>

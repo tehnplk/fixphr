@@ -703,6 +703,20 @@
   box-shadow: 0 1px 3px rgba(11, 92, 52, .28);
 }
 
+/* จำนวนตอบกลับของตารางจำนวนคำร้อง — เขียวเหมือน badge ครบ 100 ที่ตารางอื่น
+   ส่วนคอลัมน์ร้อยละข้าง ๆ เป็นตัวเลขเปล่า ไม่งั้นสองช่องติดกันจะเขียวแย่งกันเอง */
+.answerBadge {
+  display: inline-block;
+  min-width: 40px;
+  padding: 3px 9px;
+  color: #fff;
+  font: inherit;
+  text-align: center;
+  background: #16c060;
+  border-radius: 999px;
+  box-shadow: 0 1px 3px rgba(11, 92, 52, .28);
+}
+
 /* คอลัมน์ 4) KPI และ 5) เบิกจ่าย — badge แดงให้เห็นเด่นเมื่อมีรายการ */
 .countBadge {
   display: inline-block;
