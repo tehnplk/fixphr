@@ -22,6 +22,24 @@
   font: 700 9px ui-monospace, SFMono-Regular, Consolas, monospace;
 }
 
+/* ชื่อหน่วยบริการคลิกไป /report ของหน่วยนั้น เหมือนไอคอนเอกสารท้ายแถว —
+   ใช้เส้นประบอกว่ากดได้แบบเดียวกับชื่ออำเภอในหน้า /daily */
+.nameLink {
+  color: inherit;
+  border-bottom: 1px dashed rgba(18, 96, 73, .4);
+  text-decoration: none;
+}
+
+.nameLink:hover {
+  color: var(--green);
+  border-bottom-style: solid;
+}
+
+.nameLink:focus-visible {
+  outline: 3px solid rgba(18, 96, 73, .2);
+  outline-offset: 2px;
+}
+
 .hospitalTable .affiliationColumn {
   width: 54px;
   padding-inline: 3px;

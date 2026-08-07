@@ -343,7 +343,12 @@ export default async function HospitalPage({
                   return (
                     <tr key={hospital.code}>
                       <th className={`${ampStyles.nameColumn} ${styles.hospitalName}`} scope="row">
-                        <span>{hospital.code}</span> - {hospital.name}
+                        <Link
+                          className={styles.nameLink}
+                          href={{ pathname: "/report", query: { hos: hospital.code } }}
+                        >
+                          <span>{hospital.code}</span> - {hospital.name}
+                        </Link>
                       </th>
                       <td className={styles.affiliationColumn}>{hospital.affiliation}</td>
                       {dates.map((date) => {

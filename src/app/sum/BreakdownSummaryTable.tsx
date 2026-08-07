@@ -227,7 +227,14 @@ export default function BreakdownSummaryTable({
                   {selectedRow.hospitals.map((hospital) => (
                     <tr key={hospital.code}>
                       <td>{hospital.code}</td>
-                      <th scope="row">{hospital.name}</th>
+                      <th scope="row">
+                        <Link
+                          className={styles.modalNameLink}
+                          href={{ pathname: "/report", query: { hos: hospital.code } }}
+                        >
+                          {hospital.name}
+                        </Link>
+                      </th>
                       <td>{hospital.affiliation}</td>
                       <td>{formatNumber(hospital.complaints)}</td>
                       {columns.map((column, columnIndex) => (
