@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import { auth } from "@/auth";
 import { getPrisma } from "@/lib/prisma";
 import { buildReportRows, REPORT_ROW_LENGTH } from "@/lib/report-rows";
+import { CRON_ACTOR } from "@/lib/report-sheet";
 import SendSheetForm from "./SendSheetForm";
 import styles from "./page.module.css";
 
@@ -65,6 +66,7 @@ export default async function ReportSheetPage() {
                   <tr>
                     <th>รอบที่</th>
                     <th>วัน-เวลา</th>
+                    <th>วิธีส่ง</th>
                     <th>จำนวน rows</th>
                     <th>api response</th>
                   </tr>
@@ -74,6 +76,16 @@ export default async function ReportSheetPage() {
                     <tr key={log.id}>
                       <td className={styles.mark}>{totalLogs - index}</td>
                       <td>{formatSentAt(log.sent_at)}</td>
+                      <td>
+                        {log.sent_by === CRON_ACTOR ? (
+                          <span className={styles.badgeAuto}>auto</span>
+                        ) : (
+                          <>
+                            <span className={styles.badgeManual}>manual</span>
+                            {log.sent_by ? <small className={styles.sentBy}>{log.sent_by}</small> : null}
+                          </>
+                        )}
+                      </td>
                       <td className={styles.mark}>{log.row_count.toLocaleString("th-TH")}</td>
                       <td className={styles.response}>
                         <span

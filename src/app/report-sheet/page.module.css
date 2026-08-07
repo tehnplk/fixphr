@@ -142,7 +142,9 @@
 }
 
 .badgeOk,
-.badgeFail {
+.badgeFail,
+.badgeAuto,
+.badgeManual {
   display: inline-block;
   margin-right: 8px;
   padding: 2px 8px;
@@ -161,6 +163,23 @@
 .badgeFail {
   color: #8a352f;
   background: #f7ddd7;
+}
+
+/* รอบที่ cron ยิงเอง ใช้สีต่างจากรอบที่คนกด จะได้กวาดตาเจอเร็ว */
+.badgeAuto {
+  color: #1f4a6b;
+  background: #d5e6f2;
+}
+
+.badgeManual {
+  color: #4a4113;
+  background: #eaf0bd;
+}
+
+.sentBy {
+  margin-left: 6px;
+  color: #7a9188;
+  font-size: 11px;
 }
 
 .message {

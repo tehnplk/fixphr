@@ -1,6 +1,9 @@
 import { getPrisma } from "@/lib/prisma";
 import { buildReportRows } from "@/lib/report-rows";
 
+// ชื่อผู้ส่งที่งานตามเวลาใช้ — หน้า /report-sheet ใช้ค่านี้แยก auto ออกจาก manual
+export const CRON_ACTOR = "cron";
+
 // Apps Script ใช้เวลาต่อแถวพอสมควรเมื่อเขียนลงชีต จึงเผื่อเวลาไว้มากกว่าการดึงข้อมูลทั่วไป
 const FETCH_TIMEOUT_MS = 120_000;
 

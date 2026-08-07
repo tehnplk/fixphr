@@ -1,12 +1,9 @@
 import cron from "node-cron";
 import { importFromPhrApi } from "@/lib/phr-import";
-import { sendReportToSheet } from "@/lib/report-sheet";
+import { CRON_ACTOR, sendReportToSheet } from "@/lib/report-sheet";
 
 // คอนเทนเนอร์รันด้วยเวลา UTC จึงต้องระบุโซนเวลาให้ชัด ไม่งั้นจะเพี้ยนไป 7 ชั่วโมง
 const TIME_ZONE = "Asia/Bangkok";
-
-// ชื่อผู้ส่งใน log ของ /report-sheet — แยกจากชื่อคนที่กดปุ่มเอง
-const CRON_ACTOR = "cron";
 
 type Job = {
   name: string;
@@ -16,8 +13,13 @@ type Job = {
 
 const JOBS: Job[] = [
   {
-    name: "import-api",
-    expression: "30 7 * * *",
+    name: "import-api เช้า",
+    expression: "0 7 * * *",
+    run: () => importFromPhrApi("api-cron"),
+  },
+  {
+    name: "import-api บ่าย",
+    expression: "0 13 * * *",
     run: () => importFromPhrApi("api-cron"),
   },
   {
