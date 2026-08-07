@@ -120,6 +120,19 @@ model Report {
   @@map("report")
 }
 
+// ประวัติการส่งรายงานขึ้น Google Sheet ของเขต — เก็บทุกครั้งที่กดส่ง ทั้งสำเร็จและไม่สำเร็จ
+// เพื่อให้ย้อนดูได้ว่ารอบไหนส่งกี่แถว และปลายทางตอบอะไรกลับมา
+model ReportSheetLog {
+  id           Int      @id @default(autoincrement())
+  sent_at      DateTime @default(now()) @db.Timestamptz(3)
+  row_count    Int
+  status       String   @db.VarChar(20)
+  api_response String   @db.Text
+  sent_by      String?  @db.VarChar(100)
+
+  @@map("report_sheet_log")
+}
+
 model UserProvider {
   id           Int       @id @default(autoincrement())
   provider_id  String    @unique @db.VarChar(64)

@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { AlertCircle, AlertTriangle, CheckCircle2, RefreshCw, Send, Sheet } from "lucide-react";
+import { AlertCircle, CheckCircle2, RefreshCw, Send } from "lucide-react";
 import styles from "./page.module.css";
 
 type SendState =
@@ -12,12 +12,10 @@ type SendState =
   | { kind: "error"; message: string };
 
 export default function SendSheetForm({
-  endpointLabel,
   rowCount,
   hospitalCount,
   columnCount,
 }: {
-  endpointLabel: string;
   rowCount: number;
   hospitalCount: number;
   columnCount: number;
@@ -51,42 +49,20 @@ export default function SendSheetForm({
 
   return (
     <form onSubmit={handleSubmit}>
-      <div className={styles.stepLabel}><span>01</span> ปลายทางและข้อมูลที่จะส่ง</div>
-
-      <div className={styles.target}>
-        <div className={styles.targetHead}>
-          <span className={styles.targetIcon} aria-hidden="true"><Sheet /></span>
-          <div>
-            <strong>Google Sheet ของเขตสุขภาพที่ 2</strong>
-            <span>ส่งข้อมูลชุดเดียวกับไฟล์ Excel “ส่งออก Excel” ขึ้นชีตของเขต</span>
-          </div>
+      <dl className={styles.stats}>
+        <div>
+          <dt>แถวที่จะส่ง</dt>
+          <dd>{rowCount.toLocaleString("th-TH")}</dd>
         </div>
-
-        <p className={styles.endpoint}>{endpointLabel}</p>
-
-        <dl className={styles.stats}>
-          <div>
-            <dt>แถวที่จะส่ง</dt>
-            <dd>{rowCount.toLocaleString("th-TH")}</dd>
-          </div>
-          <div>
-            <dt>หน่วยบริการ</dt>
-            <dd>{hospitalCount.toLocaleString("th-TH")}</dd>
-          </div>
-          <div>
-            <dt>คอลัมน์ต่อแถว</dt>
-            <dd>{columnCount}</dd>
-          </div>
-        </dl>
-      </div>
-
-      <div className={styles.warning}>
-        <AlertTriangle aria-hidden="true" />
-        <span>
-          สคริปต์ปลายทางจะ <strong>ล้างข้อมูลเดิมในชีตตั้งแต่แถว 7 ลงไป</strong> แล้วเขียนข้อมูลชุดใหม่ทับ
-          ไม่ใช่การต่อท้าย ตรวจสอบจำนวนแถวด้านบนให้แน่ใจก่อนกดส่ง
-        </span>
-      </div>
+        <div>
+          <dt>หน่วยบริการ</dt>
+          <dd>{hospitalCount.toLocaleString("th-TH")}</dd>
+        </div>
+        <div>
+          <dt>คอลัมน์</dt>
+          <dd>{columnCount}</dd>
+        </div>
+      </dl>
 
       {state.kind === "success" && (
         <div className={`${styles.message} ${styles.success}`} role="status">

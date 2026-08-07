@@ -53,79 +53,22 @@
   box-shadow: 0 24px 70px rgba(30, 70, 56, .12);
 }
 
-.stepLabel {
-  margin-bottom: 18px;
-  color: var(--deep);
-  font-size: 14px;
-  font-weight: 800;
-}
-
-.stepLabel span {
-  margin-right: 8px;
-  color: var(--green);
-  font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
-}
-
-.target {
-  padding: 20px;
-  border: 2px dashed #8eaa9e;
-  background: #f0f5ef;
-}
-
-.targetHead {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  color: var(--deep);
-}
-
-.targetIcon {
-  width: 46px;
-  height: 46px;
-  flex: none;
-  display: grid;
-  place-items: center;
-  color: var(--green);
-  background: var(--lime);
-  border-radius: 50%;
-}
-
-.targetIcon svg {
-  width: 24px;
-  height: 24px;
-}
-
-.targetHead strong {
-  font-size: 17px;
-}
-
-.targetHead span {
-  display: block;
-  margin-top: 3px;
-  color: #617c72;
-  font-size: 13px;
-}
-
-.endpoint {
-  margin-top: 16px;
-  padding: 12px 14px;
-  color: var(--green);
-  font: 600 12px/1.7 ui-monospace, SFMono-Regular, Consolas, monospace;
-  word-break: break-all;
-  border-left: 4px solid var(--lime);
-  background: #e8f1e8;
-}
-
+/* แถบสรุปแบบบรรทัดเดียว ไม่กินพื้นที่แนวตั้ง */
 .stats {
-  margin: 16px 0 0;
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-  gap: 12px;
+  margin: 0;
+  padding: 9px 14px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 24px;
+  border-left: 3px solid var(--lime);
+  background: #e8f1e8;
 }
 
 .stats div {
-  padding: 10px 12px;
-  background: #e8f1e8;
+  display: flex;
+  align-items: baseline;
+  gap: 7px;
 }
 
 .stats dt {
@@ -135,32 +78,14 @@
 }
 
 .stats dd {
-  margin: 4px 0 0;
+  margin: 0;
   color: var(--deep);
-  font-size: 18px;
+  font-size: 15px;
   font-weight: 800;
 }
 
-.warning {
-  margin-top: 16px;
-  padding: 13px 15px;
-  display: flex;
-  align-items: flex-start;
-  gap: 9px;
-  color: #7a5a12;
-  font-size: 13px;
-  line-height: 1.7;
-  background: #fdf3d8;
-}
-
-.warning svg {
-  width: 19px;
-  flex: none;
-  margin-top: 2px;
-}
-
 .previewTitle {
-  margin: 26px 0 10px;
+  margin: 22px 0 10px;
   color: var(--deep);
   font-size: 14px;
   font-weight: 800;
@@ -216,6 +141,40 @@
   text-align: center;
 }
 
+/* ข้อความที่ปลายทางตอบกลับ อาจยาวหลายบรรทัด จึงให้ตัดบรรทัดได้แทนการ ellipsis */
+.preview .response {
+  max-width: 620px;
+  white-space: normal;
+}
+
+.preview .response code {
+  color: #46655a;
+  font-size: 11.5px;
+  word-break: break-word;
+}
+
+.badgeOk,
+.badgeFail {
+  display: inline-block;
+  margin-right: 8px;
+  padding: 2px 8px;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: .04em;
+  border-radius: 999px;
+  vertical-align: 1px;
+}
+
+.badgeOk {
+  color: #185b45;
+  background: #d8f0dd;
+}
+
+.badgeFail {
+  color: #8a352f;
+  background: #f7ddd7;
+}
+
 .message {
   margin-top: 14px;
   padding: 13px 15px;
@@ -242,13 +201,15 @@
 }
 
 .submit {
-  width: 100%;
-  min-height: 55px;
-  margin-top: 18px;
+  min-height: 44px;
+  /* width: fit-content + margin auto = ปุ่มกว้างตามข้อความแต่อยู่กึ่งกลาง */
+  width: fit-content;
+  margin: 14px auto 0;
+  padding: 0 22px;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 10px;
+  gap: 9px;
   color: white;
   font-weight: 800;
   cursor: pointer;

@@ -1,4 +1,5 @@
 import { auth } from "@/auth";
+import { getPrisma } from "@/lib/prisma";
 import { buildReportRows } from "@/lib/report-rows";
 
 export const dynamic = "force-dynamic";
@@ -6,12 +7,37 @@ export const dynamic = "force-dynamic";
 // Apps Script ใช้เวลาต่อแถวพอสมควรเมื่อเขียนลงชีต จึงเผื่อเวลาไว้มากกว่าการดึงข้อมูลทั่วไป
 const FETCH_TIMEOUT_MS = 120_000;
 
+// api_response เก็บข้อความดิบจากปลายทาง — ตัดไว้กันกรณี Apps Script ตอบเป็นหน้า HTML ยาว ๆ
+const MAX_RESPONSE_LENGTH = 2_000;
+
 type SheetResponse = {
   status?: string;
   message?: string;
   start_row?: number;
   inserted_count?: number;
 };
+
+// บันทึกทุกครั้งที่กดส่ง ทั้งสำเร็จและไม่สำเร็จ เพื่อให้หน้า /report-sheet ไล่ดูย้อนหลังได้
+// ตัวบันทึกล้มเหลวต้องไม่ทำให้การส่งที่สำเร็จไปแล้วกลายเป็น error
+async function writeLog(entry: {
+  rowCount: number;
+  status: "success" | "error";
+  apiResponse: string;
+  sentBy: string | null;
+}) {
+  try {
+    await getPrisma().reportSheetLog.create({
+      data: {
+        row_count: entry.rowCount,
+        status: entry.status,
+        api_response: entry.apiResponse.slice(0, MAX_RESPONSE_LENGTH),
+        sent_by: entry.sentBy,
+      },
+    });
+  } catch (error) {
+    console.error("Unable to write report sheet log", error);
+  }
+}
 
 export async function POST() {
   try {
@@ -29,6 +55,7 @@ export async function POST() {
       );
     }
 
+    const sentBy = session?.user?.fullname || session?.user?.name || null;
     const rows = await buildReportRows();
     if (rows.length === 0) {
       return Response.json({ message: "ยังไม่มีข้อมูลรายงานสำหรับส่ง" }, { status: 400 });
@@ -47,19 +74,22 @@ export async function POST() {
       });
     } catch (error) {
       console.error("Unable to reach region sheet web app", error);
-      return Response.json(
-        { message: "เชื่อมต่อ Google Sheet ของเขตไม่สำเร็จ กรุณาลองใหม่อีกครั้ง" },
-        { status: 502 },
-      );
+      const message = "เชื่อมต่อ Google Sheet ของเขตไม่สำเร็จ กรุณาลองใหม่อีกครั้ง";
+      await writeLog({ rowCount: rows.length, status: "error", apiResponse: message, sentBy });
+      return Response.json({ message }, { status: 502 });
     }
 
     const text = await response.text();
     if (!response.ok) {
       console.error("Region sheet web app responded with an error", response.status, text.slice(0, 500));
-      return Response.json(
-        { message: `Google Sheet ตอบกลับสถานะ ${response.status}` },
-        { status: 502 },
-      );
+      const message = `Google Sheet ตอบกลับสถานะ ${response.status}`;
+      await writeLog({
+        rowCount: rows.length,
+        status: "error",
+        apiResponse: `${message}: ${text}`,
+        sentBy,
+      });
+      return Response.json({ message }, { status: 502 });
     }
 
     let result: SheetResponse;
@@ -68,18 +98,18 @@ export async function POST() {
     } catch {
       // สคริปต์ที่ยังไม่ deploy หรือไม่ได้เปิดสิทธิ์จะคืนหน้า HTML ของ Google แทน JSON
       console.error("Region sheet web app did not return JSON", text.slice(0, 500));
-      return Response.json(
-        { message: "Google Sheet ไม่ได้ตอบกลับเป็น JSON ตรวจสอบการ deploy ของ Apps Script" },
-        { status: 502 },
-      );
+      const message = "Google Sheet ไม่ได้ตอบกลับเป็น JSON ตรวจสอบการ deploy ของ Apps Script";
+      await writeLog({ rowCount: rows.length, status: "error", apiResponse: text, sentBy });
+      return Response.json({ message }, { status: 502 });
     }
 
     if (result.status !== "success") {
-      return Response.json(
-        { message: result.message || "Google Sheet ปฏิเสธข้อมูลที่ส่งไป" },
-        { status: 502 },
-      );
+      const message = result.message || "Google Sheet ปฏิเสธข้อมูลที่ส่งไป";
+      await writeLog({ rowCount: rows.length, status: "error", apiResponse: text, sentBy });
+      return Response.json({ message }, { status: 502 });
     }
+
+    await writeLog({ rowCount: rows.length, status: "success", apiResponse: text, sentBy });
 
     const insertedCount = result.inserted_count ?? rows.length;
     return Response.json({
