@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
-import { CalendarDays, ChevronDown, ClipboardList, Download, FileText, LogIn, LogOut, Upload, UserCog } from "lucide-react";
+import { CalendarDays, ChevronDown, ClipboardList, CloudDownload, Download, FileText, LogIn, LogOut, Sheet, Upload, UserCog } from "lucide-react";
 import { logoutAction } from "./auth-actions";
 import styles from "./AppNav.module.css";
 
@@ -94,6 +94,7 @@ export default function AppNav({ user }: { user?: NavUser | null }) {
                 </Link>
                 {user.canManage ? (
                   <>
+                    <div className={styles.dropdownDivider} role="separator" />
                     <a
                       href="/api/report/export"
                       role="menuitem"
@@ -103,16 +104,27 @@ export default function AppNav({ user }: { user?: NavUser | null }) {
                       <Download aria-hidden="true" />
                       ส่งออก Excel
                     </a>
+                    <Link href="/report-sheet" role="menuitem" className={styles.dropdownItem}>
+                      <Sheet aria-hidden="true" />
+                      ส่งออก Sheet เขต
+                    </Link>
+                    <div className={styles.dropdownDivider} role="separator" />
                     <Link href="/upload" role="menuitem" className={styles.dropdownItem}>
                       <Upload aria-hidden="true" />
-                      อัปโหลดข้อมูล
+                      นำเข้า CSV
                     </Link>
+                    <Link href="/import-api" role="menuitem" className={styles.dropdownItem}>
+                      <CloudDownload aria-hidden="true" />
+                      นำเข้า API
+                    </Link>
+                    <div className={styles.dropdownDivider} role="separator" />
                     <Link href="/manage-user" role="menuitem" className={styles.dropdownItem}>
                       <UserCog aria-hidden="true" />
                       จัดการผู้ใช้
                     </Link>
                   </>
                 ) : null}
+                <div className={styles.dropdownDivider} role="separator" />
                 <form action={logoutAction}>
                   <button type="submit" role="menuitem" className={`${styles.dropdownItem} ${styles.logoutItem}`}>
                     <LogOut aria-hidden="true" />

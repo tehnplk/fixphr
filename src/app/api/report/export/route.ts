@@ -1,19 +1,10 @@
 import ExcelJS from "exceljs";
 import { auth } from "@/auth";
-import { getPrisma } from "@/lib/prisma";
+import { buildReportRows } from "@/lib/report-rows";
 
 export const dynamic = "force-dynamic";
 
 const TITLE = "การตรวจสอบการลงข้อมูลในระบบหมอพร้อม ของหน่วยบริการ ในเขตสุขภาพที่ 2";
-
-// ลำดับช่องกาเครื่องหมาย "ผลการตรวจสอบ" ในแบบฟอร์ม (คอลัมน์ J–Q)
-const RESULT_CODES = ["1", "2", "3.1", "3.2", "4", "5", "6", "7"];
-
-const FINAL_LABELS: Record<string, string> = {
-  "1": "ยืนยันคงเดิม",
-  "2": "ลบ",
-  "3": "แก้ไข",
-};
 
 const HEADER_FILL = {
   type: "pattern",
@@ -33,34 +24,7 @@ export async function GET() {
       return Response.json({ message: "เฉพาะผู้ดูแลระบบเท่านั้นที่ส่งออกข้อมูลได้" }, { status: 403 });
     }
 
-    const prisma = getPrisma();
-    const reports = await prisma.report.findMany({
-      orderBy: [{ hospital_code: "asc" }, { item_no: "asc" }],
-      select: {
-        hospital_code: true,
-        comp_date: true,
-        issue: true,
-        inspection_result: true,
-        final_result: true,
-        note: true,
-      },
-    });
-
-    const hospitals = reports.length
-      ? await prisma.hospital.findMany({
-          where: { hospcode: { in: Array.from(new Set(reports.map((row) => row.hospital_code))) } },
-          select: { hospcode: true, hospname: true, chwName: true, ampName: true, mName: true },
-        })
-      : [];
-    const hospitalByCode = new Map(hospitals.map((hospital) => [hospital.hospcode, hospital]));
-
-    const rows = reports
-      .map((report) => ({ report, hospital: hospitalByCode.get(report.hospital_code) }))
-      .sort((left, right) => {
-        const byDistrict = (left.hospital?.ampName ?? "").localeCompare(right.hospital?.ampName ?? "", "th");
-        if (byDistrict !== 0) return byDistrict;
-        return left.report.hospital_code.localeCompare(right.report.hospital_code);
-      });
+    const rows = await buildReportRows();
 
     const workbook = new ExcelJS.Workbook();
     const sheet = workbook.addWorksheet("รายงานผลการตรวจสอบ", {
@@ -94,22 +58,9 @@ export async function GET() {
     }
     sheet.mergeCells("L3:M3");
 
-    rows.forEach(({ report, hospital }, index) => {
-      const marks = RESULT_CODES.map((code) => (report.inspection_result === code ? "/" : ""));
-      sheet.addRow([
-        report.comp_date ?? "",
-        index + 1,
-        hospital?.chwName ?? "",
-        hospital?.ampName ?? "",
-        hospital?.hospname ?? report.hospital_code,
-        hospital?.mName === "กระทรวงสาธารณสุข" ? "/" : "",
-        hospital?.mName === "องค์กรปกครองส่วนท้องถิ่น" ? "/" : "",
-        report.issue ?? "",
-        FINAL_LABELS[report.final_result ?? ""] ?? "",
-        ...marks,
-        report.note ?? "",
-      ]);
-    });
+    for (const row of rows) {
+      sheet.addRow(row);
+    }
 
     sheet.getRow(1).font = { name: "TH Sarabun New", size: 16, bold: true };
     sheet.getRow(1).alignment = { horizontal: "center", vertical: "middle" };

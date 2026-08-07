@@ -177,6 +177,13 @@
   color: #126049;
 }
 
+/* เส้นคั่นกลุ่มเมนู: รายงาน · ส่งออก · นำเข้า · จัดการผู้ใช้ · ออกจากระบบ */
+.dropdownDivider {
+  height: 1px;
+  margin: 5px 8px;
+  background: rgba(18, 96, 73, .14);
+}
+
 .logoutItem {
   color: #8f2626;
 }
