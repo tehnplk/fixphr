@@ -3,6 +3,7 @@ import {
   MAX_IMPORT_SIZE,
   UploadValidationError,
 } from "@/lib/complaint-import";
+import { recordImport } from "@/lib/import-log";
 
 export async function POST(request: Request) {
   try {
@@ -24,7 +25,28 @@ export async function POST(request: Request) {
       return Response.json({ message: "ไฟล์ต้องมีขนาดมากกว่า 0 และไม่เกิน 5 MB" }, { status: 400 });
     }
 
-    const imported = await importComplaintCsv(await file.text(), file.name);
+    let imported: number;
+    try {
+      imported = await importComplaintCsv(await file.text(), file.name);
+    } catch (error) {
+      if (error instanceof UploadValidationError) {
+        await recordImport({
+          source: "csv",
+          status: "error",
+          fileName: file.name,
+          message: error.message,
+        });
+      }
+      throw error;
+    }
+
+    await recordImport({
+      source: "csv",
+      status: "success",
+      rowCount: imported,
+      hospitalCount: imported,
+      fileName: file.name,
+    });
 
     return Response.json({
       message: `นำเข้าข้อมูลสำเร็จ ${imported.toLocaleString("th-TH")} แถว`,

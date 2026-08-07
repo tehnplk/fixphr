@@ -11,13 +11,6 @@ type ImportState =
   | { kind: "success"; message: string }
   | { kind: "error"; message: string };
 
-const PARAMS = [
-  { name: "region", value: "2", note: "เขตสุขภาพที่ 2" },
-  { name: "province", value: "65", note: "พิษณุโลก" },
-  { name: "limit", value: "2000", note: "สูงสุดที่ต้นทางรับ" },
-  { name: "response", value: "JSON", note: "hospitals[] + totals" },
-];
-
 export default function ImportApiForm({ sourceUrl }: { sourceUrl: string }) {
   const router = useRouter();
   const [state, setState] = useState<ImportState>({ kind: "idle" });
@@ -48,37 +41,9 @@ export default function ImportApiForm({ sourceUrl }: { sourceUrl: string }) {
 
   return (
     <form className={styles.panel} onSubmit={handleSubmit}>
-      <div className={styles.stepLabel}><span>01</span> แหล่งข้อมูลต้นทาง</div>
-
-      <div className={styles.source}>
-        <div className={styles.sourceHead}>
-          <span className={styles.sourceIcon} aria-hidden="true"><CloudDownload /></span>
-          <div>
-            <strong>PHR — รายงานการแจ้งข้อมูลไม่ถูกต้อง</strong>
-            <span>ดึง JSON ชุดเดียวกับตารางรายหน่วยบริการบนเว็บต้นทาง</span>
-          </div>
-        </div>
-
-        <p className={styles.endpoint}>
-          <Link2 aria-hidden="true" width={14} height={14} />{" "}
-          <a href={sourceUrl} target="_blank" rel="noreferrer noopener">{sourceUrl}</a>
-        </p>
-
-        <dl className={styles.params}>
-          {PARAMS.map((param) => (
-            <div key={param.name}>
-              <dt>{param.name}</dt>
-              <dd>{param.value}</dd>
-              <dd>{param.note}</dd>
-            </div>
-          ))}
-        </dl>
-      </div>
-
-      <p className={styles.note}>
-        ระบบจะแปลงฟิลด์ใน JSON ให้เป็น schema เดียวกับไฟล์ CSV แล้วตรวจสอบด้วยกฎชุดเดียวกับ
-        การอัปโหลดไฟล์ ก่อนบันทึกลงตาราง ComplaintHosCount เป็นรอบใหม่ตามวัน–เวลาที่กดนำเข้า
-        ข้อมูลรอบก่อนหน้ายังคงอยู่ครบ
+      <p className={styles.endpoint}>
+        <Link2 aria-hidden="true" width={14} height={14} />{" "}
+        <a href={sourceUrl} target="_blank" rel="noreferrer noopener">{sourceUrl}</a>
       </p>
 
       {state.kind === "success" && (

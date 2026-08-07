@@ -1,5 +1,4 @@
 import { redirect } from "next/navigation";
-import { Sheet } from "lucide-react";
 import { auth } from "@/auth";
 import { getPrisma } from "@/lib/prisma";
 import { buildReportRows, REPORT_ROW_LENGTH } from "@/lib/report-rows";
@@ -43,13 +42,6 @@ export default async function ReportSheetPage() {
       <div className={styles.grid} aria-hidden="true" />
 
       <section className={styles.shell}>
-        <header className={styles.header}>
-          <div className={styles.eyebrow}>
-            <Sheet aria-hidden="true" />
-            REPORT · REGION SHEET
-          </div>
-        </header>
-
         <div className={styles.panel}>
           <SendSheetForm
             rowCount={rows.length}

@@ -1,3 +1,4 @@
+import type { ImportSource } from "@/lib/import-log";
 import { getPrisma } from "@/lib/prisma";
 
 export const MAX_IMPORT_SIZE = 5 * 1024 * 1024;
@@ -402,7 +403,7 @@ function getBangkokUploadTimestamp(now = new Date()) {
   };
 }
 
-async function saveRows(rows: ImportRow[], fileName: string) {
+async function saveRows(rows: ImportRow[], fileName: string, source: ImportSource) {
   const prisma = getPrisma();
   const uploadTimestamp = getBangkokUploadTimestamp();
 
@@ -415,8 +416,8 @@ async function saveRows(rows: ImportRow[], fileName: string) {
             hospital_code: row.hospital_code,
           },
         },
-        create: { ...row, ...uploadTimestamp, file_name: fileName },
-        update: { ...row, ...uploadTimestamp, file_name: fileName },
+        create: { ...row, ...uploadTimestamp, file_name: fileName, import_source: source },
+        update: { ...row, ...uploadTimestamp, file_name: fileName, import_source: source },
       }),
     ),
   );
@@ -430,7 +431,7 @@ export function parseComplaintCsv(text: string) {
 }
 
 export async function importComplaintCsv(text: string, fileName: string) {
-  return saveRows(parseComplaintCsv(text), fileName);
+  return saveRows(parseComplaintCsv(text), fileName, "csv");
 }
 
 // ใช้กับข้อมูลที่ดึงจาก API ต้นทาง (/api/import-api)
@@ -455,6 +456,10 @@ export function parseHospitalRegister(payload: unknown) {
   return validateRecords(records, (index) => `รายการที่ ${index + 1}`);
 }
 
-export async function importHospitalRegister(payload: unknown, fileName: string) {
-  return saveRows(parseHospitalRegister(payload), fileName);
+export async function importHospitalRegister(
+  payload: unknown,
+  fileName: string,
+  source: ImportSource,
+) {
+  return saveRows(parseHospitalRegister(payload), fileName, source);
 }

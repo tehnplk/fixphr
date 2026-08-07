@@ -74,8 +74,6 @@ export default function UploadForm() {
 
   return (
     <form className={styles.uploader} onSubmit={handleSubmit}>
-      <div className={styles.stepLabel}><span>01</span> เลือกไฟล์ข้อมูล</div>
-
       <label
         className={`${styles.dropzone} ${isDragging ? styles.dragging : ""}`}
         onDragEnter={(event) => {

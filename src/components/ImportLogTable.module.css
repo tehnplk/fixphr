@@ -1,0 +1,108 @@
+.title {
+  margin: 22px 0 10px;
+  color: #17352b;
+  font-size: 14px;
+  font-weight: 800;
+}
+
+.title small {
+  margin-left: 8px;
+  color: #7a9188;
+  font-weight: 500;
+}
+
+.scroll {
+  max-height: 65vh;
+  overflow: auto;
+  border: 1px solid rgba(18, 96, 73, .16);
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+}
+
+.table th,
+.table td {
+  padding: 7px 10px;
+  border-bottom: 1px solid rgba(18, 96, 73, .12);
+  border-right: 1px solid rgba(18, 96, 73, .08);
+  text-align: left;
+  white-space: nowrap;
+}
+
+/* หัวตารางค้างไว้เพราะรายการยาวและเลื่อนดูในกล่อง */
+.table th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  color: #17352b;
+  font-weight: 800;
+  background: #edf4ed;
+  box-shadow: inset 0 -1px 0 rgba(18, 96, 73, .2);
+}
+
+.table td {
+  color: #3f5c52;
+}
+
+/* คอลัมน์สุดท้ายกินที่ว่างที่เหลือ คอลัมน์อื่นกว้างเท่าเนื้อหา */
+.table th:last-child,
+.table td:last-child {
+  width: 100%;
+}
+
+.detail {
+  color: #46655a;
+  font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+  font-size: 11.5px;
+}
+
+.num {
+  text-align: right;
+  font-weight: 700;
+}
+
+.tag {
+  display: inline-block;
+  padding: 2px 9px;
+  font: 800 10px ui-monospace, SFMono-Regular, Consolas, monospace;
+  letter-spacing: .04em;
+  white-space: nowrap;
+  border-radius: 999px;
+}
+
+.src_csv {
+  color: #4a4113;
+  background: #eaf0bd;
+}
+
+.src_api {
+  color: #185b45;
+  background: #d8f0dd;
+}
+
+/* รอบที่ cron ยิงเอง ใช้สีต่างจากรอบที่คนกด จะได้กวาดตาเจอเร็ว */
+.src_api_cron {
+  color: #1f4a6b;
+  background: #d5e6f2;
+}
+
+.ok {
+  color: #185b45;
+  background: #d8f0dd;
+}
+
+.fail {
+  color: #8a352f;
+  background: #f7ddd7;
+}
+
+.empty {
+  margin: 0;
+  padding: 28px 15px;
+  color: #7a9188;
+  text-align: center;
+  border: 1px dashed rgba(18, 96, 73, .3);
+}
