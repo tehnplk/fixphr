@@ -93,7 +93,7 @@ export default function CompSummaryTable({ rows }: { rows: CompSummaryRow[] }) {
   return (
     <>
       <table className={styles.compTable}>
-        {/* หัวตารางสองชั้น — ชั้นบนเป็นกลุ่ม (คำร้อง / ตอบกลับ) ชั้นล่างเป็นคอลัมน์จริง
+        {/* หัวตารางสองชั้น — ชั้นบนเป็นกลุ่ม (คำร้อง / ตอบกลับผู้ร้อง) ชั้นล่างเป็นคอลัมน์จริง
             ลำดับกับอำเภอไม่อยู่ในกลุ่มไหน จึงคร่อมสองแถวด้วย rowSpan */}
         <thead>
           <tr className={styles.groupRow}>
@@ -103,7 +103,7 @@ export default function CompSummaryTable({ rows }: { rows: CompSummaryRow[] }) {
               <GroupHead icon={FileText} label="คำร้อง" />
             </th>
             <th colSpan={2} scope="colgroup">
-              <GroupHead icon={MessageCircle} label="ตอบกลับ" />
+              <GroupHead icon={MessageCircle} label="ตอบกลับผู้ร้อง" />
             </th>
           </tr>
           <tr className={styles.subRow}>
