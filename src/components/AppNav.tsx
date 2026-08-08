@@ -95,6 +95,15 @@ export default function AppNav({ user }: { user?: NavUser | null }) {
                 {user.canManage ? (
                   <>
                     <div className={styles.dropdownDivider} role="separator" />
+                    <Link href="/upload" role="menuitem" className={styles.dropdownItem}>
+                      <Upload aria-hidden="true" />
+                      นำเข้า CSV
+                    </Link>
+                    <Link href="/import-api" role="menuitem" className={styles.dropdownItem}>
+                      <CloudDownload aria-hidden="true" />
+                      นำเข้า API
+                    </Link>
+                    <div className={styles.dropdownDivider} role="separator" />
                     <a
                       href="/api/report/export"
                       role="menuitem"
@@ -107,15 +116,6 @@ export default function AppNav({ user }: { user?: NavUser | null }) {
                     <Link href="/report-sheet" role="menuitem" className={styles.dropdownItem}>
                       <Sheet aria-hidden="true" />
                       ส่งออก Sheet เขต
-                    </Link>
-                    <div className={styles.dropdownDivider} role="separator" />
-                    <Link href="/upload" role="menuitem" className={styles.dropdownItem}>
-                      <Upload aria-hidden="true" />
-                      นำเข้า CSV
-                    </Link>
-                    <Link href="/import-api" role="menuitem" className={styles.dropdownItem}>
-                      <CloudDownload aria-hidden="true" />
-                      นำเข้า API
                     </Link>
                     <div className={styles.dropdownDivider} role="separator" />
                     <Link href="/manage-user" role="menuitem" className={styles.dropdownItem}>
