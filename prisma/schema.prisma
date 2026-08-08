@@ -96,6 +96,10 @@ model ComplaintHosCount {
   action_other           Int      @default(0)
   action_not_recorded    Int      @default(0)
   action_unexpected_code Int      @default(0)
+  // JSON ดิบทั้งก้อนของหน่วยบริการนั้นตามที่ api/hospital-register ส่งมา เก็บทุก key รวมที่
+  // ยังไม่ได้แตกเป็นคอลัมน์ (dx = สรุปรหัสวินิจฉัย ICD-10, spark, last_filed_at ฯลฯ)
+  // ไฟล์ CSV ไม่มีข้อมูลนี้ แถวที่มาจากการอัปโหลดจึงเป็น null
+  raw_json               Json?    @db.JsonB
   date_up                DateTime @default(dbgenerated("CURRENT_DATE")) @db.Date
   time_up                DateTime @default(dbgenerated("LOCALTIME(0)")) @db.Time(0)
 

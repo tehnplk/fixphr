@@ -1,4 +1,5 @@
 import type { ImportSource } from "@/lib/import-log";
+import { Prisma } from "@/generated/prisma/client";
 import { getPrisma } from "@/lib/prisma";
 
 export const MAX_IMPORT_SIZE = 5 * 1024 * 1024;
@@ -94,6 +95,8 @@ type ImportRow = {
   action_other: number;
   action_not_recorded: number;
   action_unexpected_code: number;
+  // JSON ดิบของหน่วยนั้นจากต้นทาง — มีเฉพาะทาง API ส่วนทาง CSV เป็น null เสมอ
+  raw_json: Record<string, unknown> | null;
 };
 
 export class UploadValidationError extends Error {}
@@ -316,6 +319,9 @@ function validateRecords(records: SourceRecord[], describe: (index: number) => s
       action_other: parseInteger(record.action_other, "action_other", at),
       action_not_recorded: parseInteger(record.action_not_recorded, "action_not_recorded", at),
       action_unexpected_code: parseInteger(record.action_unexpected_code, "action_unexpected_code", at),
+      // ผู้เรียกที่มี JSON ดิบ (ทาง API) เติมให้ทีหลัง — ตัวตรวจสอบเห็นแต่ค่าที่แปลงเป็น
+      // สตริงแล้ว จึงไม่มีทางรู้จัก object ต้นทาง
+      raw_json: null,
     };
   });
 }
@@ -408,18 +414,27 @@ async function saveRows(rows: ImportRow[], fileName: string, source: ImportSourc
   const uploadTimestamp = getBangkokUploadTimestamp();
 
   await prisma.$transaction(
-    rows.map((row) =>
-      prisma.complaintHosCount.upsert({
+    rows.map(({ raw_json, ...row }) => {
+      // คอลัมน์ Json ที่เป็น nullable ต้องส่ง Prisma.DbNull ไม่ใช่ null ธรรมดา
+      const data = {
+        ...row,
+        ...uploadTimestamp,
+        file_name: fileName,
+        import_source: source,
+        raw_json: (raw_json ?? Prisma.DbNull) as Prisma.InputJsonValue,
+      };
+
+      return prisma.complaintHosCount.upsert({
         where: {
           date_up_time_up_hospital_code: {
             ...uploadTimestamp,
             hospital_code: row.hospital_code,
           },
         },
-        create: { ...row, ...uploadTimestamp, file_name: fileName, import_source: source },
-        update: { ...row, ...uploadTimestamp, file_name: fileName, import_source: source },
-      }),
-    ),
+        create: data,
+        update: data,
+      });
+    }),
   );
 
   return rows.length;
@@ -452,8 +467,20 @@ export function parseHospitalRegister(payload: unknown) {
     throw new UploadValidationError("API ต้นทางตัดข้อมูลบางส่วน (truncated) จึงไม่นำเข้า");
   }
 
-  const records = hospitalRegisterToRecords(hospitals as HospitalRegisterItem[]);
-  return validateRecords(records, (index) => `รายการที่ ${index + 1}`);
+  const items = hospitals as HospitalRegisterItem[];
+  const rows = validateRecords(
+    hospitalRegisterToRecords(items),
+    (index) => `รายการที่ ${index + 1}`,
+  );
+
+  // เก็บ JSON ต้นทางไว้ทั้งก้อนคู่กับแถวที่แปลงแล้ว ฟิลด์ที่ยังไม่มีคอลัมน์รองรับ
+  // (dx, spark, last_filed_at ฯลฯ) จึงไม่หายไปกับการแปลง และ validateRecords คืนแถว
+  // ตามลำดับเดิมเสมอ index จึงตรงกับ items
+  rows.forEach((row, index) => {
+    row.raw_json = items[index];
+  });
+
+  return rows;
 }
 
 export async function importHospitalRegister(
